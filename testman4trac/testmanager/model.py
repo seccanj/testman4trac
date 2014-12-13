@@ -21,12 +21,10 @@
 #
 
 import copy
-import re
-import time
-
 from datetime import date, datetime
+import re
 
-from trac.core import *
+from trac.core import Component, implements
 from trac.db import Table, Column, Index
 from trac.env import IEnvironmentSetupParticipant
 from trac.perm import PermissionError
@@ -35,11 +33,13 @@ from trac.util.datefmt import utc, utcmax
 from trac.util.text import CRLF
 from trac.wiki.api import WikiSystem
 from trac.wiki.model import WikiPage
+from trac.wiki.web_ui import WikiModule
 
+from testmanager.util import get_page_title, get_page_description
 from tracgenericclass.model import IConcreteClassProvider, AbstractVariableFieldsObject, AbstractWikiPageWrapper, need_db_create_for_realm, create_db_for_realm, need_db_upgrade_for_realm, upgrade_db_for_realm
-from tracgenericclass.util import *
+from tracgenericclass.util import to_any_timestamp, get_timestamp_db_type, \
+    db_insert_or_ignore, formatExceptionInfo
 
-from testmanager.util import *
 
 try:
     from testmanager.api import _, tag_, N_
@@ -114,7 +114,15 @@ class AbstractTestDescription(AbstractWikiPageWrapper):
         
         return True
 
-    
+    def get_search_results(self, req, terms, filters):
+        """
+        Currently delegates the search to the Wiki module. 
+        """
+        for result in WikiModule(self.env).get_search_results(req, terms, ('wiki',)):
+            if result[0].rpartition('/')[2].startswith("TC"):
+                yield result
+
+
 class TestCatalog(AbstractTestDescription):
     """
     A container for test cases and sub-catalogs.
@@ -344,6 +352,15 @@ class TestCatalog(AbstractTestDescription):
             if tc['page_name'].count('_') == 1:
                 yield tc
    
+    def get_search_results(self, req, terms, filters):
+        if not 'testcatalog' in filters:
+            return
+
+        for result in AbstractTestDescription.get_search_results(self, req, terms, filters):
+            if 'TC' not in result[0].rpartition("_TT")[2]:
+                yield result
+           
+   
 class TestCase(AbstractTestDescription):
 
     # Fields that must not be modified directly by the user
@@ -503,6 +520,14 @@ class TestCase(AbstractTestDescription):
 
         AbstractTestDescription.post_delete(self, db)
         
+    def get_search_results(self, req, terms, filters):
+        if not 'testcase' in filters:
+            return
+            
+        for result in AbstractTestDescription.get_search_results(self, req, terms, filters):
+            if 'TC' in result[0].rpartition("_TT")[2]:
+                yield result
+
         
 class TestCaseInPlan(AbstractVariableFieldsObject):
     """
@@ -631,7 +656,7 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
             cursor.execute('DELETE FROM testcasehistory WHERE id = %s and planid = %s', (self['id'], self['planid']))
 
         self.env.log.debug('<<< delete_history')
-        
+
     
 class TestPlan(AbstractVariableFieldsObject):
     """
@@ -920,13 +945,13 @@ class TestManagerModelProvider(Component):
                     },
                 'testcaseinplan': {
                         'label': "Test Case in a Plan", 
-                        'searchable': True,
+                        'searchable': False,
                         'has_custom': True,
                         'has_change': True
                     },
                 'testplan': {
                         'label': "Test Plan", 
-                        'searchable': True,
+                        'searchable': False,
                         'has_custom': True,
                         'has_change': True
                     }

@@ -20,25 +20,10 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 
-import re
-import math
-
 from genshi.builder import tag
+from trac.core import Component, implements
+from trac.web.chrome import ITemplateProvider, INavigationContributor
 
-from trac.core import *
-from trac.mimeview import Context
-from trac.resource import Resource
-from trac.search import ISearchSource
-from trac.util import to_unicode
-from trac.util.compat import sorted, set, any
-from trac.util.text import CRLF
-from trac.web.chrome import ITemplateProvider, INavigationContributor, \
-                            add_stylesheet, add_script, add_ctxtnav
-from trac.wiki.formatter import Formatter
-from trac.wiki.model import WikiPage
-
-from testmanager.api import TestManagerSystem
-from testmanager.model import TestCatalog, TestCase, TestCaseInPlan, TestPlan, TestManagerModelProvider
 
 try:
     from testmanager.api import _, tag_, N_

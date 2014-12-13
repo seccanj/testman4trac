@@ -25,16 +25,19 @@
 #
 
 import cStringIO
+from datetime import timedelta
 import json
-import re
-
-from datetime import date, datetime, time, timedelta
-from time import strptime
 
 from genshi.builder import tag
+from trac.perm import IPermissionRequestor
+from trac.web import IRequestHandler
+from trac.web.chrome import Chrome, INavigationContributor, ITemplateProvider, add_script_data
 
-from trac.core import *
-from trac.config import Option, IntOption
+from testmanager.api import TestManagerSystem
+from testmanager.model import TestPlan
+from testmanager.util import *
+from tracgenericclass.util import *
+
 
 try:
     from trac.util.datefmt import (utc, parse_date, 
@@ -52,18 +55,6 @@ except ImportError:
 
 # TODO To be removed
 compatibility = True
-
-
-from trac.web import IRequestHandler
-from trac.web.chrome import Chrome, INavigationContributor, ITemplateProvider, add_script_data
-from trac.perm import IPermissionRequestor
-
-from tracgenericclass.util import *
-
-from testmanager.api import TestManagerSystem
-from testmanager.model import TestPlan
-from testmanager.util import *
-
 
 try:
     from testmanager.api import _, tag_, N_

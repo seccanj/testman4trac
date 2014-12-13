@@ -20,9 +20,8 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 
-import re
-from trac.core import *
 from trac.util.text import CRLF
+
 
 def get_page_title(text):
     result = None

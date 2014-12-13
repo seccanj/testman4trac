@@ -20,19 +20,12 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 
-import re
-import time
-
-from datetime import date, datetime
-
-from trac.core import *
-from trac.db import Table, Column, Index
+from trac.core import Component, implements
+from trac.db import Table, Column
 from trac.env import IEnvironmentSetupParticipant
-from trac.resource import Resource, ResourceNotFound
-from trac.util.translation import _, N_, gettext
+from trac.util.translation import N_
 
 from tracgenericclass.model import IConcreteClassProvider, AbstractVariableFieldsObject, need_db_create_for_realm, create_db_for_realm, need_db_upgrade_for_realm, upgrade_db_for_realm
-from tracgenericclass.util import *
 
 
 class ResourceWorkflowState(AbstractVariableFieldsObject):
@@ -44,7 +37,7 @@ class ResourceWorkflowState(AbstractVariableFieldsObject):
     # Fields that must not be modified directly by the user
     protected_fields = ('id', 'res_realm', 'state')
 
-    def __init__(self, env, id=None, res_realm=None, state='new', db=None):
+    def __init__(self, env, id_=None, res_realm=None, state='new', db=None):
         """
         The resource workflow state is related to a resource, the 'id' 
         and 'res_realm' arguments.
@@ -52,7 +45,7 @@ class ResourceWorkflowState(AbstractVariableFieldsObject):
         """
         self.values = {}
 
-        self.values['id'] = id
+        self.values['id'] = id_
         self.values['res_realm'] = res_realm
         self.values['state'] = state
 

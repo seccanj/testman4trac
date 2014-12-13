@@ -2,7 +2,7 @@
 
 rm -rf bin docs
 
-cd tracgenericclass
+cd ../tracgenericclass
 rm -rf build dist *.egg-info
 
 cd ../tracgenericworkflow
@@ -26,5 +26,5 @@ rm -f testmanager/htdocs/js/it.js
 rm -f testmanager/htdocs/js/ko.js
 rm -f testmanager/htdocs/js/ru.js
 
-cd ..
+cd ../testman4trac-parent
 

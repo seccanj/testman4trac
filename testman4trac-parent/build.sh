@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Initialize variables
 build_catalogs=1
@@ -10,7 +10,7 @@ project_path=""
 show_help ()
 {
 	echo Usage:
-	echo     . ./build.sh [-c] [-i your/trac/env/path]
+	echo     . ./build.sh [-f] [-i your/trac/env/path]
 	echo
 	echo     -f :    fast: do not generate message catalogs
 	echo     -i :    install the built plugins into your trac environment
@@ -74,17 +74,17 @@ shift $((OPTIND-1)) # Shift off the options and optional --.
 mkdir bin
 mkdir docs
 
-cd tracgenericclass
+cd ../tracgenericclass
 python setup.py bdist_egg
-cp -f dist/*.egg ../bin
+cp -f dist/*.egg ../testman4trac-parent/bin
 
 cd ../tracgenericworkflow
 python setup.py bdist_egg
-cp -f dist/*.egg ../bin
+cp -f dist/*.egg ../testman4trac-parent/bin
 
 cd ../sqlexecutor
 python setup.py bdist_egg
-cp -f dist/*.egg ../bin
+cp -f dist/*.egg ../testman4trac-parent/bin
 
 cd ../testman4trac
 
@@ -94,9 +94,9 @@ then
 fi
 
 python setup.py bdist_egg
-cp -f dist/*.egg ../bin
+cp -f dist/*.egg ../testman4trac-parent/bin
 
-cd ..
+cd ../testman4trac-parent
 
 cp -f *.txt docs
 

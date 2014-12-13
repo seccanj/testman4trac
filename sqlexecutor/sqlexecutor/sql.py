@@ -20,18 +20,11 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 
-import re
-import sys
-import time
-import traceback
-
 from genshi.builder import tag
-from datetime import datetime
-
-from trac.core import *
+from trac.core import Component, implements
 from trac.perm import IPermissionRequestor
-from trac.util.text import CRLF, to_unicode
-from trac.util.translation import _, N_, gettext
+from trac.util.text import to_unicode
+from trac.util.translation import _
 from trac.web.api import IRequestHandler
 from trac.web.chrome import ITemplateProvider, INavigationContributor
 

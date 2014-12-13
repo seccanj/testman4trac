@@ -20,11 +20,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 
-from trac.db import Table, Column, Index, DatabaseManager
-
-from tracgenericclass.model import create_db_for_realm
-from tracgenericclass.util import *
-
 from testmanager.model import TestManagerModelProvider
 
 def do_upgrade(env, ver, db_backend, db):

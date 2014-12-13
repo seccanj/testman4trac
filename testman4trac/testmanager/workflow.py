@@ -20,19 +20,16 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 
-from trac.core import *
-from trac.resource import Resource
-from trac.util.datefmt import utc
-from trac.web.api import ITemplateStreamFilter
-
 from genshi.builder import tag
 from genshi.filters.transform import Transformer
-from genshi import HTML
+from trac.core import Component, implements
+from trac.resource import Resource
+from trac.web.api import ITemplateStreamFilter
 
-from tracgenericclass.util import *
+from tracgenericclass.util import get_string_from_dictionary
+from tracgenericworkflow.api import IWorkflowOperationProvider, \
+    ResourceWorkflowSystem
 
-from tracgenericworkflow.model import ResourceWorkflowState
-from tracgenericworkflow.api import IWorkflowOperationProvider, ResourceWorkflowSystem
 
 # Workflow support
 class TestManagerWorkflowInterface(Component):

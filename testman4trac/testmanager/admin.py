@@ -21,22 +21,16 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 
-import re
-import os.path
-from operator import itemgetter
-
-from trac.core import *
-from trac.db import *
-from trac.web.chrome import add_notice, add_warning, add_stylesheet
 from trac.admin.web_ui import IAdminPanelProvider
-from trac.wiki.formatter import format_to_html
+from trac.core import Component, implements
 from trac.mimeview.api import Context
+from trac.web.chrome import add_notice, add_warning, add_stylesheet
+from trac.wiki.formatter import format_to_html
 
+from testmanager.api import TestManagerSystem
 from tracgenericclass.model import GenericClassModelProvider
+from tracgenericclass.util import formatExceptionInfo
 
-from testmanager.api import *
-from tracgenericclass.util import *
-from testmanager.util import *
 
 try:
     from testmanager.api import _, tag_, N_
@@ -133,6 +127,7 @@ class TestManagerAdmin(Component):
         data['tcat_templates'] = testmanagersystem.get_templates(testmanagersystem.TEMPLATE_TYPE_TESTCATALOG)
         data['tcat_list'] = testmanagersystem.get_testcatalogs()
         data['tcat_selected'] = testmanagersystem.get_default_tcat_template_id()
+        data['tc_selected'] = testmanagersystem.get_default_tc_template_id()
 
         if req.method == 'POST':
             
@@ -175,8 +170,20 @@ class TestManagerAdmin(Component):
             # delete a Test Case template?
             if req.args.get('tc_del'):
                 tc_sel = req.args.get('tc_sel')
-                for t_id in tc_sel:
+                tc_default = testmanagersystem.get_default_tc_template_id()
+                tc_to_delete = []
+                
+                if isinstance(tc_sel, basestring):
+                    tc_to_delete.append(tc_sel)
+                else:
+                    tc_to_delete = tc_sel
+
+                for t_id in tc_to_delete:
                     t = testmanagersystem.get_template_by_id(t_id)
+                    if t_id == tc_default:
+                        add_warning(req, _("Template '%s' not removed as it is currently the default template") % t['name'])
+                        continue
+                    
                     if testmanagersystem.template_in_use(t_id):
                         add_warning(req, _("Template '%s' not removed as it is in use for a Test Catalog") % t['name'])
                         continue
@@ -194,7 +201,14 @@ class TestManagerAdmin(Component):
             if req.args.get('tcat_del'):
                 tcat_sel = req.args.get('tcat_sel')
                 tcat_default = testmanagersystem.get_default_tcat_template_id()
-                for t_id in tcat_sel:
+                tcat_to_delete = []
+                
+                if isinstance(tcat_sel, basestring):
+                    tcat_to_delete.append(tcat_sel)
+                else:
+                    tcat_to_delete = tcat_sel
+                    
+                for t_id in tcat_to_delete:
                     t = testmanagersystem.get_template_by_id(t_id)
                     if t_id == tcat_default:
                         add_warning(req, _("Template '%s' not removed as it is currently the default template") % t['name'])
@@ -215,6 +229,15 @@ class TestManagerAdmin(Component):
                 if testmanagersystem.set_config_property('TEST_CATALOG_DEFAULT_TEMPLATE', tcat_default):
                     add_notice(req, _("Default Test Catalog template updated"))
                     data['tcat_selected'] = tcat_default
+                else:
+                    add_warning(req, _("Failed to update default Test Catalog template"))
+
+            # save default Test Case template
+            if req.args.get('tc_default_save'):
+                tc_default = req.args.get('tc_default')
+                if testmanagersystem.set_config_property('TEST_CASE_DEFAULT_TEMPLATE', tc_default):
+                    add_notice(req, _("Default Test Case template updated"))
+                    data['tc_selected'] = tc_default
                 else:
                     add_warning(req, _("Failed to update default Test Catalog template"))
 

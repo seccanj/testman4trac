@@ -20,24 +20,15 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 
-import re
-import sys
-import time
-import traceback
-
-from datetime import datetime
-from trac.core import *
-from trac.perm import IPermissionRequestor, PermissionError
-from trac.resource import IResourceManager
 from trac.search import ISearchSource
 from trac.util import get_reporter_id
-from trac.util.datefmt import utc
-from trac.util.translation import _, N_, gettext
 from trac.web.api import IRequestHandler
 from trac.web.chrome import ITemplateProvider
 
-from tracgenericclass.model import AbstractVariableFieldsObject, GenericClassModelProvider
-from tracgenericclass.util import *
+from tracgenericclass.model import GenericClassModelProvider
+from trac.core import Interface, Component, ExtensionPoint, implements
+from tracgenericclass.util import get_dictionary_from_string,\
+    formatExceptionInfo
 
 
 class IGenericObjectChangeListener(Interface):
@@ -46,17 +37,17 @@ class IGenericObjectChangeListener(Interface):
     when objects are created, modified, or deleted.
     """
 
-    def object_created(g_object):
+    def object_created(self, g_object):
         """Called when an object is created."""
 
-    def object_changed(g_object, comment, author, old_values):
+    def object_changed(self, g_object, comment, author, old_values):
         """Called when an object is modified.
         
         `old_values` is a dictionary containing the previous values of the
         fields that have changed.
         """
 
-    def object_deleted(g_object):
+    def object_deleted(self, g_object):
         """Called when an object is deleted."""
 
 

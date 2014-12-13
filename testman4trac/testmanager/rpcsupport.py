@@ -20,17 +20,15 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os
 from datetime import datetime
 
-from trac.core import *
 from trac.util import get_reporter_id
-    
-from tracgenericclass.model import GenericClassModelProvider
-from tracgenericclass.util import formatExceptionInfo
 
 from testmanager.api import TestManagerSystem
 from testmanager.model import TestCatalog, TestCase, TestCaseInPlan, TestPlan
+from tracgenericclass.util import formatExceptionInfo
+from trac.core import Component, implements
+
 
 try:
     # Check that tracrpc plugin is available. Otherwise, an ImportError exception will be raised.
@@ -49,9 +47,9 @@ try:
             return 'testmanager'
 
         def xmlrpc_methods(self):
-            yield ('TEST_MODIFY', ((str, str, str, str),), self.createTestCatalog)
-            yield ('TEST_MODIFY', ((str, str, str, str),), self.createTestCase)
-            yield ('TEST_PLAN_ADMIN', ((str, str, str),), self.createTestPlan)
+            yield ('TEST_MODIFY', ((str, str, str, str),(str, str, str, str, dict)), self.createTestCatalog)
+            yield ('TEST_MODIFY', ((str, str, str, str),(str, str, str, str, dict)), self.createTestCase)
+            yield ('TEST_PLAN_ADMIN', ((str, str, str),(str, str, str, dict)), self.createTestPlan)
             yield (None, ((bool, str, str),), self.deleteTestObject)
             yield (None, ((bool, str, str),(bool, str, str, dict)), self.modifyTestObject)
             yield (None, ((bool, str, str, str),), self.setTestCaseStatus)
@@ -63,7 +61,7 @@ try:
             yield ('TEST_VIEW', ((list, str),), self.listSubCatalogs)
             yield ('TEST_VIEW', ((list, str),), self.listTestPlans)
 
-        def createTestCatalog(self, req, parent_catalog_id, title, description):
+        def createTestCatalog(self, req, parent_catalog_id, title, description, customfields = {}):
             """ Creates a new test catalog, in the parent catalog specified, 
             with the specified title and description.
             To create a root catalog, specify '' as the parent catalog.
@@ -90,6 +88,10 @@ try:
                 new_tc = TestCatalog(self.env, id, pagename, title, description)
                 new_tc.author = author
                 new_tc.remote_addr = req.remote_addr
+                
+                for custom_field_name in customfields:
+                    new_tc[custom_field_name] = customfields[custom_field_name]
+                
                 # This also creates the Wiki page
                 new_tc.insert()
                 result = id
@@ -100,7 +102,7 @@ try:
             
             return id
 
-        def createTestCase(self, req, catalog_id, title, description):
+        def createTestCase(self, req, catalog_id, title, description, customfields = {}):
             """ Creates a new test case, in the catalog specified, with the 
             specified title and description.
             Returns the generated object ID, or '-1' if an error occurs. """
@@ -125,6 +127,10 @@ try:
                 new_tc = TestCase(self.env, id, pagename, title, description)
                 new_tc.author = author
                 new_tc.remote_addr = req.remote_addr
+                
+                for custom_field_name in customfields:
+                    new_tc[custom_field_name] = customfields[custom_field_name]
+
                 # This also creates the Wiki page
                 new_tc.insert()
                 result = id
@@ -135,7 +141,7 @@ try:
             
             return id
 
-        def createTestPlan(self, req, catalog_id, name):
+        def createTestPlan(self, req, catalog_id, name, customfields = {}):
             """ Creates a new test plan, on the catalog specified, with the 
             specified name.
             Returns the generated object ID, or '-1' if an error occurs. """
@@ -154,6 +160,10 @@ try:
                 pagename = tcat['page_name']
 
                 new_tp = TestPlan(self.env, id, catalog_id, pagename, name, author)
+                
+                for custom_field_name in customfields:
+                    new_tp[custom_field_name] = customfields[custom_field_name]
+
                 new_tp.insert()
                 result = id
                 
@@ -197,6 +207,8 @@ try:
         def modifyTestObject(self, req, objtype, id, attributes={}):
             """ Modifies the test object of the specified type identified
             by the given id.
+            For testcaseinplan objects, also the 'planid' attrribute is required 
+            te be specified in the attributes dictionary.
             Returns True if successful, False otherwise. """
 
             try:
@@ -211,6 +223,12 @@ try:
                 elif objtype == 'testplan':
                     req.perm.require('TEST_PLAN_ADMIN')
                     obj = TestPlan(self.env, id)
+                elif objtype == 'testcaseinplan':
+                    req.perm.require('TEST_EXECUTE')
+                    if not 'planid' in attributes:
+                        self.env.log.error("'planid' attribute must be provided.")
+                        
+                    obj = TestCaseInPlan(self.env, id, int(attributes['planid']))
 
                 if not obj.exists:
                     self.env.log.error("Input test object of type %s with ID %s not found." % (objtype, id))
@@ -264,7 +282,7 @@ try:
         def getTestCatalog(self, req, catalog_id):
             """ Returns the catalog properties.
             The result is in the form, all strings:
-            (wiki_page_name, title, description) """
+            (wiki_page_name, title, description, customfields) """
             
             try:
                 # Check catalog really exists
@@ -272,7 +290,10 @@ try:
                 if not tcat.exists:
                     self.env.log.error("Input test catalog with ID %s not found." % catalog_id)
                 else:
-                    return (tcat['page_name'], tcat.title, tcat.description)
+                    customfields = []
+                    self._append_custom_fields(tcat, customfields)
+
+                    return (tcat['page_name'], tcat.title, tcat.description, customfields)
 
             except:
                 self.env.log.error("Error getting the test catalog with ID %s!" % catalog_id)
@@ -284,9 +305,9 @@ try:
             plan will be returned.
             Each result is in the form, all strings:
                 If plan_id is NOT provided:
-                    (wiki_page_name, title, description)
+                    (wiki_page_name, title, description, customfields)
                 If plan_id is provided:
-                    (wiki_page_name, title, description, status) """
+                    (wiki_page_name, title, description, status, customfields) """
             
             try:
                 # Check test case really exists
@@ -294,11 +315,15 @@ try:
                 if not tc.exists:
                     self.env.log.error("Input test case with ID %s not found." % testcase_id)
                 else:
+                    customfields = []
+                    self._append_custom_fields(tc, customfields)
+
                     if plan_id is None or plan_id == '':
-                        return (tc['page_name'], tc.title, tc.description)
+                        return (tc['page_name'], tc.title, tc.description, customfields)
                     else:
                         tcip = TestCaseInPlan(self.env, testcase_id, plan_id)
-                        return (tc['page_name'], tc.title, tc.description, tcip['status'])
+                        self._append_custom_fields(tcip, customfields)
+                        return (tc['page_name'], tc.title, tc.description, tcip['status'], customfields)
 
             except:
                 self.env.log.error("Error getting the test case with ID %s!" % testcase_id)
@@ -307,7 +332,7 @@ try:
         def getTestPlan(self, req, plan_id, catalog_id):
             """ Returns the test plan properties.
             The result is in the form, all strings:
-            (wiki_page_name, name) """
+            (wiki_page_name, name, customfields) """
             
             try:
                 # Check test plan really exists
@@ -315,7 +340,10 @@ try:
                 if not tp.exists:
                     self.env.log.error("Input test plan with ID %s on catalog %s not found." % (plan_id, catalog_id))
                 else:
-                    return (tp['page_name'], tp['name'])
+                    customfields = []
+                    self._append_custom_fields(tp, customfields)
+
+                    return (tp['page_name'], tp['name'], customfields)
 
             except:
                 self.env.log.error("Error getting the test plan with ID %s on catalog %s." % (plan_id, catalog_id))
@@ -324,11 +352,14 @@ try:
         def listRootCatalogs(self, req):
             """ Returns a iterator over the root-level test catalogs.
             Each result is in the form, all strings:
-            (test_catalog_id, wiki_page_name, title, description) """
+            (test_catalog_id, wiki_page_name, title, description, customfields) """
             
             try:
                 for tc in TestCatalog.list_root_catalogs(self.env):
-                    yield (tc['id'], tc['page_name'], tc.title, tc.description)
+                    customfields = []
+                    self._append_custom_fields(tc, customfields)
+
+                    yield (tc['id'], tc['page_name'], tc.title, tc.description, customfields)
                 
             except:
                 self.env.log.error("Error listing the root-level test catalogs!")
@@ -338,7 +369,7 @@ try:
             """ Returns a iterator over the direct sub-catalogs of the specified 
             catalog.
             Each result is in the form, all strings:
-            (test_catalog_id, wiki_page_name, title, description) """
+            (test_catalog_id, wiki_page_name, title, description, customfields) """
             
             try:
                 # Check catalog really exists
@@ -347,7 +378,10 @@ try:
                     self.env.log.error("Input test catalog with ID %s not found." % catalog_id)
                 else:
                     for tc in tcat.list_subcatalogs():
-                        yield (tc['id'], tc['page_name'], tc.title, tc.description)
+                        customfields = []
+                        self._append_custom_fields(tc, customfields)
+
+                        yield (tc['id'], tc['page_name'], tc.title, tc.description, customfields)
                 
             except:
                 self.env.log.error("Error listing the test catalogs!")
@@ -357,7 +391,7 @@ try:
             """ Returns a iterator over the test plans associated 
             to the specified catalog.
             Each result is in the form, all strings:
-            (testplan_id, name) """
+            (testplan_id, name, customfields) """
             
             try:
                 # Check catalog really exists
@@ -366,7 +400,10 @@ try:
                     self.env.log.error("Input test catalog with ID %s not found." % catalog_id)
                 else:
                     for tp in tcat.list_testplans():
-                        yield (tp['id'], tp['name'])
+                        customfields = []
+                        self._append_custom_fields(tp, customfields)
+
+                        yield (tp['id'], tp['name'], customfields)
                 
             except:
                 self.env.log.error("Error listing the test plans!")
@@ -379,9 +416,9 @@ try:
             plan will be returned.
             Each result is in the form, all strings:
                 If plan_id is NOT provided:
-                    (testcase_id, wiki_page_name, title, description)
+                    (testcase_id, wiki_page_name, title, description, customfields)
                 If plan_id is provided:
-                    (testcase_id, wiki_page_name, status) """
+                    (testcase_id, wiki_page_name, status, customfields) """
             
             try:
                 # Check catalog really exists
@@ -392,15 +429,27 @@ try:
                     if plan_id is None or plan_id == '':
                         for tc in tcat.list_testcases():
                             # Returned object is a TestCase
-                            yield (tc['id'], tc['page_name'], tc.title, tc.description)
+                            customfields = []
+                            self._append_custom_fields(tc, customfields)
+
+                            yield (tc['id'], tc['page_name'], tc.title, tc.description, customfields)
                     else:
                         for tcip in tcat.list_testcases(plan_id):
                             # Returned object is a TestCaseInPlan
-                            yield (tcip['id'], tcip['page_name'], tcip['status'])
+                            customfields = []
+                            self._append_custom_fields(tcip, customfields)
+
+                            yield (tcip['id'], tcip['page_name'], tcip['status'], customfields)
                 
             except:
                 self.env.log.error("Error listing the test cases in the catalog with ID %s!" % catalog_id)
                 self.env.log.error(formatExceptionInfo())
+
+        def _append_custom_fields(self, obj, customfields):
+            for field in obj.fields:
+                if field.get("custom"):
+                     customtuple = (field.get('name'), field.get('value'), field.get('label'))
+                     customfields.append(customtuple)
 
 except ImportError:
     print "\n\nError importing optional Trac XML-RPC Plugin. No XML-RPC remote interface will be available."

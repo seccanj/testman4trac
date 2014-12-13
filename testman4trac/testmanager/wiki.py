@@ -20,31 +20,30 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 
-from operator import itemgetter
 from StringIO import StringIO
-
-from trac.core import *
-from trac.mimeview.api import Context
-from trac.resource import Resource
-from trac.util import format_datetime, format_date
-from trac.web.api import ITemplateStreamFilter
-from trac.web.chrome import add_stylesheet, add_script, ITemplateProvider
-from trac.wiki.api import WikiSystem, IWikiChangeListener
-from trac.wiki.formatter import Formatter
-from trac.wiki.model import WikiPage
-from trac.wiki.parser import WikiParser
+import re
 
 from genshi import HTML
 from genshi.builder import tag
 from genshi.filters.transform import Transformer
+from trac.core import Component, implements, TracError
+from trac.mimeview.api import Context
+from trac.resource import Resource
+from trac.util import format_datetime
+from trac.web.api import ITemplateStreamFilter
+from trac.web.chrome import add_stylesheet
+from trac.wiki.api import IWikiChangeListener
+from trac.wiki.formatter import Formatter
+from trac.wiki.model import WikiPage
+from trac.wiki.parser import WikiParser
 
-from tracgenericclass.model import GenericClassModelProvider
-from tracgenericclass.util import *
-
-from testmanager.util import *
 from testmanager.admin import get_all_table_columns_for_object
 from testmanager.api import TestManagerSystem
 from testmanager.model import TestCatalog, TestCase, TestCaseInPlan, TestPlan, TestManagerModelProvider
+from testmanager.util import html_escape, get_page_title
+from tracgenericclass.model import GenericClassModelProvider
+from tracgenericclass.util import fix_base_location, from_any_timestamp
+
 
 try:
     from testmanager.api import _, tag_, N_
@@ -56,6 +55,8 @@ class WikiTestManagerInterface(Component):
     """Implement generic template provider."""
     
     implements(ITemplateStreamFilter, IWikiChangeListener)
+    
+    DOUBLE_QUOTES = re.compile("\"")
     
     _config_properties = {}
     sortby = 'custom'
@@ -254,7 +255,7 @@ class WikiTestManagerInterface(Component):
         if not page_name == 'TC':
             # The root of all catalogs cannot contain itself test cases
             insert2.append(tag.div()(
-                        self._get_custom_fields_markup(test_catalog, tmmodelprovider.get_custom_fields_for_realm('testcatalog')),
+                        self._get_custom_fields_markup(req, test_catalog, tmmodelprovider.get_custom_fields_for_realm('testcatalog')),
                         tag.br()
                     ))
 
@@ -395,7 +396,7 @@ class WikiTestManagerInterface(Component):
                     HTML(self._build_testplan_tree(formatter.context, str(planid), page_name, mode, self.sortby, table_columns, table_columns_map, custom_ctx)),
                     tag.div(class_='testCaseList')(
                     tag.br(),
-                    self._get_custom_fields_markup(tp, tmmodelprovider.get_custom_fields_for_realm('testplan')),
+                    self._get_custom_fields_markup(req, tp, tmmodelprovider.get_custom_fields_for_realm('testplan')),
                     tag.br(),
                     HTML(self._get_export_dialog_markup(req, cat_name, planid, 'testplan')),
                     HTML(self._get_clone_testplan_dialog_markup(req, planid, tp['name'])),
@@ -483,7 +484,7 @@ class WikiTestManagerInterface(Component):
         
         insert2 = tag.div(class_='field', style='marging-top: 60px;')(
                     tag.br(), tag.br(), 
-                    self._get_custom_fields_markup(test_case, tmmodelprovider.get_custom_fields_for_realm('testcase')),
+                    self._get_custom_fields_markup(req, test_case, tmmodelprovider.get_custom_fields_for_realm('testcase')),
                     tag.br(),
                     tag.input(type='button', value=_("Open a Ticket on this Test Case"), onclick='creaTicket("'+tc_name+'", "", "", "'+summary+'")'),
                     HTML(u'&nbsp;&nbsp;'), 
@@ -543,7 +544,7 @@ class WikiTestManagerInterface(Component):
         
         insert2 = tag.div(class_='field', style='marging-top: 60px;')(
                     tag.br(), tag.br(),
-                    self._get_custom_fields_markup(tcip, tmmodelprovider.get_custom_fields_for_realm('testcaseinplan'), ('page_name', 'status')),
+                    self._get_custom_fields_markup(req, tcip, tmmodelprovider.get_custom_fields_for_realm('testcaseinplan'), ('page_name', 'status')),
                     tag.br(), 
                     self._get_testcase_change_status_markup(formatter, has_status, page_name, planid),
                     tag.br(), tag.br(),
@@ -616,7 +617,7 @@ class WikiTestManagerInterface(Component):
         else:
             return tag.span()()
 
-    def _get_custom_fields_markup(self, obj, fields, props=None):
+    def _get_custom_fields_markup(self, req, obj, fields, props=None):
         obj_key = obj.gey_key_string()
 
         obj_props = ''
@@ -641,7 +642,12 @@ class WikiTestManagerInterface(Component):
             result += '<span id="custom_field_value_'+field_name+'" name="custom_field_value_'+field_name+'">'
             if field_value is not None:
                 if field_type == 'textarea':
-                    temp_contents = html_escape(field_value)
+                    
+                    if ('format' in f) and f['format'] == 'wiki':
+                        temp_contents = self._get_wiki_markup(req, field_value)
+                    else:
+                        temp_contents = html_escape(field_value)
+                        
                     result += temp_contents.replace('\n\r', '<br />').replace('\n', '<br />')
                 else:
                     result += html_escape(field_value)
@@ -656,15 +662,19 @@ class WikiTestManagerInterface(Component):
                 
             elif field_type == 'textarea':
                 result += '<textarea id="custom_field_'+field_name+'" name="custom_field_'+field_name+'" '
-                if f['width'] is not None:
-                    result += ' cols="' + str(f['width']) + '" '
-                if f['height'] is not None:
-                    result += ' rows="' + str(f['height']) + '" '
+                if ('cols' in f) and f['cols'] is not None:
+                    result += ' cols="' + str(f['cols']) + '" '
+                if ('rows' in f) and f['rows'] is not None:
+                    result += ' rows="' + str(f['rows']) + '" '
                     
                 result += '>'
                     
                 if field_value is not None:
-                    result += html_escape(field_value)
+                    if ('format' in f) and f['format'] == 'wiki':
+                        result += field_value
+                    else:
+                        result += html_escape(field_value)
+                        
                 result += '</textarea>'
                 
             elif field_type == 'radio':
@@ -1955,4 +1965,18 @@ class WikiTestManagerInterface(Component):
 
         self.env.log.debug("<<< _get_field_value: %s", result)
                 
+        return result
+
+    def _get_wiki_markup(self, req, raw_content):
+        
+        context = Context.from_request(req, 'wiki', 'TC')
+
+        wikidom = WikiParser(self.env).parse(raw_content)
+        out = StringIO()
+        f = Formatter(self.env, context)
+        f.reset(wikidom)
+        f.format(wikidom, out, False)
+        #result = re.sub(self.DOUBLE_QUOTES, "\"\"", out.getvalue())
+        result = out.getvalue()
+
         return result

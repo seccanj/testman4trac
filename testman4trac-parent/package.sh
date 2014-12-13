@@ -20,10 +20,10 @@ cp *.sh testman4trac.$VER
 cp *.txt testman4trac.$VER
 cp *.cmd testman4trac.$VER
 cp *.py testman4trac.$VER
-cp -R sqlexecutor testman4trac.$VER
-cp -R testman4trac testman4trac.$VER
-cp -R tracgenericclass testman4trac.$VER
-cp -R tracgenericworkflow testman4trac.$VER
+cp -R ../sqlexecutor testman4trac.$VER
+cp -R ../testman4trac testman4trac.$VER
+cp -R ../tracgenericclass testman4trac.$VER
+cp -R ../tracgenericworkflow testman4trac.$VER
 
 cd testman4trac.$VER
 
@@ -37,4 +37,4 @@ cd ..
 zip -r ../testman4trac.$VER.src.zip testman4trac.$VER
 tar cvzf ../testmanager.$VER.src.tar.gz testman4trac.$VER
 
-#rm -rf testman4trac.$VER testman4trac.$VER.SVN testman4trac.$VER.BITBKT
+#rm -rf testman4trac.$VER testman4trac.$VER.SVN testman4trac.$VER.GIT

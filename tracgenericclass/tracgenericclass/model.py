@@ -21,25 +21,20 @@
 #
 
 import copy
-import re
-import sys
-import time
-import traceback
-
 from datetime import date, datetime
+import re
 
-from trac.attachment import Attachment
-from trac.core import *
+from trac.core import Interface, TracError, Component, ExtensionPoint
 from trac.db import Table, Column, Index, DatabaseManager, with_transaction
-from trac.resource import Resource, ResourceNotFound
-from trac.util.datefmt import utc, utcmax
-from trac.util.text import CRLF
-from trac.util.translation import _, N_, gettext
-from trac.wiki.api import WikiSystem
+from trac.resource import Resource
+from trac.util.datefmt import utc
+from trac.util.translation import _
 from trac.wiki.model import WikiPage
 from trac.wiki.web_ui import WikiModule
 
-from tracgenericclass.util import *
+from tracgenericclass.util import from_any_timestamp, get_string_from_dictionary, \
+    to_any_timestamp, to_list, get_timestamp_db_type, list_available_tables, \
+    db_get_config_property
 
 
 class IConcreteClassProvider(Interface):
@@ -48,14 +43,14 @@ class IConcreteClassProvider(Interface):
     concrete classes based on this generic class framework.
     """
 
-    def get_realms():
+    def get_realms(self):
         """
         Return class realms provided by the component.
 
         :rtype: `basestring` generator
         """
 
-    def get_data_models():
+    def get_data_models(self):
         """
         Return database tables metadata to allow the framework to create the
         db schema for the classes provided by the component.
@@ -75,7 +70,7 @@ class IConcreteClassProvider(Interface):
                        }
         """
 
-    def get_fields():
+    def get_fields(self):
         """
         Return the standard fields for classes in all the realms 
         provided by the component.
@@ -91,7 +86,7 @@ class IConcreteClassProvider(Interface):
                        }
         """
         
-    def get_metadata():
+    def get_metadata(self):
         """
         Return a set of metadata about the classes in all the realms 
         provided by the component.
@@ -117,7 +112,7 @@ class IConcreteClassProvider(Interface):
                        }
         """
         
-    def create_instance(realm, props=None):
+    def create_instance(self, realm, props=None):
         """
         Return an instance of the specified realm, with the specified properties,
         or an empty object if props is None.
@@ -126,7 +121,7 @@ class IConcreteClassProvider(Interface):
         """
 
 
-    def check_permission(req, realm, key_str=None, operation='set', name=None, value=None):
+    def check_permission(self, req, realm, key_str=None, operation='set', name=None, value=None):
         """
         Checks whether the logged in User has permission to perform
         the specified operation on a resource of the specified realm and 
@@ -1254,8 +1249,8 @@ class GenericClassModelProvider(Component):
                     field['format'] = config.get(name + '.format', 'plain')
                 elif field['type'] == 'textarea':
                     field['format'] = config.get(name + '.format', 'plain')
-                    field['width'] = config.getint(name + '.cols')
-                    field['height'] = config.getint(name + '.rows')
+                    field['cols'] = config.getint(name + '.cols')
+                    field['rows'] = config.getint(name + '.rows')
                 fields.append(field)
 
             fields.sort(lambda x, y: cmp(x['order'], y['order']))
