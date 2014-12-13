@@ -7,8 +7,8 @@ import xmlrpclib
 #
 # trac_project_url = "http://anonymous@localhost:8000/my_test_project/rpc"
 #
-#trac_project_url = "http://user@yourserver:port/yourproject/rpc"
-trac_project_url = "http://anonymous@localhost:8001/test01/rpc"
+# trac_project_url = "http://user@yourserver:port/yourproject/rpc"
+trac_project_url = "http://anonymous@localhost:8000/test01/rpc"
 
 print ""
 print "-------- Connecting to '%s'" % trac_project_url
@@ -22,13 +22,13 @@ root_cat = server.testmanager.createTestCatalog('', "Test Root Catalog RPC", "Th
 print root_cat
 
 print ">> Creating sub-catalog"
-sub_cat = server.testmanager.createTestCatalog(root_cat, "Test Sub-Catalog RPC", "This is a wonderful sub-catalog.")
+sub_cat = server.testmanager.createTestCatalog(root_cat, "Test Sub-Catalog RPC", "This is a wonderful sub-catalog.", {'remarks': 'These are the Remarks'})
 print sub_cat
 
 print ">> Creating two test cases in the root catalog"
-tc_1 = server.testmanager.createTestCase(root_cat, "Test Case 1", "This is a wonderful test case.")
+tc_1 = server.testmanager.createTestCase(root_cat, "Test Case 1", "This is a wonderful test case.", {'component': 'Framework'})
 print tc_1
-tc_2 = server.testmanager.createTestCase(root_cat, "Test Case 2", "This is an even more wonderful test case.")
+tc_2 = server.testmanager.createTestCase(root_cat, "Test Case 2", "This is an even more wonderful test case.", {'testeffort': '1000'})
 print tc_2
 
 print ">> Creating two test cases in the sub-catalog"
@@ -53,11 +53,11 @@ for tc in server.testmanager.listTestCases(root_cat):
         print v
 
 print ">> Creating a test plan on the root catalog"
-tplan = server.testmanager.createTestPlan(root_cat, "Test Root Plan RPC")
+tplan = server.testmanager.createTestPlan(root_cat, "Test Root Plan RPC", {'longdescription': 'This is a veeeeeery long description.'})
 print tplan
 
 print ">> Listing test plans available on specified test catalog"
-for tp in server.testmanager.listTestPlans('0'):
+for tp in server.testmanager.listTestPlans(root_cat):
     for v in tp:
         print v
 
@@ -83,6 +83,10 @@ for v in server.testmanager.getTestCase(tc_1):
 
 print ">> Getting test plan on root catalog properties"
 for v in server.testmanager.getTestPlan(tplan, root_cat):
+    print v
+
+print ">> Verifying root test catalog properties has been changed"
+for v in server.testmanager.getTestCatalog(root_cat):
     print v
 
 #
@@ -145,7 +149,7 @@ printSubCatalog(root_cat, 0)
 print ">> Printing complete test plan tree"
 printPlan(root_cat, tplan)
 
-print ">> Setting test case status"
+print ">> Setting test case status (note: this actually creates the TestCaseInPlan object into the DB)"
 print server.testmanager.setTestCaseStatus(tc_2, tplan, 'successful')
 
 print ">> Printing test case status just set"
@@ -155,7 +159,10 @@ for v in server.testmanager.getTestCase(tc_2, tplan):
 print ">> Changing test case status"
 print server.testmanager.setTestCaseStatus(tc_2, tplan, 'failed')
 
-print ">> Verifying the test case status has been changed"
+print ">> Modifying test case in plan custom field"
+print server.testmanager.modifyTestObject('testcaseinplan', tc_2, {'planid': tplan, 'operating_system': "Macosx"})
+
+print ">> Verifying the test case status and custom field have been changed"
 for v in server.testmanager.getTestCase(tc_2, tplan):
     print v
 

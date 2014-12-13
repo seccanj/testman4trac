@@ -20,8 +20,6 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 
-from datetime import datetime
-
 from trac.util import get_reporter_id
 
 from testmanager.api import TestManagerSystem
@@ -69,7 +67,7 @@ try:
             
             result = '-1'
             try:
-                id = self.testmanagersys.get_next_id('catalog')
+                id_ = self.testmanagersys.get_next_id('catalog')
 
                 pagename = None
                 if parent_catalog_id is not None and parent_catalog_id != '':
@@ -79,13 +77,13 @@ try:
                         self.env.log.error("Input parent test catalog with ID %s not found." % parent_catalog_id)
                         return result
                         
-                    pagename = tcat['page_name'] + '_TT' + id
+                    pagename = tcat['page_name'] + '_TT' + id_
                 else:
-                    pagename = 'TC_TT' + id
+                    pagename = 'TC_TT' + id_
 
                 author = get_reporter_id(req, 'author')
                 
-                new_tc = TestCatalog(self.env, id, pagename, title, description)
+                new_tc = TestCatalog(self.env, id_, pagename, title, description)
                 new_tc.author = author
                 new_tc.remote_addr = req.remote_addr
                 
@@ -94,13 +92,13 @@ try:
                 
                 # This also creates the Wiki page
                 new_tc.insert()
-                result = id
+                result = id_
                 
             except:
                 self.env.log.error("Error adding test catalog with title '%s' in catalog with ID %s!" % (title, parent_catalog_id))
                 self.env.log.error(formatExceptionInfo())
             
-            return id
+            return id_
 
         def createTestCase(self, req, catalog_id, title, description, customfields = {}):
             """ Creates a new test case, in the catalog specified, with the 
@@ -121,10 +119,10 @@ try:
                 
                 author = get_reporter_id(req, 'author')
                 
-                id = self.testmanagersys.get_next_id('testcase')
-                pagename = tcat['page_name'] + '_TC' + id
+                id_ = self.testmanagersys.get_next_id('testcase')
+                pagename = tcat['page_name'] + '_TC' + id_
 
-                new_tc = TestCase(self.env, id, pagename, title, description)
+                new_tc = TestCase(self.env, id_, pagename, title, description)
                 new_tc.author = author
                 new_tc.remote_addr = req.remote_addr
                 
@@ -133,13 +131,13 @@ try:
 
                 # This also creates the Wiki page
                 new_tc.insert()
-                result = id
+                result = id_
                 
             except:
                 self.env.log.error("Error adding test case with title '%s' in catalog with ID %s!" % (title, catalog_id))
                 self.env.log.error(formatExceptionInfo())
             
-            return id
+            return id_
 
         def createTestPlan(self, req, catalog_id, name, customfields = {}):
             """ Creates a new test plan, on the catalog specified, with the 
@@ -156,16 +154,16 @@ try:
                 
                 author = get_reporter_id(req, 'author')
                 
-                id = self.testmanagersys.get_next_id('testplan')
+                id_ = self.testmanagersys.get_next_id('testplan')
                 pagename = tcat['page_name']
 
-                new_tp = TestPlan(self.env, id, catalog_id, pagename, name, author)
+                new_tp = TestPlan(self.env, id_, catalog_id, pagename, name, author)
                 
                 for custom_field_name in customfields:
                     new_tp[custom_field_name] = customfields[custom_field_name]
 
                 new_tp.insert()
-                result = id
+                result = id_
                 
             except:
                 self.env.log.error("Error adding test plan with name '%s' for catalog with ID %s!" % (name, catalog_id))
@@ -173,7 +171,7 @@ try:
             
             return result
 
-        def deleteTestObject(self, req, objtype, id):
+        def deleteTestObject(self, req, objtype, id_):
             """ Deletes the test object of the specified type identified
             by the given id. 
             Returns True if successful, False otherwise. """
@@ -183,28 +181,28 @@ try:
                 obj = None
                 if objtype == 'testcatalog':
                     req.perm.require('TEST_MODIFY')
-                    obj = TestCatalog(self.env, id)
+                    obj = TestCatalog(self.env, id_)
                 elif objtype == 'testcase':
                     req.perm.require('TEST_MODIFY')
-                    obj = TestCase(self.env, id)
+                    obj = TestCase(self.env, id_)
                 elif objtype == 'testplan':
                     req.perm.require('TEST_PLAN_ADMIN')
-                    obj = TestPlan(self.env, id)
+                    obj = TestPlan(self.env, id_)
 
                 if not obj.exists:
-                    self.env.log.error("Input test object of type %s with ID %s not found." % (objtype, id))
+                    self.env.log.error("Input test object of type %s with ID %s not found." % (objtype, id_))
                     return False
 
                 obj.delete()
                 
             except:
-                self.env.log.error("Error deleting test object of type %s with ID %s." % (objtype, id))
+                self.env.log.error("Error deleting test object of type %s with ID %s." % (objtype, id_))
                 self.env.log.error(formatExceptionInfo())
                 return False
             
             return True
 
-        def modifyTestObject(self, req, objtype, id, attributes={}):
+        def modifyTestObject(self, req, objtype, id_, attributes={}):
             """ Modifies the test object of the specified type identified
             by the given id.
             For testcaseinplan objects, also the 'planid' attrribute is required 
@@ -216,22 +214,23 @@ try:
                 obj = None
                 if objtype == 'testcatalog':
                     req.perm.require('TEST_MODIFY')
-                    obj = TestCatalog(self.env, id)
+                    obj = TestCatalog(self.env, id_)
                 elif objtype == 'testcase':
                     req.perm.require('TEST_MODIFY')
-                    obj = TestCase(self.env, id)
+                    obj = TestCase(self.env, id_)
                 elif objtype == 'testplan':
                     req.perm.require('TEST_PLAN_ADMIN')
-                    obj = TestPlan(self.env, id)
+                    obj = TestPlan(self.env, id_)
                 elif objtype == 'testcaseinplan':
                     req.perm.require('TEST_EXECUTE')
                     if not 'planid' in attributes:
                         self.env.log.error("'planid' attribute must be provided.")
                         
-                    obj = TestCaseInPlan(self.env, id, int(attributes['planid']))
+                    # Note: Test case in plan objects may not exist if their status has not been set yet
+                    obj = TestCaseInPlan(self.env, id_, attributes['planid'])
 
                 if not obj.exists:
-                    self.env.log.error("Input test object of type %s with ID %s not found." % (objtype, id))
+                    self.env.log.error("Input test object of type %s with ID %s not found." % (objtype, id_))
                     return False
 
                 author = get_reporter_id(req, 'author')
@@ -249,7 +248,7 @@ try:
                 obj.save_changes(author, "Changed through RPC.")
 
             except:
-                self.env.log.error("Error modifying test object of type %s with ID %s." % (objtype, id))
+                self.env.log.error("Error modifying test object of type %s with ID %s." % (objtype, id_))
                 self.env.log.error(formatExceptionInfo())
                 return False
             
@@ -448,8 +447,8 @@ try:
         def _append_custom_fields(self, obj, customfields):
             for field in obj.fields:
                 if field.get("custom"):
-                     customtuple = (field.get('name'), field.get('value'), field.get('label'))
-                     customfields.append(customtuple)
+                    customtuple = (field.get('name'), obj[field.get('name')], field.get('label'))
+                    customfields.append(customtuple)
 
 except ImportError:
     print "\n\nError importing optional Trac XML-RPC Plugin. No XML-RPC remote interface will be available."
