@@ -1,2 +1,7 @@
 bin/*
 docs/*
+testman4trac.*/*
+testman4trac.*.zip
+testman4trac.*zip
+testmanager.*.gz
+testmanager.*.gz
