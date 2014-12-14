@@ -93,7 +93,7 @@ for v in server.testmanager.getTestCatalog(root_cat):
 # These simple functions leverage the base functions to demostrate some more articulated usage.
 #
 
-# Recursive function to print a whole sub-catalog and its contained test cases
+# Recursive function to print a whole sub-plan and its contained test cases
 def printSubCatalog(cat_id, indent):
     tcat = server.testmanager.getTestCatalog(cat_id)
 
