@@ -2,7 +2,7 @@ Check the tutorial on YouTube: http://www.youtube.com/watch?v=BIi3QMT0rT4
 
 Test Manager plugin for Trac
 
-  Copyright 2010-2013 Roberto Longobardi
+  Copyright 2010-2015 Roberto Longobardi
   
   The Test Manager plugin for Trac is free software: you can 
   redistribute it and/or modify it under the terms of the GNU General 
@@ -38,21 +38,11 @@ test plans and track their execution status and outcome.
 
 Since the release of Trac 1.0, I had to split the plugins code into two 
 versions:
- - a version that works well with Trac 0.11
+ - a version that works well with Trac 0.11 (no more supported)
  - a version that works well with Trac 0.12 and Trac 1.0
 
-All the code works with Python 2.5, 2.6 and 2.7.
+All the code works with Python 2.6 and 2.7.
 All database backends are supported.
-
-***********************************************************************
-********************
-   IMPORTANT NOTE
-********************
-Starting with release 1.5.2, because of the code branch I had to do to 
-support Trac 1.0, all new features will only be developed for 
-Trac 0.12+. 
-
-The 0.11 branch will only be supported for bug fixes.
 
 ***********************************************************************
 
@@ -201,6 +191,40 @@ Change History:
 
 (Refer to the tickets on trac-hacks or SourceForge for complete 
 descriptions.)
+
+
+Release 1.8.2 (2014-12-14):
+
+  o Enhancement #11598 (Trac-Hacks): "Default" Test Case template to be applied to newly created Test Catalogs
+  
+                                     Now you can define a custom test case template, which will be applied to
+                                     all new test cases.
+  
+  o Enhancement #10805 (Trac-Hacks): Remove empty sub catalogs from test plan
+  
+  o Enhancement #11476 (Trac-Hacks): Return custom fields in XMLRPC Calls
+  
+                                     Custom fields (http://trac-hacks.org/wiki/TestManagerForTracPlugin#Customfields)
+                                     are now returned by the XML-RPC calls to retrieve test manager objects.
+                                     They can also be set and changed using the "create*()" and "modifyTestObject()"
+                                     methods.
+                                     Refer to the XML-RPC interface documentation for further details and to the
+                                     sample script "rpc_example.py" for usage examples:
+                                     
+                                     XML-RPC documentation: http://trac-hacks.org/wiki/TestManagerForTracPluginRPCApi
+  
+  o Fixed Ticket #11597 (Trac-Hacks): Cannot delete Test Case templates
+  
+  o Fixed Ticket #11486 (Trac-Hacks): Searching in tickets search in wiki as well even if unchecked
+  
+  o Fixed Ticket #11609 (Trac-Hacks): [testplan-tm_custom] custom=textarea format=wiki does not do wiki formatting
+  
+                                      Wiki formatting is now supported in custom fields, if you specify
+                                      "format=wiki" for the field in trac.ini.
+  
+  o Fixed Ticket #11912 (Trac-Hacks): Error cloning test plan with PostgreSQL database
+
+                                      Many thanks to "sistemas" for providing the patch!!! 
 
 Release 1.8.1 (2014-01-06):
 

@@ -8,21 +8,20 @@ To build the four plugins that make up the application:
     path. Genshi should also be available in the Python lookup path.
     To make these libraries available to Python you can either install them
     centrally, or reference them using the PYTHONLIB environment variable.
- 2) Unzip the source code distribution package
- 3) Open a shell, cd into the root directory coming from the source code 
-    distribution package
- 4) Build the source code using the provided build scripts:
     
-    - To build for Trac 0.11:
+    In order to enable languages different from English, you should also
+    have Babel installed in your Python environment.
+    
+ 2) Unzip the source code distribution package
  
-        . ./build_011.sh
- 
-    - To build for Trac 0.12 and above:
- 
+ 3) Open a shell, cd into the testman4trac-parent directory
+    
+ 4) Build the source code using the provided build script:
+    
         ./build.sh [-f] [-i path/to/your/trac/project/env]
         
         Where:
-            -f :    fast: do not generates the message catalogs (they are required for the first build run)
+            -f :    fast: does not generate the message catalogs (you should build them at least on the first build run)
             -i :    installs the built plugins into your trac environment
  
     The build shell script can copy the resulting egg files into your desired 
@@ -36,10 +35,6 @@ To build the four plugins that make up the application:
 
  1), 2), 3) Same as for Linux
  4) Build the source code using the provided build scripts:
- 
-    - To build for Trac 0.11:
- 
-        build_011.cmd
  
     - To build for Trac 0.12 and above:
  

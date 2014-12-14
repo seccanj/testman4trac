@@ -1,6 +1,11 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+testman4trac.*/*
+testman4trac.*.zip
+testman4trac.*zip
+testmanager.*.gz
+testmanager.*.gz
 
 # C extensions
 *.so

@@ -1,3 +1,8 @@
+Upgrade is supported from release 1.4.7 and above only.
+
+If you have an earlier release, upgrade to 1.4.7 first and then upgrade 
+to the latest release.
+
 The functionalities are divided in three plugins, which must be installed in 
 this order:
 
@@ -14,7 +19,7 @@ in a production environment.
     *  SQL Executor => SQLExecutor
 
 
-Installation:
+Upgrade:
 
 1) Download the Python Egg file (".egg" extension) which is RIGHT FOR YOUR 
    PYTHON VERSION, or download the source code and build it.
@@ -41,7 +46,6 @@ Repeat steps 3) to 7) for each plugin, in the following order:
    
 7) Restart your Trac server (e.g. Apache or tracd).
 
+8) Clear your browser's cache - needed to get the updated Javascript
+   code.
 
-8) Enable the newly installed plugins, using the Trac admin page, or
-   editing the trac.ini file.
-   Refer to Trac's documentation for how to enable plugins.
