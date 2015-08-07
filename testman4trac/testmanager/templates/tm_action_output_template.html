@@ -1,0 +1,70 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
+    <xi:include href="layout.html" />
+  <head>
+    <title>$title</title>
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+  </head>
+
+  <body>
+    <div xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:i18n="http://genshi.edgewall.org/i18n"
+          xmlns:py="http://genshi.edgewall.org/"
+          i18n:domain="testmanager">
+
+        <h1>${a2}</h1>
+
+        <p>
+            ${a3}
+        </p>
+
+        <p>
+            ${a4}
+        </p>
+        
+        <form id="tm_my_action_method_output_form" name="tm_my_action_method_output_form" 
+              action="${base_url}/action/testmanager.actions!tm_actions_method" method="post">
+              
+            <input type="text" name="a2" value="AA2" />
+            <input type="text" name="a6" value="AA6" />
+            <input type="text" name="a7" value="AA7" />
+
+            <input type="submit" value="Submit" />
+        </form>
+        
+        <form id="tm_my_action_method_ajax_form" name="tm_my_action_method_ajax_form" method="post">
+            <input type="text" name="a1" value="AAA1" />
+            <input type="text" name="a2" value="AAA2" />
+            <input type="text" name="a5" value="AAA5" />
+
+            <input id="tm_ajax_submit_button" type="button" value="Submit" />
+        </form>
+        
+        <div id="tm_my_action_method_ajax_response"></div>
+    </div>
+    
+    <script type="text/javascript">/*<![CDATA[*/
+      jQuery(document).ready(function($) {
+          $('#tm_ajax_submit_button').click(function(e) {
+              var params = $("#tm_my_action_method_ajax_form").serialize(); 
+              /* params["__FORM_TOKEN"] = getCookie('trac_form_token'); */
+              /* params["__STRACS_CONTEXT"] = stracsContext; */
+              
+              $.post( 
+                "${base_url}/action/testmanager.actions!tm_actions_ajax_method", 
+                params,
+                function( data ) {
+                    $('#tm_my_action_method_ajax_response').html(JSON.stringify(data));
+                },
+                "json");
+            });
+        });
+/*]]>*/</script>
+  </body>
+</html>

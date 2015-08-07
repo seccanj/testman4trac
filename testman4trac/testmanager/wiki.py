@@ -4,57 +4,51 @@
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
-# The Test Manager plugin for Trac is free software: you can 
-# redistribute it and/or modify it under the terms of the GNU 
-# General Public License as published by the Free Software Foundation, 
-# either version 3 of the License, or (at your option) any later 
-# version.
-# 
-# The Test Manager plugin for Trac is distributed in the hope that it 
-# will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with the Test Manager plugin for Trac. See the file LICENSE.txt. 
-# If not, see <http://www.gnu.org/licenses/>.
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at: 
+#   https://trac-hacks.org/wiki/TestManagerForTracPluginLicense
 #
+# Author: Roberto Longobardi <otrebor.dev@gmail.com>
+# 
 
+from operator import itemgetter
 from StringIO import StringIO
-import re
 
-from genshi import HTML
-from genshi.builder import tag
-from genshi.filters.transform import Transformer
-from trac.core import Component, implements, TracError
+from trac.core import *
 from trac.mimeview.api import Context
 from trac.resource import Resource
-from trac.util import format_datetime
+from trac.util import format_datetime, format_date
 from trac.web.api import ITemplateStreamFilter
-from trac.web.chrome import add_stylesheet
-from trac.wiki.api import IWikiChangeListener
+from trac.web.chrome import add_stylesheet, add_script, ITemplateProvider
+from trac.wiki.api import WikiSystem, IWikiChangeListener
 from trac.wiki.formatter import Formatter
 from trac.wiki.model import WikiPage
 from trac.wiki.parser import WikiParser
 
+from genshi import HTML
+from genshi.builder import tag
+from genshi.filters.transform import Transformer
+
+from tracgenericclass.cache import GenericClassCacheSystem
+from tracgenericclass.model import GenericClassModelProvider
+from tracgenericclass.util import *
+
+from testmanager.util import *
 from testmanager.admin import get_all_table_columns_for_object
 from testmanager.api import TestManagerSystem
 from testmanager.model import TestCatalog, TestCase, TestCaseInPlan, TestPlan, TestManagerModelProvider
-from testmanager.util import html_escape, get_page_title
-from tracgenericclass.model import GenericClassModelProvider
-from tracgenericclass.util import fix_base_location, from_any_timestamp
-
 
 try:
     from testmanager.api import _, tag_, N_
 except ImportError:
-	from trac.util.translation import _, N_
-	tag_ = _
+    from trac.util.translation import _, N_
+    tag_ = _
 
 class WikiTestManagerInterface(Component):
     """Implement generic template provider."""
     
-    implements(ITemplateStreamFilter, IWikiChangeListener)
+    #implements(ITemplateStreamFilter, IWikiChangeListener)
     
     DOUBLE_QUOTES = re.compile("\"")
     
@@ -105,7 +99,10 @@ class WikiTestManagerInterface(Component):
 
     def wiki_page_deleted(self, page):
         """Called when a page has been deleted."""
-        if page.name.find('_TC') >= 0:
+
+        GenericClassCacheSystem.clear_cache()
+            
+        if '_TC' in page.name:
             # Delete test case
             tc_id = page.name.rpartition('_TC')[2]
             self.env.log.debug("Deleting Test case with id '%s" % tc_id)
@@ -115,7 +112,7 @@ class WikiTestManagerInterface(Component):
             else:
                 self.env.log.debug("Test case with id '%s' not found" % tc_id)
         
-        elif page.name.find('_TT') >= 0:
+        elif '_TT' in page.name:
             # Delete test catalog and all its contained test cases
             tcat_id = page.name.rpartition('_TT')[2]
             self.env.log.debug("Deleting Test catalog with id '%s" % tcat_id)
@@ -125,6 +122,8 @@ class WikiTestManagerInterface(Component):
             else:
                 self.env.log.debug("Test catalog with id '%s' not found" % tcat_id)
 
+        GenericClassCacheSystem.clear_cache()
+    
     def wiki_page_version_deleted(self, page):
         """Called when a version of a page has been deleted."""
         
@@ -139,40 +138,47 @@ class WikiTestManagerInterface(Component):
         
     # ITemplateStreamFilter methods
     def filter_stream(self, req, method, filename, stream, data):
-        self._parse_config_options()
-
+        result = stream
+        
         page_name = req.args.get('page', 'WikiStart')
-        planid = req.args.get('planid', '-1')
-        delete_version = req.args.get('delete_version', '')
-        version = req.args.get('version', '')
-
-        formatter = Formatter(
-            self.env, Context.from_request(req, Resource('testmanager'))
-            )
         
         if page_name.startswith('TC'):
             req.perm.require('TEST_VIEW')
+
+            self._parse_config_options()
+
+            planid = req.args.get('planid', '-1')
+            delete_version = req.args.get('delete_version', '')
+            version = req.args.get('version', '')
+
+            formatter = Formatter(
+                self.env, Context.from_request(req, Resource('testmanager'))
+                )
+            
+            GenericClassCacheSystem.clear_cache()
             
             if page_name.find('_TC') >= 0:
                 if filename == 'wiki_view.html':
                     if not planid or planid == '-1':
-                        return self._testcase_wiki_view(req, formatter, planid, page_name, stream)
+                        result = self._testcase_wiki_view(req, formatter, planid, page_name, stream)
                     else:
-                        return self._testcase_in_plan_wiki_view(req, formatter, planid, page_name, stream)
+                        result = self._testcase_in_plan_wiki_view(req, formatter, planid, page_name, stream)
             elif page_name == 'TC' or page_name.find('_TT') >= 0:
                 if filename == 'wiki_view.html':
                     if not planid or planid == '-1':
-                        return self._catalog_wiki_view(req, formatter, page_name, stream)
+                        result = self._catalog_wiki_view(req, formatter, page_name, stream)
                     else:
-                        return self._testplan_wiki_view(req, formatter, page_name, planid, stream)
+                        result = self._testplan_wiki_view(req, formatter, page_name, planid, stream)
                 elif filename == 'wiki_delete.html':
                     if not planid or planid == '-1':
                         if not delete_version or delete_version == '' or version == '1':
-                            return self._catalog_wiki_delete(req, formatter, page_name, stream)
+                            result = self._catalog_wiki_delete(req, formatter, page_name, stream)
                     else:
                         raise TracError(_("You cannot delete a Test Plan this way. Expand the Test Plans list under the corrisponding Catalog and use the X buttons to delete the Test Plans."))
 
-        return stream
+            GenericClassCacheSystem.clear_cache()
+
+        return result
 
         
     # Internal methods
@@ -192,7 +198,11 @@ class WikiTestManagerInterface(Component):
     def _catalog_wiki_view(self, req, formatter, page_name, stream):
         path_name = req.path_info
         cat_name = path_name.rpartition('/')[2]
-        cat_id = cat_name.rpartition('TT')[2]
+        
+        if cat_name == 'TC':
+            cat_id = '-1'
+        else:
+            cat_id = cat_name.rpartition('TT')[2]
 
         mode = req.args.get('mode', self.env.config.get('testmanager', 'testcatalog.default_view', 'tree'))
         fulldetails = req.args.get('fulldetails', 'False')
@@ -268,6 +278,7 @@ class WikiTestManagerInterface(Component):
                         tag.form(id='createTestCatalogForm', action='%s/testcreate' % fix_base_location(req), method='post')(
                             tag.input(type='hidden', name='type', value='catalog'),
                             tag.input(type='hidden', name='path', value=cat_name),
+                            tag.input(type='hidden', name='parent_id', value=cat_id),
                             tag.input(type='text', name='title', size='50'),
                             tag.input(type='submit', value=_(buttonLabel))
                             )
@@ -285,6 +296,7 @@ class WikiTestManagerInterface(Component):
                             tag.form(id='createTestCaseForm', action='%s/testcreate' % fix_base_location(req), method='post')(
                                 tag.input(type='hidden', name='type', value='testcase'),
                                 tag.input(type='hidden', name='path', value=cat_name),
+                                tag.input(type='hidden', name='parent_id', value=cat_id),
                                 tag.input(type='text', name='title', size='50'),
                                 tag.input(type='submit', value=_("Add a Test Case"))
                                 )
@@ -381,7 +393,7 @@ class WikiTestManagerInterface(Component):
         tp = TestPlan(self.env, planid)
         
         insert1 = tag.div()(
-                    tag.a(href=req.href.wiki(page_name))(_("Back to the Catalog")),
+                    self._get_breadcrumb_markup(formatter, planid, page_name, mode, fulldetails),
                     tag.div(style='border: 1px, solid, gray; padding: 1px;')(
                         self._get_switch_view_icon_markup(req, page_name, mode, fulldetails, planid)
                         ),
@@ -579,23 +591,40 @@ class WikiTestManagerInterface(Component):
     def _get_breadcrumb_markup(self, formatter, planid, page_name, mode='tree', fulldetails='False'):
         if planid and not planid == '-1':
             # We are in the context of a test plan
-            if not page_name.rpartition('_TC')[2] == '':
+            tp = TestPlan(self.env, planid)
+            catpath = tp['page_name']
+            if '_TC' in page_name:
                 # It's a test case in plan
-                tp = TestPlan(self.env, planid)
-                catpath = tp['page_name']
+                tcid = page_name.rpartition('_TC')[2]
+                tc = TestCase(self.env, tcid)
                 result = tag.span()(
                     tag.a(href=formatter.req.href.wiki(catpath, planid=planid, mode=mode, fulldetails=fulldetails))(_("Back to the Test Plan")),
-                    HTML(self._build_testcases_breadcrumb(page_name, planid, mode, (fulldetails == 'True')))
+                    HTML(self._build_testcases_breadcrumb(formatter.req, tcid, tc['parent_id'], planid, tp['catid'], mode, (fulldetails == 'True')))
                 )
                 
                 return result
             else:
                 # It's a test plan
-                return tag.a(href=formatter.req.href.wiki(page_name))(_("Back to the Catalog"))
+                subcat_id = page_name.rpartition('_TT')[2]
+                result = tag.span()(
+                    tag.a(href=formatter.req.href.wiki(page_name))(_("Back to the Catalog")),
+                    tag.br(),
+                    HTML(self._build_testcases_breadcrumb(formatter.req, None, subcat_id, planid, tp['catid'], mode, (fulldetails == 'True')))
+                )
+
+                return result
                 
         else:
             # It's a test catalog or test case description
-            return HTML(self._build_testcases_breadcrumb(page_name, '-1', mode, (fulldetails == 'True')))
+            if '_TC' in page_name:
+                # It's a test case
+                tcid = page_name.rpartition('_TC')[2]
+                tc = TestCase(self.env, tcid)
+                return HTML(self._build_testcases_breadcrumb(formatter.req, tcid, tc['parent_id'], '-1', None, mode, (fulldetails == 'True')))
+            else:
+                # It's a test catalog
+                tcat_id = page_name.rpartition('_TT')[2]
+                return HTML(self._build_testcases_breadcrumb(formatter.req, None, tcat_id, '-1', None, mode, (fulldetails == 'True')))
 
     def _get_testcase_status_markup(self, formatter, has_status, page_name, planid):
         if has_status:
@@ -1115,58 +1144,63 @@ class WikiTestManagerInterface(Component):
                     common_code.append(tag.script(src='../chrome/testmanager/js/%s.js' % base_locale[0], type='text/javascript'))
         except:
             # Trac 0.11
-			pass
+            pass
 
         return common_code
 
-    def _build_testcases_breadcrumb(self, curpage, planid, mode, fulldetails):
-        # Determine current catalog name
-        cat_name = 'TC'
-        if curpage.find('_TC') >= 0:
-            cat_name = curpage.rpartition('_TC')[0].rpartition('_')[2]
-        elif not curpage == 'TC':
-            cat_name = curpage.rpartition('_')[2]
+    def _build_testcases_breadcrumb(self, req, tcid, cat_id, planid, plan_cat_id, mode, fulldetails):
+        breadcrumb = []
         
-        # Create the breadcrumb model
-        path_name = curpage.partition('TC_')[2]
-        tokens = path_name.split("_")
-        curr_path = 'TC'
+        self.env.log.debug("Building breadcrumbs starting with test case ID %s and catalog ID %s" % (tcid, cat_id))
         
-        breadcrumb = [{'name': 'TC', 'title': _("All Catalogs"), 'id': 'TC'}]
+        # Manage leaf test case, if present
+        if tcid is not None:
+            tc = TestCase(self.env, tcid)
 
-        for i, tc in enumerate(tokens):
-            curr_path += '_'+tc
-            page = WikiPage(self.env, curr_path)
-            page_title = get_page_title(page.text)
-            
-            breadcrumb[(i+1):] = [{'name': tc, 'title': page_title, 'id': curr_path}]
-
-            if tc == cat_name:
+            curr_step = {'name': tc['page_name'], 'title': tc.title, 'id': tcid, 'page_name': tc['page_name']}
+            breadcrumb.insert(0, curr_step)
+        
+        # Manage test catalogs, starting with the last one and navigating parent-wide
+        while True:
+            if cat_id is None or cat_id == '-1':
+                curr_step = {'name': 'TC', 'title': _("All Catalogs"), 'id': 'TC', 'page_name': 'TC'}
+                breadcrumb.insert(0, curr_step)
+                
                 break
+            else:
+                tcat = TestCatalog(self.env, cat_id)
+
+                curr_step = {'name': tcat['page_name'], 'title': tcat.title, 'id': cat_id, 'page_name': tcat['page_name']}
+                breadcrumb.insert(0, curr_step)
+            
+                # If the catalog to which the test plan is tied has been reached,
+                # must not go further, because higher catalogs are not in the scope
+                # of the test plan
+                if cat_id == plan_cat_id:
+                    break
+                
+                cat_id = tcat['parent_id']
 
         text = u''
 
         text +='<div>'
-        text += self._render_breadcrumb(breadcrumb, planid, mode, fulldetails)
+        text += self._render_breadcrumb(req, breadcrumb, planid, mode, fulldetails)
         text +='</div>'
 
         return text    
                 
     def _build_catalog_tree(self, context, curpage, mode='tree', fulldetails=False, table_columns=None, table_columns_map=None, custom_ctx=None):
         # Determine current catalog name
-        cat_name = 'TC'
-        if curpage.find('_TC') >= 0:
-            cat_name = curpage.rpartition('_TC')[0].rpartition('_')[2]
-            #cat_id = '-1'
-        elif not curpage == 'TC':
-            cat_name = curpage.rpartition('_')[2]
+        cat_id = '-1'
+        if not '_TC' in curpage and not curpage == 'TC':
+            cat_id = curpage.rpartition('_TT')[2]
 
-        if cat_name == 'TC':
+        if curpage == 'TC':
             mode = 'tree'
             fulldetails = False
 
         # Create the catalog subtree model
-        components = TestManagerSystem(self.env).get_test_catalog_data_model(curpage)
+        components = TestManagerSystem(self.env).get_test_catalog_data_model(cat_id)
 
         # Generate the markup
         ind = {'count': 0, 'totals': None}
@@ -1212,14 +1246,12 @@ class WikiTestManagerInterface(Component):
         default_status = testmanagersystem.get_default_tc_status()
         
         # Determine current catalog name
-        cat_name = 'TC'
-        if curpage.find('_TC') >= 0:
-            cat_name = curpage.rpartition('_TC')[0].rpartition('_')[2]
-        elif not curpage == 'TC':
-            cat_name = curpage.rpartition('_')[2]
+        cat_id = '-1'
+        if not '_TC' in curpage and not curpage == 'TC':
+            cat_id = curpage.rpartition('_TT')[2]
 
         # Create the catalog subtree model
-        components = TestManagerSystem(self.env).get_test_catalog_data_model(curpage, True, planid, sortby)
+        components = TestManagerSystem(self.env).get_test_catalog_data_model(cat_id, curpage, None, True, planid, sortby)
 
         # Generate the markup
         ind = {'count': 0, 'totals': None}
@@ -1262,16 +1294,11 @@ class WikiTestManagerInterface(Component):
 
     def _build_testplan_list(self, curpage, mode, fulldetails, show_delete_button):
         # Determine current catalog name
-        cat_name = 'TC'
-        catid = '-1'
-        if curpage.find('_TC') >= 0:
-            cat_name = curpage.rpartition('_TC')[0].rpartition('_')[2]
-            catid = cat_name.rpartition('TT')[2]
-        elif not curpage == 'TC':
-            cat_name = curpage.rpartition('_')[2]
-            catid = cat_name.rpartition('TT')[2]
+        cat_id = '-1'
+        if not '_TC' in curpage and not curpage == 'TC':
+            cat_id = curpage.rpartition('_TT')[2]
         
-        markup, num_plans = self._render_testplan_list(catid, mode, fulldetails, show_delete_button)
+        markup, num_plans = self._render_testplan_list(cat_id, mode, fulldetails, show_delete_button)
 
         text = u'<form id="testPlanList" class="printableform"><fieldset id="testPlanListFields" class="collapsed"><legend class="foldable" style="cursor: pointer;"><a href="#no4"  onclick="expandCollapseSection(\'testPlanListFields\')">'+_("Available Test Plans")+' ('+str(num_plans)+')</a></legend>'
         text +='<div style="padding: 0px 0px 10px 10px">'+_("Filter:")+' <input id="tpFilter" title="'+_("Type the test to search for, even more than one word.")+'" type="text" size="40" onkeyup="starthighlightTable(\'testPlanListTable\', this.value)"/>&nbsp;&nbsp;<span id="testPlanListTable_searchResultsNumberId" style="font-weight: bold;"></span></div>'
@@ -1311,24 +1338,16 @@ class WikiTestManagerInterface(Component):
         return result, num_plans
         
     # Render the breadcrumb
-    def _render_breadcrumb(self, breadcrumb, planid, mode, fulldetails):
+    def _render_breadcrumb(self, req, breadcrumb, planid, mode, fulldetails):
         plan_ref = ''
         if planid is not None and not planid == '-1':
             plan_ref = '&planid='+planid
-            display_breadcrumb = 'none'
-        else:
-            display_breadcrumb = 'block'
         
-        text = u'<span style="display: %s">' % display_breadcrumb
+        text = u'<span>'
         path_len = len(breadcrumb)
         for i, x in enumerate(breadcrumb):
-            if i == 0:
-                plan_param = ''
-            else:
-                plan_param = plan_ref
-        
             text += '<span name="breadcrumb" style="cursor: pointer; color: #BB0000; margin-left: 5px; margin-right: 5px; font-size: 0.8em;" '
-            text += ' onclick="window.location=\''+x['id']+'?mode='+mode+plan_param+'&fulldetails='+str(fulldetails)+'\'">'+html_escape(x['title'])
+            text += ' onclick="window.location=\''+x['page_name']+'?mode='+mode+plan_ref+'&fulldetails='+str(fulldetails)+'\'">'+html_escape(x['title'])
             
             if i < path_len-1:
                 text += '</span><span style="color: #BB0000; margin-left: 2px; margin-right: 2px;">->'
@@ -1384,21 +1403,24 @@ class WikiTestManagerInterface(Component):
                     if has_status:
                         text += '<img class="aggregatedStatusIconElement" style="cursor: default;" src="'+statusIcon+'"></img>'
 
-                    text += '<span id="l_'+index+'" onmouseover="underlineLink(\'l_'+index+'\')" onmouseout="removeUnderlineLink(\'l_'+index+'\')" onclick="window.location=\''+comp['id']+plan_param+'\'" title="'+_("Open")+'">'+comp['title']+'</span></span><span style="color: gray;">&nbsp;('+str(comp['tot'])+')</span>'
+                    text += '<span id="l_'+index+'" onmouseover="underlineLink(\'l_'+index+'\')" onmouseout="removeUnderlineLink(\'l_'+index+'\')" onclick="window.location=\''+comp['page_name']+plan_param+'\'" title="'+_("Open")+'">'+comp['title']+'</span></span><span style="color: gray;">&nbsp;('+str(comp['tot'])+')</span>'
 
                     text +='<ul id="b_'+index+'_list" style="display:none;list-style: none; margin-bottom: 0px;">';
                     ind['count']+=1
+
                     text += self._render_subtree(planid, subcData, ind, level+1)
                     if ('childrenT' in comp):            
                         mtData=comp['childrenT']
                         text += self._render_testcases(planid, mtData)
+                        
                     text+='</ul>'
                 
             text+='</li>'
             
         if (level == 0):
-            if ('childrenT' in component):            
+            if ('childrenT' in component):
                 cmtData=component['childrenT']
+                ind['count'] += len(cmtData)
                 text += self._render_testcases(planid, cmtData)
             text+='</ul>'
             
@@ -1417,6 +1439,7 @@ class WikiTestManagerInterface(Component):
         text=u''
         #sortedList = sorted(data, key=self._test_sorting(data))
         sortedList = sorted(data)
+
         for x in sortedList:
             tick = data[x]
             status = tick['status']
@@ -1439,13 +1462,13 @@ class WikiTestManagerInterface(Component):
                 if status in tc_statuses:
                     statusLabel = tc_statuses[status][1]
             
-                tcid = tick['id'].rpartition('TC')[2]
-                text+='<li name="tc_node" style="font-weight: normal; margin-left: 10px;"><span class="statusMenuAnchor" name="'+tcid+','+planid+','+tick["id"]+','+status+','+stat_meaning+','+statusLabel+'"><img id="statusIcon'+tick["id"]+'" class="statusIconElement" src="'+statusIcon+'" title="'+statusLabel+'" style="cursor: pointer;"></img></span><span onmouseover="showPencil(\'pencilIcon'+tick["id"]+'\', true)" onmouseout="hidePencil(\'pencilIcon'+tick["id"]+'\', false)"><a href="'+tick["id"]+'?planid='+planid+version_str+'" '+tc_target+'>'+tick["title"]+'&nbsp;</a><span style="display: none;">'+statusLabel+'</span><span><a class="rightIcon" style="display: none;" title="'+_('Edit the Test Case')+'" href="'+tick["id"]+'?action=edit&planid='+planid+'" '+tc_target+' id="pencilIcon'+tick["id"]+'"></a></span></span>'
+                tcid = tick['tc_id']
+                text+='<li name="tc_node" style="font-weight: normal; margin-left: 10px;"><span class="statusMenuAnchor" name="'+tcid+','+planid+','+tick['page_name']+','+status+','+stat_meaning+','+statusLabel+'"><img id="statusIcon'+tick['page_name']+'" class="statusIconElement" src="'+statusIcon+'" title="'+statusLabel+'" style="cursor: pointer;"></img></span><span onmouseover="showPencil(\'pencilIcon'+tick['page_name']+'\', true)" onmouseout="hidePencil(\'pencilIcon'+tick['page_name']+'\', false)"><a href="'+tick['page_name']+'?planid='+planid+version_str+'" '+tc_target+'>'+tick["title"]+'&nbsp;</a><span style="display: none;">'+statusLabel+'</span><span><a class="rightIcon" style="display: none;" title="'+_('Edit the Test Case')+'" href="'+tick['page_name']+'?action=edit&planid='+planid+'" '+tc_target+' id="pencilIcon'+tick['page_name']+'"></a></span></span>'
 
                 text+='</li>'
             else:
-                text+='<li name="tc_node" style="font-weight: normal; margin-left: 10px;"><input name="select_tc_checkbox" value="'+tick["id"]+'" type="checkbox" style="display: none;float: left; position: relative; top: 3px;" /><span onmouseover="showPencil(\'pencilIcon'+tick["id"]+'\', true)" onmouseout="hidePencil(\'pencilIcon'+tick["id"]+'\', false)"><a href="'+tick["id"]+"?a=a"+version_str+'" '+tc_target+'>'+tick["title"]+'&nbsp;</a><span><a class="rightIcon" style="display: none;" title="'+_('Edit the Test Case')+'" href="'+tick["id"]+'?action=edit" '+tc_target+' id="pencilIcon'+tick["id"]+'"></a></span></span></li>'
-                
+                text+='<li name="tc_node" style="font-weight: normal; margin-left: 10px;"><input name="select_tc_checkbox" value="'+tick['page_name']+'" type="checkbox" style="display: none;float: left; position: relative; top: 3px;" /><span onmouseover="showPencil(\'pencilIcon'+tick['page_name']+'\', true)" onmouseout="hidePencil(\'pencilIcon'+tick['page_name']+'\', false)"><a href="'+tick['page_name']+"?a=a"+version_str+'" '+tc_target+'>'+tick["title"]+'&nbsp;</a><span><a class="rightIcon" style="display: none;" title="'+_('Edit the Test Case')+'" href="'+tick['page_name']+'?action=edit" '+tc_target+' id="pencilIcon'+tick['page_name']+'"></a></span></span></li>'
+
         return text
             
     def _build_testcase_status(self, planid, curpage):
@@ -1515,12 +1538,12 @@ class WikiTestManagerInterface(Component):
                         # Include color icon for the aggregated status of all sub catalogs/test cases
                         text += '<img class="aggregatedStatusIconElement" style="cursor: default;" src="'+statusIcon+'"></img>'
                     
-                    text += '<a href="'+comp['id']+'?mode=tree_table'+plan_param+'&fulldetails='+str(fulldetails)+'" title="'+_("Open")+'">'+comp['title']+'</a></td>'
+                    text += '<a href="'+comp['page_name']+'?mode=tree_table'+plan_param+'&fulldetails='+str(fulldetails)+'" title="'+_("Open")+'">'+comp['title']+'</a></td>'
 
                 # Custom testcatalog columns
                 tcat = None
                 if custom_ctx['testcatalog'][0]:
-                    tcat_id = comp['id'].rpartition('TT')[2]
+                    tcat_id = comp['tcat_id']
                     tcat = TestCatalog(self.env, tcat_id)
                     text += self._get_custom_fields_columns(tcat, table_columns, table_columns_map, custom_ctx['testcatalog'][1])
 
@@ -1590,9 +1613,9 @@ class WikiTestManagerInterface(Component):
             # TODO Hide status icon if Status column deselected in preferences
             if table_columns_map['title']['visible'] == 'True':
                 if has_status:
-                    text += '<td style="padding-left: '+str(level*30)+'px;"><span class="statusMenuAnchor" name="'+tick['tc_id']+','+planid+','+tick["id"]+','+status+','+stat_meaning+','+statusLabel+'"><img name="'+tick['tc_id']+','+planid+','+tick['id']+','+status+','+stat_meaning+','+statusLabel+'" id="statusIcon'+tick['id']+'" class="statusIconElement" src="'+statusIcon+'" title="'+statusLabel+'"></img></span><a href="'+tick['id']+'?planid='+planid+version_str+'&mode=tree_table" '+tc_target+'>'+tick['title']+'</a></td>'
+                    text += '<td style="padding-left: '+str(level*30)+'px;"><span class="statusMenuAnchor" name="'+tick['tc_id']+','+planid+','+tick['page_name']+','+status+','+stat_meaning+','+statusLabel+'"><img name="'+tick['tc_id']+','+planid+','+tick['page_name']+','+status+','+stat_meaning+','+statusLabel+'" id="statusIcon'+tick['page_name']+'" class="statusIconElement" src="'+statusIcon+'" title="'+statusLabel+'"></img></span><a href="'+tick['page_name']+'?planid='+planid+version_str+'&mode=tree_table" '+tc_target+'>'+tick['title']+'</a></td>'
                 else:
-                    text += '<td style="padding-left: '+str(level*30)+'px;"><input name="select_tc_checkbox" value="'+tick['id']+'" type="checkbox" style="display: none;float: left; position: relative; top: 3px;" /><a href="'+tick['id']+'?mode=tree_table&fulldetails='+str(fulldetails)+version_str+'" '+tc_target+'>'+tick['title']+'</a></td>'
+                    text += '<td style="padding-left: '+str(level*30)+'px;"><input name="select_tc_checkbox" value="'+tick['page_name']+'" type="checkbox" style="display: none;float: left; position: relative; top: 3px;" /><a href="'+tick['page_name']+'?mode=tree_table&fulldetails='+str(fulldetails)+version_str+'" '+tc_target+'>'+tick['title']+'</a></td>'
                 
             # Custom testcatalog columns
             if custom_ctx['testcatalog'][0]:
@@ -1673,7 +1696,7 @@ class WikiTestManagerInterface(Component):
             cat_id = curpage.rpartition('_TT')[2]
 
         # Create the catalog subtree model
-        components = TestManagerSystem(self.env).get_test_catalog_data_model(curpage, sortby='custom')
+        components = TestManagerSystem(self.env).get_test_catalog_data_model(cat_id, curpage, None, sortby='custom')
 
         # Generate the markup
         ind = {'count': 0}

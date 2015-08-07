@@ -96,37 +96,21 @@
     </fieldset>
     <br />
     <fieldset>
-      <legend>Default template for Test Case</legend>
-      <form method="post">
-		<div class="field">
-          <select size="1" name="tc_default">
-			<option value="0">None</option>
-			<option py:for="tc_template in tc_templates" value="$tc_template.id" selected="${tc_template.id == tc_selected or None}">$tc_template.name</option>
-		  </select>
-		</div>
-		<div class="buttons">
-		  <input type="submit" name="tc_default_save" value="${_('Save Default Test Case Template')}" />
-		</div>
-      </form>
-    </fieldset>
-    <br />
-    <fieldset>
-      <legend>Default Test Case template for specific Test Catalogs (overrides default above)</legend>
+      <legend>Default Test Case template for each Test Catalog</legend>
       <form method="post">
         <table class="listing">
 		  <thead>
 			<tr>
-			  <th>Test Catalog ID</th><th>Test Catalog</th><th>Test Case Template</th>
+			  <th>Test Catalog</th><th>Test Case Template</th>
 			</tr>
 		  </thead>
 		  <tbody>
 			<tr py:for="tcat in tcat_list">
-			  <td class="name">$tcat.id</td>
 			  <td class="name">$tcat.title</td>
 			  <td>
 				<div class="field">
 				  <select size="1" name="TC_TEMPLATE_FOR_TCAT_$tcat.id">
-					<option value="0">Default</option>
+					<option value="0">None</option>
 					<option py:for="tc in tc_templates" value="$tc.id" selected="${tc.id == tcat.template or None}">$tc.name</option>
 				  </select>
 				</div>

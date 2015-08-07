@@ -1,30 +1,24 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2011 Roberto Longobardi
+# Copyright (C) 2010-2015 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
-# The Test Manager plugin for Trac is free software: you can 
-# redistribute it and/or modify it under the terms of the GNU 
-# General Public License as published by the Free Software Foundation, 
-# either version 3 of the License, or (at your option) any later 
-# version.
-# 
-# The Test Manager plugin for Trac is distributed in the hope that it 
-# will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with the Test Manager plugin for Trac. See the file LICENSE.txt. 
-# If not, see <http://www.gnu.org/licenses/>.
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at: 
+#   https://trac-hacks.org/wiki/TestManagerForTracPluginLicense
 #
+# Author: Roberto Longobardi <otrebor.dev@gmail.com>
+# 
 
 import copy
-from datetime import date, datetime
 import re
+import time
 
-from trac.core import Component, implements
+from datetime import date, datetime
+
+from trac.core import *
 from trac.db import Table, Column, Index
 from trac.env import IEnvironmentSetupParticipant
 from trac.perm import PermissionError
@@ -35,11 +29,10 @@ from trac.wiki.api import WikiSystem
 from trac.wiki.model import WikiPage
 from trac.wiki.web_ui import WikiModule
 
-from testmanager.util import get_page_title, get_page_description
 from tracgenericclass.model import IConcreteClassProvider, AbstractVariableFieldsObject, AbstractWikiPageWrapper, need_db_create_for_realm, create_db_for_realm, need_db_upgrade_for_realm, upgrade_db_for_realm
-from tracgenericclass.util import to_any_timestamp, get_timestamp_db_type, \
-    db_insert_or_ignore, formatExceptionInfo
+from tracgenericclass.util import *
 
+from testmanager.util import *
 
 try:
     from testmanager.api import _, tag_, N_
@@ -61,16 +54,27 @@ class AbstractTestDescription(AbstractWikiPageWrapper):
     """
     
     # Fields that must not be modified directly by the user
-    protected_fields = ('id', 'page_name')
+    protected_fields = ('id', 'page_name', 'parent_id')
 
-    def __init__(self, env, realm='testdescription', id=None, page_name=None, title=None, description=None, db=None):
+    def __new__(cls, env, realm='testdescription', id=None, page_name=None, parent_id=None, title=None, description=None, db=None):
+        key = None
+        if id is not None:
+            key = {'id': id}
+        
+        return AbstractWikiPageWrapper.__new__(cls, env, realm, key, db)
+
+    def __init__(self, env, realm='testdescription', id=None, page_name=None, parent_id=None, title=None, description=None, db=None):
     
+        if self.is_initialized:
+            return
+
         self.env = env
         
         self.values = {}
 
         self.values['id'] = id
         self.values['page_name'] = page_name
+        self.values['parent_id'] = parent_id
 
         self.title = title
         self.description = description
@@ -149,37 +153,36 @@ class TestCatalog(AbstractTestDescription):
                              Note that test case IDs are independent on 
                              test catalog IDs.
     """
-    def __init__(self, env, id=None, page_name=None, title=None, description=None, db=None):
+    def __new__(cls, env, id=None, page_name=None, parent_id=None, title=None, description=None, db=None):
+        return AbstractTestDescription.__new__(cls, env, 'testcatalog', id, page_name, parent_id, title, description, db)
+
+    def __init__(self, env, id=None, page_name=None, parent_id=None, title=None, description=None, db=None):
     
-        AbstractTestDescription.__init__(self, env, 'testcatalog', id, page_name, title, description, db)
+        if self.is_initialized:
+            return
+
+        AbstractTestDescription.__init__(self, env, 'testcatalog', id, page_name, parent_id, title, description, db)
 
     def get_enclosing_catalog(self):
         """
         Returns the catalog containing this test catalog, or None if its a root catalog.
         """
         page_name = self.values['page_name']
-        cat_page = page_name.rpartition('_TT')[0]
 
-        if cat_page == 'TC':
+        if page_name == 'TC':
             return None
         else:
-            cat_id = page_name.rpartition('TT')[0].page_name.rpartition('TT')[2].rpartition('_')[0]
-
-            return TestCatalog(self.env, cat_id, cat_page)
+            return TestCatalog(self.env, self.values['parent_id'])
         
     def list_subcatalogs(self, db=None):
         """
         Returns a list of the sub catalogs of this catalog.
         """
         tc_search = TestCatalog(self.env)
-        tc_search['page_name'] = self.values['page_name'] + '_TT%'
-        
-        cat_re = re.compile('^TT[0-9]*$')
+        tc_search['parent_id'] = self.values['id']
         
         for tc in tc_search.list_matching_objects(exact_match=False, db=db):
-            # Only return direct sub-catalogs and exclude test cases
-            if cat_re.match(tc['page_name'].partition(self.values['page_name']+'_')[2]) :
-                yield tc
+            yield tc
         
     def list_testcases(self, plan_id=None, deep=False, db=None):
         """
@@ -197,7 +200,7 @@ class TestCatalog(AbstractTestDescription):
             default_status = TestManagerSystem(self.env).get_default_tc_status()
         
         tc_search = TestCase(self.env)
-        tc_search['page_name'] = self.values['page_name'] + ('_TC%', '%_TC%')[deep]
+        tc_search['parent_id'] = self.values['id']
         
         for tc in tc_search.list_matching_objects(exact_match=False, db=db):
             self.env.log.debug('    ---> Found testcase %s' % tc['id'])
@@ -230,14 +233,12 @@ class TestCatalog(AbstractTestDescription):
         self.env.log.debug('<<< list_testplans')
 
     def get_last_order(self, db=None):
-        tcat_page_filter = "%s_TC%%" % self.values['page_name']
-        
         if not db:
             db = self.env.get_read_db()
         
         cursor = db.cursor()
-        cursor.execute("SELECT max(exec_order) FROM testcase WHERE page_name LIKE %s",
-            (tcat_page_filter,))
+        cursor.execute("SELECT max(exec_order) FROM testcase WHERE parent_id = %s",
+            (self.values['id'],))
 
         row = cursor.fetchone()
         last_order = row[0]
@@ -256,14 +257,13 @@ class TestCatalog(AbstractTestDescription):
         @self.env.with_transaction(db)
         def do_remove_testcase_from_order(db):
             old_order = tc['exec_order']
-            tcat_page_filter = "%s_TC%%" % self.values['page_name']
 
             cursor = db.cursor()
             
             # Spostare indietro di 1 posizione tutti gli elementi
             # da old_order + 1 in poi
-            cursor.execute("UPDATE testcase SET exec_order = exec_order - 1 WHERE page_name LIKE %s AND exec_order >= %s", 
-                (tcat_page_filter, old_order + 1))
+            cursor.execute("UPDATE testcase SET exec_order = exec_order - 1 WHERE parent_id = %s AND exec_order >= %s", 
+                (self.values['id'], old_order + 1))
                 
     def insert_testcase_into_order(self, tc, new_order, db=None):
         """ 
@@ -273,14 +273,12 @@ class TestCatalog(AbstractTestDescription):
 
         @self.env.with_transaction(db)
         def do_insert_testcase_into_order(db):
-            tcat_page_filter = "%s_TC%%" % self.values['page_name']
-            
             cursor = db.cursor()
             
             # Spostare avanti di 1 posizione tutti gli elementi
             # da new_order in poi
-            cursor.execute("UPDATE testcase SET exec_order = exec_order + 1 WHERE page_name LIKE %s AND exec_order >= %s", 
-                (tcat_page_filter, new_order))
+            cursor.execute("UPDATE testcase SET exec_order = exec_order + 1 WHERE parent_id = %s AND exec_order >= %s", 
+                (self.values['id'], new_order))
                 
     def change_testcase_order(self, tc, new_order, db=None):
         """ 
@@ -290,7 +288,6 @@ class TestCatalog(AbstractTestDescription):
         @self.env.with_transaction(db)
         def do_change_testcase_order(db):
             old_order = tc['exec_order']
-            tcat_page_filter = "%s_TC%%" % self.values['page_name']
 
             cursor = db.cursor()
             
@@ -298,14 +295,14 @@ class TestCatalog(AbstractTestDescription):
                 # Spostare in avanti di 1 posizione tutti gli elementi compresi
                 # tra new_order incluso e old_order -1 inluso
                 #update testcase set exec_order = old_order + 1 where 
-                cursor.execute("UPDATE testcase SET exec_order = exec_order + 1 WHERE page_name LIKE %s AND exec_order >= %s AND exec_order <= %s", 
-                    (tcat_page_filter, new_order, old_order - 1))
+                cursor.execute("UPDATE testcase SET exec_order = exec_order + 1 WHERE parent_id = %s AND exec_order >= %s AND exec_order <= %s", 
+                    (self.values['id'], new_order, old_order - 1))
 
             else:
                 # Spostare indietro di 1 posizione tutti gli elementi compresi
                 # tra old_order + 1 incluso e new_order incluso
-                cursor.execute("UPDATE testcase SET exec_order = exec_order - 1 WHERE page_name LIKE %s AND exec_order >= %s AND exec_order <= %s", 
-                    (tcat_page_filter, old_order + 1, new_order))
+                cursor.execute("UPDATE testcase SET exec_order = exec_order - 1 WHERE parent_id = %s AND exec_order >= %s AND exec_order <= %s", 
+                    (self.values['id'], old_order + 1, new_order))
 
     def pre_delete(self, db):
         """ 
@@ -345,19 +342,17 @@ class TestCatalog(AbstractTestDescription):
         Returns a list of the root-level catalogs.
         """
         tc_search = cls(env)
-        tc_search['page_name'] ='TC_TT%'
+        tc_search['parent_id'] = '-1'
         
         for tc in tc_search.list_matching_objects(exact_match=False):
-            # Only return root catalogs
-            if tc['page_name'].count('_') == 1:
-                yield tc
+            yield tc
    
     def get_search_results(self, req, terms, filters):
         if not 'testcatalog' in filters:
             return
 
         for result in AbstractTestDescription.get_search_results(self, req, terms, filters):
-            if 'TC' not in result[0].rpartition("_TT")[2]:
+            if 'TC_TT' in result[0]:
                 yield result
            
    
@@ -366,20 +361,21 @@ class TestCase(AbstractTestDescription):
     # Fields that must not be modified directly by the user
     protected_fields = ('id', 'page_name', 'exec_order')
 
-    def __init__(self, env, id=None, page_name=None, title=None, description=None, exec_order=0, db=None):
-    
+    def __new__(cls, env, id=None, page_name=None, parent_id=None, title=None, description=None, db=None):
+        return AbstractTestDescription.__new__(cls, env, 'testcase', id, page_name, parent_id, title, description, db)
+
+    def __init__(self, env, id=None, page_name=None, parent_id=None, title=None, description=None, exec_order=0, db=None):
+        if self.is_initialized:
+            return
+
         self.exec_order = exec_order
-        AbstractTestDescription.__init__(self, env, 'testcase', id, page_name, title, description, db)
+        AbstractTestDescription.__init__(self, env, 'testcase', id, page_name, parent_id, title, description, db)
         
     def get_enclosing_catalog(self):
         """
         Returns the catalog containing this test case.
         """
-        page_name = self.values['page_name']
-        cat_id = page_name.rpartition('TT')[2].rpartition('_')[0]
-        cat_page = page_name.rpartition('_TC')[0]
-        
-        return TestCatalog(self.env, cat_id, cat_page)
+        return TestCatalog(self.env, self.values['parent_id'])
         
     def create_instance(self, key):
         return TestCase(self.env, key['id'])
@@ -422,23 +418,6 @@ class TestCase(AbstractTestDescription):
             # Add it to the ordered list of the new catalog
             tcat.insert_testcase_into_order(self, t_new_order)
         
-            # Rename the wiki page
-            new_page_name = tcat['page_name'] + '_TC' + self['id']
-
-            cursor = db.cursor()
-            cursor.execute("UPDATE wiki SET name = %s WHERE name = %s", 
-                (new_page_name, self['page_name']))
-
-            # Invalidate Trac 0.12 page name cache
-            try:
-                del WikiSystem(self.env).pages
-            except:
-                pass
-
-            # TODO Move wiki page attachments
-            #from trac.attachment import Attachment
-            #Attachment.delete_all(self.env, 'wiki', self.name, db)
-            
             if delete_tcip:
                 # Remove test case from all the plans
                 tcip_search = TestCaseInPlan(self.env)
@@ -447,9 +426,8 @@ class TestCase(AbstractTestDescription):
                     tcip.delete(db)
 
             # Update self properties and save
-            self['page_name'] = new_page_name
+            self['parent_id'] = tcat['id']
             self['exec_order'] = t_new_order
-            self.wikipage = WikiPage(self.env, new_page_name)
             
             self.save_changes('System', "Moved to a different catalog", 
                 datetime.now(utc), db)
@@ -509,7 +487,7 @@ class TestCase(AbstractTestDescription):
         # Delete test cases in plan
         cursor.execute('DELETE FROM testcaseinplan WHERE id = %s', (self['id'],))
 
-		# TODO Delete from testcaseinplan_custom and testcaseinplan_change
+        # TODO Delete from testcaseinplan_custom and testcaseinplan_change
 
         # Delete test case status history
         cursor.execute('DELETE FROM testcasehistory WHERE id = %s', (self['id'],))
@@ -525,7 +503,7 @@ class TestCase(AbstractTestDescription):
             return
             
         for result in AbstractTestDescription.get_search_results(self, req, terms, filters):
-            if 'TC' in result[0].rpartition("_TT")[2]:
+            if 'TC_TC' in result[0]:
                 yield result
 
         
@@ -551,12 +529,25 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
     # Fields that must not be modified directly by the user
     protected_fields = ('id', 'planid', 'page_name', 'page_version', 'status')
 
+    def __new__(cls, env, id=None, planid=None, page_name=None, page_version=-1, status=None, db=None):
+        key = None
+        if id is not None and planid is not None:
+            key = {'id': id, 'planid': planid}
+        
+        result = AbstractVariableFieldsObject.__new__(cls, env, 'testcaseinplan', key, db)
+            
+        return result
+
     def __init__(self, env, id=None, planid=None, page_name=None, page_version=-1, status=None, db=None):
         """
         The test case in plan is related to a test case, the 'id' and 
         'page_name' arguments, and to a test plan, the 'planid' 
         argument.
         """
+
+        if self.is_initialized:
+            return
+
         self.values = {}
 
         self.values['id'] = id
@@ -569,7 +560,8 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
     
         AbstractVariableFieldsObject.__init__(self, env, 'testcaseinplan', key, db)
 
-    def get_key_prop_names(self):
+    @classmethod
+    def get_key_prop_names(cls):
         return ['id', 'planid']
         
     def create_instance(self, key):
@@ -683,6 +675,15 @@ class TestPlan(AbstractVariableFieldsObject):
     
     selected_tcs = []
 
+    def __new__(cls, env, id=None, catid=None, page_name=None, name=None, author=None, contains_all=1, snapshot=0, selected_tcs=[], db=None):
+        key = None
+        if id is not None:
+            key = {'id': id}
+        
+        result = AbstractVariableFieldsObject.__new__(cls, env, 'testplan', key, db)
+            
+        return result
+
     def __init__(self, env, id=None, catid=None, page_name=None, name=None, author=None, contains_all=1, snapshot=0, selected_tcs=[], db=None):
         """
         A test plan has an ID, generated at creation time and 
@@ -691,6 +692,9 @@ class TestPlan(AbstractVariableFieldsObject):
         arguments.
         It has a name and an author.
         """
+        if self.is_initialized:
+            return
+
         self.values = {}
 
         self.values['id'] = id
@@ -775,7 +779,7 @@ class TestPlan(AbstractVariableFieldsObject):
         # Delete test cases in plan
         cursor.execute('DELETE FROM testcaseinplan WHERE planid = %s', (self['id'],))
 
-		# TODO Delete from testcaseinplan_custom and testcaseinplan_change
+        # TODO Delete from testcaseinplan_custom and testcaseinplan_change
 
         # Delete test case status history
         cursor.execute('DELETE FROM testcasehistory WHERE planid = %s', (self['id'],))
@@ -848,19 +852,23 @@ class TestManagerModelProvider(Component):
                     {'table':
                         Table('testcatalog', key = ('id'))[
                               Column('id'),
-                              Column('page_name')],
+                              Column('page_name'),
+                              Column('parent_id'),
+                              Index(['parent_id'])],
                      'has_custom': True,
                      'has_change': True,
-                     'version': 1},
+                     'version': 2},
                 'testcase':  
                     {'table':
                         Table('testcase', key = ('id'))[
                               Column('id'),
                               Column('page_name'),
-                              Column('exec_order', type='int')],
+                              Column('exec_order', type='int'),
+                              Column('parent_id'),
+                              Index(['parent_id'])],
                      'has_custom': True,
                      'has_change': True,
-                     'version': 2},
+                     'version': 3},
                 'testcaseinplan':  
                     {'table':
                         Table('testcaseinplan', key = ('id', 'planid'))[
@@ -905,12 +913,14 @@ class TestManagerModelProvider(Component):
     FIELDS = {
                 'testcatalog': [
                     {'name': 'id', 'type': 'text', 'label': N_('ID')},
-                    {'name': 'page_name', 'type': 'text', 'label': N_('Wiki page name')}
+                    {'name': 'page_name', 'type': 'text', 'label': N_('Wiki page name')},
+                    {'name': 'parent_id', 'type': 'text', 'label': N_('Parent catalog ID')}
                 ],
                 'testcase': [
                     {'name': 'id', 'type': 'text', 'label': N_('ID')},
                     {'name': 'page_name', 'type': 'text', 'label': N_('Wiki page name')},
-                    {'name': 'exec_order', 'type': 'int', 'label': N_('Order')}
+                    {'name': 'exec_order', 'type': 'int', 'label': N_('Order')},
+                    {'name': 'parent_id', 'type': 'text', 'label': N_('Enclosing catalog ID')}
                 ],
                 'testcaseinplan': [
                     {'name': 'id', 'type': 'text', 'label': N_('ID')},

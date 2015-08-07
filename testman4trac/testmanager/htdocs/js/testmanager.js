@@ -4,20 +4,12 @@
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
-# The Test Manager plugin for Trac is free software: you can 
-# redistribute it and/or modify it under the terms of the GNU 
-# General Public License as published by the Free Software Foundation, 
-# either version 3 of the License, or (at your option) any later 
-# version.
-# 
-# The Test Manager plugin for Trac is distributed in the hope that it 
-# will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with the Test Manager plugin for Trac. See the file LICENSE.txt. 
-# If not, see <http://www.gnu.org/licenses/>.
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at: 
+#   https://trac-hacks.org/wiki/TestManagerForTracPluginLicense
+#
+# Author: Roberto Longobardi <otrebor.dev@gmail.com>
 #
 */
 
@@ -26,7 +18,7 @@
 /******************************************************/
 
 (function($) {
-		$(function() {
+        $(function() {
 
             $( "#createTestCatalogForm" ).submit(function( event ) {
                 var form = $(this);
@@ -77,7 +69,7 @@
                     
                 return;
             });
-		});
+        });
 })(jQuery_testmanager);
 
 function createTestPlanConfirm(catName) {
@@ -86,10 +78,10 @@ function createTestPlanConfirm(catName) {
     var testplanSnapshot = "false";
 
     /*
-	The following should work... but doesn't in case one has first selected some test cases from the tree.
+    The following should work... but doesn't in case one has first selected some test cases from the tree.
     var testplanContainsAll = $("input[@name='testplan_contains_all']:checked").val();
     var testplanSnapshot = $("input[@name=testplan_snapshot]:checked").val();
-	*/
+    */
 
     var nodes = $("input[@name='testplan_contains_all']:checked");
     for (var i=0; i<nodes.length; i++) {
@@ -123,54 +115,54 @@ function createTestPlanConfirm(catName) {
 }
 
 function createTestPlanCancel() {
-	(function($) {
+    (function($) {
         $(function() {
             $("#dialog_testplan").dialog('close');
         });
-    })(jQuery_testmanager);	
+    })(jQuery_testmanager); 
 }
 
 function addTestCaseToTestplanDialog() {
-	(function($) {
-		$(function() {
-			$("#dialog_select_testplan").dialog({width: 640, height: 430, modal: true});
-		});
-	})(jQuery_testmanager);	
+    (function($) {
+        $(function() {
+            $("#dialog_select_testplan").dialog({width: 640, height: 430, modal: true});
+        });
+    })(jQuery_testmanager); 
 }
 
 function addTestCaseToPlan(tcId, tcatId) {
-	(function($) {
-		$(function() {
-			var planids = $("input[name='selected_planid']:checked");
-			
-			if (planids && planids.length > 0) {
-				var planIdList = "";
-				
-				for (var i=0; i<planids.length; i++) {
-					planIdList += $(planids[i]).val();
-					if (i < planids.length - 1) {
-						planIdList += ",";
-					}
-				}
+    (function($) {
+        $(function() {
+            var planids = $("input[name='selected_planid']:checked");
+            
+            if (planids && planids.length > 0) {
+                var planIdList = "";
+                
+                for (var i=0; i<planids.length; i++) {
+                    planIdList += $(planids[i]).val();
+                    if (i < planids.length - 1) {
+                        planIdList += ",";
+                    }
+                }
 
-				var url = baseLocation+"/testcreate?type=testcaseinplan&tcatId="+tcatId+"&tcId="+tcId+"&planid="+planIdList;
-				window.location = url;
-			}
-		});
-	})(jQuery_testmanager);	
+                var url = baseLocation+"/testcreate?type=testcaseinplan&tcatId="+tcatId+"&tcId="+tcId+"&planid="+planIdList;
+                window.location = url;
+            }
+        });
+    })(jQuery_testmanager); 
 }
 
 function addTestCaseToPlanCancel() {
-	(function($) {
+    (function($) {
         $(function() {
             $("#dialog_select_testplan").dialog('close');
         });
-    })(jQuery_testmanager);	
+    })(jQuery_testmanager); 
 }
 
 function duplicateTestCase(tcName, catName) { 
-	var url = baseLocation+'/testcreate?type=testcase&duplicate=true&tcId='+tcName+'&path='+catName; 
-	window.location = url;
+    var url = baseLocation+'/testcreate?type=testcase&duplicate=true&tcId='+tcName+'&path='+catName; 
+    window.location = url;
 }
 
 function updateTestCase(tcName, planId) {
@@ -180,9 +172,9 @@ function updateTestCase(tcName, planId) {
 
 function removeTestCase(tcName, planId) {
     if (confirm(_("Are you sure you want to remove the test case from the plan?"))) {
-		var url = baseLocation+"/testdelete?type=testcaseinplan&tcId="+tcName+"&planid="+planId;
-		window.location = url;
-	}
+        var url = baseLocation+"/testdelete?type=testcaseinplan&tcId="+tcName+"&planid="+planId;
+        window.location = url;
+    }
 }
 
 function creaTicket(tcName, planId, planName, summary) {
@@ -216,13 +208,18 @@ function creaTicket(tcName, planId, planName, summary) {
 
     fullSummary += _("[Insert problem summary]");
 
-	var url = baseLocation+'/newticket?testcaseid='+tcName+'&planid='+planId+'&planname='+planName+'&summary='+stripLessSpecialChars(fullSummary)+'&description=Test%20Case:%20[wiki:'+tcName+'?planid='+planId+'],%20Test%20Plan:%20'+planName+'%20('+planId+')'; 
-	window.location = url;
+    var url = baseLocation+'/newticket?testcaseid='+tcName+'&planid='+planId+'&planname='+planName+'&summary='+stripLessSpecialChars(fullSummary)+'&description=Test%20Case:%20[wiki:'+tcName+'?planid='+planId+'],%20Test%20Plan:%20'+planName+'%20('+planId+')'; 
+    window.location = url;
 }
 
 function showTickets(tcName, planId, planName){ 
-	var url = baseLocation+'/query?testcaseid=~'+tcName+'&planid='+planId; 
-	window.location = url;
+    var url = baseLocation+'/query?testcaseid=~'+tcName
+
+    if (planId) { 
+        url += '&planid='+planId; 
+    }
+    
+    window.location = url;
 }
 
 function duplicateTestCatalog(catName){
@@ -239,32 +236,32 @@ function deleteTestPlan(url){
 }
 
 function cloneTestPlan(catId, planId){
-	(function($) {
-		$(function() {
-			$("#dialog_clone_testplan").dialog({width: 500, height: 300, modal: true});
-		});
-	})(jQuery_testmanager);	
+    (function($) {
+        $(function() {
+            $("#dialog_clone_testplan").dialog({width: 500, height: 300, modal: true});
+        });
+    })(jQuery_testmanager); 
 }
 
 function cloneTestPlanConfirm(planId) {
-	(function($) {
-		$(function() {
+    (function($) {
+        $(function() {
             var newPlanNameInput = document.getElementById('new_cloned_testplan_name');
             var testPlanName = newPlanNameInput.value; 
             var tplanName = stripLessSpecialChars(testPlanName); 
 
             var url = baseLocation+"/testclone?type=testplan&planId="+planId+"&newName="+tplanName;
             window.location = url;
-		});
-	})(jQuery_testmanager);	
+        });
+    })(jQuery_testmanager); 
 }
 
 function cloneTestPlanCancel() {
-	(function($) {
+    (function($) {
         $(function() {
             $("#dialog_clone_testplan").dialog('close');
         });
-    })(jQuery_testmanager);	
+    })(jQuery_testmanager); 
 }
 
 /******************************************************/
@@ -298,7 +295,7 @@ function isMultiplePasteEnabled() {
 }
 
 function showSelectionCheckboxes(id) {
-	/* toggleAll(true); */
+    /* toggleAll(true); */
 
     var nodes=null;
     if (document.getElementById("ticketContainer") !== null) {
@@ -309,13 +306,13 @@ function showSelectionCheckboxes(id) {
         nodes=document.getElementById("testcaseList").getElementsByTagName('input');
     }
 
-	for (var i=0;i<nodes.length;i++) {
-		var el=nodes.item(i);
-		
-		if (el.getAttribute("name") && el.getAttribute("name") == "select_tc_checkbox") {
-			el.style.display = "block";
-		}
-	}
+    for (var i=0;i<nodes.length;i++) {
+        var el=nodes.item(i);
+        
+        if (el.getAttribute("name") && el.getAttribute("name") == "select_tc_checkbox") {
+            el.style.display = "block";
+        }
+    }
 }
 
 function copyTestCaseToClipboard(tcId) {
@@ -324,32 +321,32 @@ function copyTestCaseToClipboard(tcId) {
 }
 
 function copyMultipleTestCasesToClipboard() {
-	var selectedTestCases = getSelectedTestCases();
+    var selectedTestCases = getSelectedTestCases();
 
     setCookie('TestManager_MultipleTestCases', selectedTestCases, 1, '/', '', '');
     setTimeout('window.location="'+window.location+'"', 100);
 }
 
 function getSelectedTestCases() {
-	var selectedTestCases = "";
-	var nodes;
+    var selectedTestCases = "";
+    var nodes;
 
-	if (document.getElementById("ticketContainer") !== null) {
-	    nodes=document.getElementById("ticketContainer").getElementsByTagName('input');
-	}
-	if (document.getElementById("testcaseList") !== null) {
-	    nodes=document.getElementById("testcaseList").getElementsByTagName('input');
-	}
-	
-	for (var i=0;i<nodes.length;i++) {
-		var el=nodes.item(i);
-		
-		if (el.getAttribute("name") && el.getAttribute("name") == "select_tc_checkbox") {
-			if (el.checked) {
-				selectedTestCases += el.value + ',';
-			}
-		}
-	}
+    if (document.getElementById("ticketContainer") !== null) {
+        nodes=document.getElementById("ticketContainer").getElementsByTagName('input');
+    }
+    if (document.getElementById("testcaseList") !== null) {
+        nodes=document.getElementById("testcaseList").getElementsByTagName('input');
+    }
+    
+    for (var i=0;i<nodes.length;i++) {
+        var el=nodes.item(i);
+        
+        if (el.getAttribute("name") && el.getAttribute("name") == "select_tc_checkbox") {
+            if (el.checked) {
+                selectedTestCases += el.value + ',';
+            }
+        }
+    }
 
     return selectedTestCases;
 }
@@ -389,35 +386,35 @@ function cancelTCsCopy() {
 /******************************************************/
 
 function importTestCasesIntoCatalog(catName) {
-	(function($) {
+    (function($) {
         $(function() {
             $("#dialog_import").dialog({width: 640, height: 430, modal: true});
         });
-    })(jQuery_testmanager);	
+    })(jQuery_testmanager); 
 }
 
 function importTestCasesCancel() {
-	(function($) {
+    (function($) {
         $(function() {
             $("#dialog_import").dialog('close');
         });
-    })(jQuery_testmanager);	
+    })(jQuery_testmanager); 
 }
 
 function exportTestCasesFromCatalog(catName) {
-	(function($) {
+    (function($) {
         $(function() {
             $("#dialog_export").dialog({width: 640, height: 300, modal: true});
         });
-    })(jQuery_testmanager);	
+    })(jQuery_testmanager); 
 }
 
 function exportTestCasesCancel() {
-	(function($) {
+    (function($) {
         $(function() {
             $("#dialog_export").dialog('close');
         });
-    })(jQuery_testmanager);	
+    })(jQuery_testmanager); 
 }
 
 /******************************************************/
@@ -524,11 +521,11 @@ function clearSelection(tableId) {
     selectData[tableId]=[];
     
     if (tableId in deselectData) {
-	    for (var i=0;i<deselectData[tableId].length;i++) {
-	        if (selectHide) {
-	            deselectData[tableId][i].style.display="";
-	        }
-	    };
+        for (var i=0;i<deselectData[tableId].length;i++) {
+            if (selectHide) {
+                deselectData[tableId][i].style.display="";
+            }
+        };
     }
     
     deselectData[tableId]=[];
@@ -589,13 +586,13 @@ function starthighlight(tableId, str,now) {
 function checkFilter(tableId, now) {
     var f=document.getElementById("tcFilter");
     if (f) {
-    	var rootEl = document.getElementById(tableId);
+        var rootEl = document.getElementById(tableId);
         if (rootEl !== null) {
-        	if (rootEl.tagName.toLowerCase() == "div") {
-        		starthighlight(f.value,now);
-        	} else {
+            if (rootEl.tagName.toLowerCase() == "div") {
+                starthighlight(f.value,now);
+            } else {
                 starthighlightTable(f.value,now);
-        	}
+            }
         }
     }
 }
@@ -684,20 +681,20 @@ function filterMatchTable(node, res) {
 }
 
 function clearSelectionTable(tableId) {
-	if (tableId in selectData) {
-	    for (var i=0;i<selectData[tableId].length;i++) {
-	        selectData[tableId][i].className="";
-	    };
-	}
+    if (tableId in selectData) {
+        for (var i=0;i<selectData[tableId].length;i++) {
+            selectData[tableId][i].className="";
+        };
+    }
     
     selectData[tableId]=[];
     
-	if (tableId in deselectData) {
-	    for (var i=0;i<deselectData[tableId].length;i++) {
-	        deselectData[tableId][i].className="";
-	    };
-	}
-	
+    if (tableId in deselectData) {
+        for (var i=0;i<deselectData[tableId].length;i++) {
+            deselectData[tableId][i].className="";
+        };
+    }
+    
     deselectData[tableId]=[];
     searchResults = 0;
     
@@ -755,10 +752,10 @@ function changestate(tc, planid, path, newStatus, newStatusColor, newLabel) {
         newIconSpan.style.border="2px solid black";
         
         displayNode("tcTitleStatusIcon"+currStatusColor, false);
-		
+        
         $("#tcTitleStatusIcon"+newStatusColor).prop('title', newLabel);
         displayNode("tcTitleStatusIcon"+newStatusColor, true);
-		
+        
         currStatus = newStatus;
         currStatusColor = newStatusColor;
     } else {
@@ -766,7 +763,7 @@ function changestate(tc, planid, path, newStatus, newStatusColor, newLabel) {
             $(function() {
                 $("#dialog_error").dialog({width: 320, height: 150, modal: true});
             });
-        })(jQuery_testmanager);	
+        })(jQuery_testmanager); 
     }
 }
 
@@ -778,8 +775,8 @@ function changestateOnPlan(imgNode, tc, planid, newStatus, newStatusColor, newLa
     result = doAjaxCall(url, "GET", params);
     
     /*
-	Handle errors in the Ajax call
-	*/
+    Handle errors in the Ajax call
+    */
     if (result == 'OK') {
         $(imgNode).attr('title', newLabel);
         $(imgNode).attr('src', '../chrome/testmanager/images/'+newStatusColor+'.png');
@@ -788,7 +785,7 @@ function changestateOnPlan(imgNode, tc, planid, newStatus, newStatusColor, newLa
             $(function() {
                 $("#dialog_error").dialog({width: 320, height: 150, modal: true});
             });
-        })(jQuery_testmanager);	
+        })(jQuery_testmanager); 
     }
 }
 
@@ -799,107 +796,107 @@ function bindTCStatusMenus() {
                 $(".statusMenuAnchor").bind('click', function(event) {
                     event.stopPropagation();
                 
-					var $target = $(event.target);
-					
-					var imgNode = $(this).find("img");
-					
+                    var $target = $(event.target);
+                    
+                    var imgNode = $(this).find("img");
+                    
                     var params = $(this).attr("name").split(",");
-					var tcid = params[0];
-					var planid = params[1];
-					var path = params[2];
-					var oldStatus = params[3];
-					var oldColor = params[4];
-					var oldLabel = params[5];
-					
-					var newMenu = $("#statusmenuContainer").clone();
-					newMenu.attr("id", "statusmenuContainer_"+tcid);
-					newMenu.appendTo($(this));
-					
-					$("#statusmenuContainer_"+tcid).show();
-					$("#statusmenuContainer_"+tcid+" > ul").menu({
-						select: function( event, ui ) {
-								event.stopPropagation();
-								
-								var currItemName = ui.item.attr("name");
-								if (currItemName != null && currItemName.length > 0) {
-									var newParams = currItemName.split("|");
-									var newStatus = newParams[0];
-									var newColor = newParams[1];
-									var newLabel = newParams[2];
+                    var tcid = params[0];
+                    var planid = params[1];
+                    var path = params[2];
+                    var oldStatus = params[3];
+                    var oldColor = params[4];
+                    var oldLabel = params[5];
+                    
+                    var newMenu = $("#statusmenuContainer").clone();
+                    newMenu.attr("id", "statusmenuContainer_"+tcid);
+                    newMenu.appendTo($(this));
+                    
+                    $("#statusmenuContainer_"+tcid).show();
+                    $("#statusmenuContainer_"+tcid+" > ul").menu({
+                        select: function( event, ui ) {
+                                event.stopPropagation();
+                                
+                                var currItemName = ui.item.attr("name");
+                                if (currItemName != null && currItemName.length > 0) {
+                                    var newParams = currItemName.split("|");
+                                    var newStatus = newParams[0];
+                                    var newColor = newParams[1];
+                                    var newLabel = newParams[2];
 
-									changestateOnPlan(imgNode, tcid, planid, newStatus, newColor, newLabel);
-									
-									$("#statusmenuContainer_"+tcid+" > ul").menu("destroy");
-									$("#statusmenuContainer_"+tcid).remove();
-								}
-							}
-					}).popup();
-					
-					$("#statusmenuContainer_"+tcid+" > ul").css({display: "inline-block"});
-					
-					/* To close the menu when clicking outside of it */
-					$(document).on(
-							"click.statusmenuContainer_"+tcid,     /* provide a namespace for the 'click' event handler */
-							":not(#statusmenuContainer_"+tcid+")",
-							function(){
-								$("#statusmenuContainer_"+tcid).hide();
-								/* Remove this event handler */
-								$(document).off("click.statusmenuContainer_"+tcid);
-							}
-						);
-					
-				});
-				
+                                    changestateOnPlan(imgNode, tcid, planid, newStatus, newColor, newLabel);
+                                    
+                                    $("#statusmenuContainer_"+tcid+" > ul").menu("destroy");
+                                    $("#statusmenuContainer_"+tcid).remove();
+                                }
+                            }
+                    }).popup();
+                    
+                    $("#statusmenuContainer_"+tcid+" > ul").css({display: "inline-block"});
+                    
+                    /* To close the menu when clicking outside of it */
+                    $(document).on(
+                            "click.statusmenuContainer_"+tcid,     /* provide a namespace for the 'click' event handler */
+                            ":not(#statusmenuContainer_"+tcid+")",
+                            function(){
+                                $("#statusmenuContainer_"+tcid).hide();
+                                /* Remove this event handler */
+                                $(document).off("click.statusmenuContainer_"+tcid);
+                            }
+                        );
+                    
+                });
+                
                 $(".statusSingleMenuAnchor").bind('click', function(event) {
                     event.stopPropagation();
                 
-					var target = $(event.target);
-					
+                    var target = $(event.target);
+                    
                     var params = $(this).attr("name").split(",");
-					var color = params[0];
-					var tcid = params[1];
-					var planid = params[2];
-					var path = params[3];
-					var oldStatus = params[4];
-					var oldColor = params[5];
-					var oldLabel = params[6];
-					
-					$("#statusSingleMenu_"+color).show();
-					$("#statusSingleMenu_"+color+" > ul").menu({
-						select: function( event, ui ) {
-								event.stopPropagation();
-								
-								var currItemName = ui.item.attr("name");
-								if (currItemName != null && currItemName.length > 0) {
-									var newParams = currItemName.split("|");
-									var newStatus = newParams[0];
-									var newColor = newParams[1];
-									var newLabel = newParams[2];
+                    var color = params[0];
+                    var tcid = params[1];
+                    var planid = params[2];
+                    var path = params[3];
+                    var oldStatus = params[4];
+                    var oldColor = params[5];
+                    var oldLabel = params[6];
+                    
+                    $("#statusSingleMenu_"+color).show();
+                    $("#statusSingleMenu_"+color+" > ul").menu({
+                        select: function( event, ui ) {
+                                event.stopPropagation();
+                                
+                                var currItemName = ui.item.attr("name");
+                                if (currItemName != null && currItemName.length > 0) {
+                                    var newParams = currItemName.split("|");
+                                    var newStatus = newParams[0];
+                                    var newColor = newParams[1];
+                                    var newLabel = newParams[2];
 
-									changestate(tcid, planid, path, newStatus, newColor, newLabel);
-									
-									$("#statusSingleMenu_"+color).hide();
-								}
-							}
-					}).popup();
-					
-					$("#statusSingleMenu_"+color+" > ul").css({display: "inline-block"});
-					
-					/* To close the menu when clicking outside of it */
-					$(document).on(
-							"click.statusSingleMenu_"+color,     /* provide a namespace for the 'click' event handler */
-							":not(#statusSingleMenu_"+color+")",
-							function(){
-								$("#statusSingleMenu_"+color).hide();
-								/* Remove this event handler */
-								$(document).off("click.statusSingleMenu_"+color);
-							}
-						);
-						
-				});
-				
-			});
-        })(jQuery_testmanager);	
+                                    changestate(tcid, planid, path, newStatus, newColor, newLabel);
+                                    
+                                    $("#statusSingleMenu_"+color).hide();
+                                }
+                            }
+                    }).popup();
+                    
+                    $("#statusSingleMenu_"+color+" > ul").css({display: "inline-block"});
+                    
+                    /* To close the menu when clicking outside of it */
+                    $(document).on(
+                            "click.statusSingleMenu_"+color,     /* provide a namespace for the 'click' event handler */
+                            ":not(#statusSingleMenu_"+color+")",
+                            function(){
+                                $("#statusSingleMenu_"+color).hide();
+                                /* Remove this event handler */
+                                $(document).off("click.statusSingleMenu_"+color);
+                            }
+                        );
+                        
+                });
+                
+            });
+        })(jQuery_testmanager); 
     }
 }
 
@@ -914,79 +911,79 @@ function bindTCStatusMenus() {
  */
 
 function organizeTestCatalog(catName) {
-	(function($) {
+    (function($) {
         $(function() {
             $("#dialog_organize").dialog({width: 900, height: 500, modal: true});
 
-			$('#testcaseOrganizeList').nestedSortable({
-				handle: 'div',
-				listType: 'ul',
-				items: 'li',
-				protectRoot: false,
-				rootID: 'testcaseOrganizeList',
-				toleranceElement: '> div',
-				isAllowed: canDropItem
-			});
+            $('#testcaseOrganizeList').nestedSortable({
+                handle: 'div',
+                listType: 'ul',
+                items: 'li',
+                protectRoot: false,
+                rootID: 'testcaseOrganizeList',
+                toleranceElement: '> div',
+                isAllowed: canDropItem
+            });
 
-			$("#testcaseOrganizeList").sortableTree();
+            $("#testcaseOrganizeList").sortableTree();
 
         });
-    })(jQuery_testmanager);	
+    })(jQuery_testmanager); 
 }
 
 function organizeCatalogCancel() {
-	(function($) {
+    (function($) {
         $(function() {
             $("#dialog_organize").dialog('close');
         });
-    })(jQuery_testmanager);	
+    })(jQuery_testmanager); 
 }
 
 function canDropItem(item, parent) {
 
-	if (item.attr('name') == 'testcase' && (parent == null || parent.attr('name') == 'testcatalog')) {
-		return true;
-	}
-	
-	return false; 
+    if (item.attr('name') == 'testcase' && (parent == null || parent.attr('name') == 'testcatalog')) {
+        return true;
+    }
+    
+    return false; 
 }
 
 function postCatalogOrganization() {
-	(function($) {
-		var hiered = JSON.stringify($('#testcaseOrganizeList').nestedSortable('toHierarchy', {startDepthCount: 0}));
-		
-		$("div [name=test_list]").val(hiered);
-		
-		document.organize_form_id.submit();
-		
-    })(jQuery_testmanager);	
+    (function($) {
+        var hiered = JSON.stringify($('#testcaseOrganizeList').nestedSortable('toHierarchy', {startDepthCount: 0}));
+        
+        $("div [name=test_list]").val(hiered);
+        
+        document.organize_form_id.submit();
+        
+    })(jQuery_testmanager); 
 }
 
 function dump(arr,level) {
-	var dumped_text = "";
-	if(!level) level = 0;
+    var dumped_text = "";
+    if(!level) level = 0;
 
-	/*
-	The padding given at the beginning of the line.
-	*/
-	var level_padding = "";
-	for(var j=0;j<level+1;j++) level_padding += "    ";
+    /*
+    The padding given at the beginning of the line.
+    */
+    var level_padding = "";
+    for(var j=0;j<level+1;j++) level_padding += "    ";
 
-	if(typeof(arr) == 'object') { /* Array/Hashes/Objects */
-		for(var item in arr) {
-			var value = arr[item];
+    if(typeof(arr) == 'object') { /* Array/Hashes/Objects */
+        for(var item in arr) {
+            var value = arr[item];
 
-			if(typeof(value) == 'object') { /* If it is an array, */
-				dumped_text += level_padding + "'" + item + "' ...\n";
-				dumped_text += dump(value,level+1);
-			} else {
-				dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
-			}
-		}
-	} else { /* Strings/Chars/Numbers etc. */
-		dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
-	}
-	return dumped_text;
+            if(typeof(value) == 'object') { /* If it is an array, */
+                dumped_text += level_padding + "'" + item + "' ...\n";
+                dumped_text += dump(value,level+1);
+            } else {
+                dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+            }
+        }
+    } else { /* Strings/Chars/Numbers etc. */
+        dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
+    }
+    return dumped_text;
 }
 
 /******************************************************/
@@ -1024,35 +1021,47 @@ function displayNodes(name, show, mode) {
     }
 }
 
-function doAjaxCall(url, method, params) {
-	var responseText = "ERROR";
+function doAjaxCall(url, method, params, async, callback) {
+    var responseText = "ERROR";
+    
+    if (!async) {
+        async = false;
+    }
 
     try {
-		headers = {};
+        headers = {};
         if (method == "POST") {
             headers = {"Content-type": "application/x-www-form-urlencoded"};
             params["__FORM_TOKEN"] = getCookie('trac_form_token');
         }
+        
+        if (!callback) {
+            callback = function(data) {
+              responseText = data;
+            };
+            
+            responseText = "";
+        }
+
+        console.info("Performing Ajax call to "+url+" with method "+method);
 
         $.ajax({
-          async: false,
+          async: async,
           type: method,
           url: url,
           data: params,
           dataType: "text",
           headers: headers,
-          success: function(data) {
-              responseText = data;
-            },
+          success: callback,
           error: function() {
               responseText = 'ERROR';
-			}
+            }
         });
         
     } catch (e) {
         responseText = 'ERROR';
     }
-	
+    
     return responseText;
 }
 
@@ -1073,10 +1082,10 @@ function editField(name, type) {
 }
 
 function sendUpdate(realm, name, type) {
-   	var objKeyField = document.getElementById("obj_key_field");
+    var objKeyField = document.getElementById("obj_key_field");
     var objKey = objKeyField.value;
 
-   	var objPropsField = document.getElementById("obj_props_field");
+    var objPropsField = document.getElementById("obj_props_field");
     var objProps = objPropsField.value;
 
     var value = null;
@@ -1098,8 +1107,8 @@ function sendUpdate(realm, name, type) {
     result = doAjaxCall(url, "GET", params);
 
     /*
-	Handle result of the Ajax call
-	*/
+    Handle result of the Ajax call
+    */
     if (result == 'OK') {
         if (type == 'textarea') {
             value = replaceAll('\n\r', '<br />', value);
@@ -1118,40 +1127,40 @@ function sendUpdate(realm, name, type) {
             $(function() {
                 $("#dialog_error").dialog({width: 320, height: 150, modal: true});
             });
-        })(jQuery_testmanager);	
+        })(jQuery_testmanager); 
     }
 }
 
 function getLocale() {
-	if ( navigator ) {
-		if ( navigator.language ) {
-			return navigator.language;
-		}
-		else if ( navigator.browserLanguage ) {
-			return navigator.browserLanguage;
-		}
-		else if ( navigator.systemLanguage ) {
-			return navigator.systemLanguage;
-		}
-		else if ( navigator.userLanguage ) {
-			return navigator.userLanguage;
-		}
-	}
+    if ( navigator ) {
+        if ( navigator.language ) {
+            return navigator.language;
+        }
+        else if ( navigator.browserLanguage ) {
+            return navigator.browserLanguage;
+        }
+        else if ( navigator.systemLanguage ) {
+            return navigator.systemLanguage;
+        }
+        else if ( navigator.userLanguage ) {
+            return navigator.userLanguage;
+        }
+    }
 }
 
 function include(filename) {
-	var head = document.getElementsByTagName('head')[0];
-	
-	script = document.createElement('script');
-	script.src = filename;
-	script.type = 'text/javascript';
-	
-	head.appendChild(script);
+    var head = document.getElementsByTagName('head')[0];
+    
+    script = document.createElement('script');
+    script.src = filename;
+    script.type = 'text/javascript';
+    
+    head.appendChild(script);
 }
 
 function loadMessageCatalog() {
-	var lc = getLocale();
-	include('../chrome/testmanager/js/' + lc + '.js');
+    var lc = getLocale();
+    include('../chrome/testmanager/js/' + lc + '.js');
 }
 
 function escapeRegExp(str) {
@@ -1194,5 +1203,5 @@ addLoadHandler(function() {
         checkFilter(true);
         checkMoveTCDisplays();
         bindTCStatusMenus();
-		/* loadMessageCatalog(); */
+        /* loadMessageCatalog(); */
     });

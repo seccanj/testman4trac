@@ -4,37 +4,35 @@
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
-# The Test Manager plugin for Trac is free software: you can 
-# redistribute it and/or modify it under the terms of the GNU 
-# General Public License as published by the Free Software Foundation, 
-# either version 3 of the License, or (at your option) any later 
-# version.
-# 
-# The Test Manager plugin for Trac is distributed in the hope that it 
-# will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with the Test Manager plugin for Trac. See the file LICENSE.txt. 
-# If not, see <http://www.gnu.org/licenses/>.
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at: 
+#   https://trac-hacks.org/wiki/TestManagerForTracPluginLicense
 #
+# Author: Roberto Longobardi <otrebor.dev@gmail.com>
+# 
 
 import copy
-from datetime import date, datetime
 import re
+import sys
+import time
+import traceback
 
-from trac.core import Interface, TracError, Component, ExtensionPoint
+from datetime import date, datetime
+
+from trac.attachment import Attachment
+from trac.core import *
 from trac.db import Table, Column, Index, DatabaseManager, with_transaction
-from trac.resource import Resource
-from trac.util.datefmt import utc
-from trac.util.translation import _
+from trac.resource import Resource, ResourceNotFound
+from trac.util.datefmt import utc, utcmax
+from trac.util.text import CRLF
+from trac.util.translation import _, N_, gettext
+from trac.wiki.api import WikiSystem
 from trac.wiki.model import WikiPage
 from trac.wiki.web_ui import WikiModule
 
-from tracgenericclass.util import from_any_timestamp, get_string_from_dictionary, \
-    to_any_timestamp, to_list, get_timestamp_db_type, list_available_tables, \
-    db_get_config_property
+from tracgenericclass.cache import GenericClassCacheSystem
+from tracgenericclass.util import *
 
 
 class IConcreteClassProvider(Interface):
@@ -43,14 +41,14 @@ class IConcreteClassProvider(Interface):
     concrete classes based on this generic class framework.
     """
 
-    def get_realms(self):
+    def get_realms():
         """
         Return class realms provided by the component.
 
         :rtype: `basestring` generator
         """
 
-    def get_data_models(self):
+    def get_data_models():
         """
         Return database tables metadata to allow the framework to create the
         db schema for the classes provided by the component.
@@ -70,7 +68,7 @@ class IConcreteClassProvider(Interface):
                        }
         """
 
-    def get_fields(self):
+    def get_fields():
         """
         Return the standard fields for classes in all the realms 
         provided by the component.
@@ -86,7 +84,7 @@ class IConcreteClassProvider(Interface):
                        }
         """
         
-    def get_metadata(self):
+    def get_metadata():
         """
         Return a set of metadata about the classes in all the realms 
         provided by the component.
@@ -112,7 +110,7 @@ class IConcreteClassProvider(Interface):
                        }
         """
         
-    def create_instance(self, realm, props=None):
+    def create_instance(realm, props=None):
         """
         Return an instance of the specified realm, with the specified properties,
         or an empty object if props is None.
@@ -121,7 +119,7 @@ class IConcreteClassProvider(Interface):
         """
 
 
-    def check_permission(self, req, realm, key_str=None, operation='set', name=None, value=None):
+    def check_permission(req, realm, key_str=None, operation='set', name=None, value=None):
         """
         Checks whether the logged in User has permission to perform
         the specified operation on a resource of the specified realm and 
@@ -190,9 +188,24 @@ class AbstractVariableFieldsObject(object):
           declaratively create the required tables.
     """
 
+    def __new__(cls, env, realm='variable_fields_obj', key=None, db=None):
+        result = None
+        
+        if key is not None:
+            result = GenericClassCacheSystem.cache_get(realm, get_string_from_dictionary(key))
+
+            if result is not None:
+                result.is_initialized = True
+
+        if result is None:
+            result = object.__new__(cls, env, realm, key, db)
+            result.is_initialized = False
+            
+        return result
+
     def __init__(self, env, realm='variable_fields_obj', key=None, db=None):
         """
-        Creates an empty object and also tries to fetches it from the 
+        Creates an empty object and also tries to fetch it from the 
         database, if an object with a matching key is found.
         
         To create an empty, template object, do not specify a key.
@@ -211,6 +224,10 @@ class AbstractVariableFieldsObject(object):
               one to keep track of the changes to any field
            3) call the save_changes() method.
         """
+        
+        if self.is_initialized:
+            return
+        
         self.env = env
 
         self.exists = False
@@ -230,7 +247,7 @@ class AbstractVariableFieldsObject(object):
             self.resource = Resource(realm, self.gey_key_string())
         else:
             self.resource = None
-            
+        
         if not key or not self._fetch_object(key, db):
             self._init_defaults(db)
             self.exists = False
@@ -240,7 +257,8 @@ class AbstractVariableFieldsObject(object):
         
         self._old = {}
 
-    def get_key_prop_names(self):
+    @classmethod
+    def get_key_prop_names(cls):
         """
         Returns an array with the fields representing the identity
         of this object. 
@@ -870,7 +888,7 @@ class AbstractVariableFieldsObject(object):
         Use this method to further fulfill your object after being
         fetched from the database.
         """
-        pass
+        GenericClassCacheSystem.cache_put(self)
         
     def pre_insert(self, db):
         """ 
@@ -960,6 +978,8 @@ class AbstractWikiPageWrapper(AbstractVariableFieldsObject):
     
     def post_fetch_object(self, db):
         self.wikipage = WikiPage(self.env, self.values['page_name'])
+        
+        AbstractVariableFieldsObject.post_fetch_object(self, db)
     
     def delete(self, del_wiki_page=True, db=None):
         """

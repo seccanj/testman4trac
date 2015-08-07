@@ -1,0 +1,80 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      xmlns:py="http://genshi.edgewall.org/"
+      i18n:domain="testmanager"
+
+     id="tm_main_toolbar" class="ui-widget-header ui-corner-all"
+>
+
+    <style>
+        #toolbar {
+            padding: 4px;
+            display: inline-block;
+        }
+        /* support: IE7 */
+            *+html #toolbar {
+            display: inline;
+        }
+    </style>
+
+
+    <button id="tm_main_toolbar_new_root_catalog">New root test catalog</button>
+
+    <!--
+    <input type="checkbox" id="shuffle"><label for="shuffle">Shuffle</label>
+    -->
+
+    <span id="tm_main_toolbar_viewtype">
+        <input type="radio" id="tm_main_toolbar_viewtype_tree" name="viewtype" checked="checked" /><label for="tm_main_toolbar_viewtype_tree">Tree view</label>
+        <input type="radio" id="tm_main_toolbar_viewtype_table" name="viewtype" /><label for="tm_main_toolbar_viewtype_table">Table view</label>
+    </span>
+
+    <script>
+      $(function() {
+        $( "#tm_main_toolbar_viewtype_tree" ).button({
+          text: false,
+          icons: {
+            primary: "icon-sitemap"
+          }
+        });
+        $( "#tm_main_toolbar_viewtype_table" ).button({
+          text: false,
+          icons: {
+            primary: "icon-list-ul"
+          }
+        });
+        $( "#tm_main_toolbar_new_root_catalog" ).button({
+          text: false,
+          icons: {
+            primary: "icon-plus"
+          }
+        })
+        .click(function() {
+          var options;
+          if ( $( this ).text() === "play" ) {
+            options = {
+              label: "pause",
+              icons: {
+                primary: "ui-icon-pause"
+              }
+            };
+          } else {
+            options = {
+              label: "play",
+              icons: {
+                primary: "ui-icon-play"
+              }
+            };
+          }
+          $( this ).button( "option", options );
+        });
+        /*
+        $( "#shuffle" ).button();
+        */
+        $( "#tm_main_toolbar_viewtype" ).buttonset();
+      });
+    </script>
+
+</div>
+

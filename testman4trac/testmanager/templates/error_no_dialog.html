@@ -1,0 +1,40 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      xmlns:py="http://genshi.edgewall.org/"
+      i18n:domain="testmanager"
+
+     id="tm_error_no_dialog_container"
+>
+
+    Error: No dialog name was specified.
+    
+    <button id="tm_error_no_dialog_button_ok">OK</button>
+    <button id="tm_error_no_dialog_button_cancel">Cancel</button>
+
+    <script>
+      $(function() {
+        $( "#tm_error_no_dialog_button_ok" ).button({
+          text: true,
+          icons: {
+            primary: "icon-ok"
+          }
+        })
+        .click(function() {
+            $("tm_dialog_anchor").dialog( "close" );
+        });
+
+        $( "#tm_error_no_dialog_button_cancel" ).button({
+          text: true,
+          icons: {
+            primary: "icon-remove"
+          }
+        })
+        .click(function() {
+            $("tm_dialog_anchor").dialog( "close" );
+        });
+      });
+    </script>
+
+</div>
+

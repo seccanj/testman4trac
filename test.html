@@ -1,0 +1,19 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+Espandibile $item.name
+
+    <py:for each="item in item.children">
+
+        <py:if test="item.expandable">
+            <xi:include href="test.html" />
+        </py:if>
+
+        <py:if test="item.expandable != True">
+            Non espandibile $item.name
+        </py:if>
+
+    </py:for>        
+
+</html>
+

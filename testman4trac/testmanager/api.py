@@ -4,57 +4,57 @@
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
-# The Test Manager plugin for Trac is free software: you can 
-# redistribute it and/or modify it under the terms of the GNU 
-# General Public License as published by the Free Software Foundation, 
-# either version 3 of the License, or (at your option) any later 
-# version.
-# 
-# The Test Manager plugin for Trac is distributed in the hope that it 
-# will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with the Test Manager plugin for Trac. See the file LICENSE.txt. 
-# If not, see <http://www.gnu.org/licenses/>.
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at: 
+#   https://trac-hacks.org/wiki/TestManagerForTracPluginLicense
 #
+# Author: Roberto Longobardi <otrebor.dev@gmail.com>
+# 
 
-from StringIO import StringIO
 import csv
-from datetime import datetime
 import json
-from operator import itemgetter
 import os
+import pkg_resources
 import re
+import shutil
+import sys
+import time
+import traceback
 
-from trac.core import Component, implements, TracError
-from trac.db.api import with_transaction
+from datetime import datetime
+from operator import itemgetter
+from StringIO import StringIO
+
+from trac.core import *
 from trac.mimeview.api import Context
-from trac.perm import IPermissionRequestor
-from trac.resource import IResourceManager
-from trac.util import get_reporter_id, format_datetime
+from trac.perm import IPermissionRequestor, PermissionError
+from trac.resource import Resource, IResourceManager, render_resource_link, get_resource_url
+from trac.util import get_reporter_id, format_datetime, format_date
 from trac.util.datefmt import utc
 from trac.web.api import IRequestHandler
-from trac.web.chrome import add_notice, add_warning
+from trac.web.chrome import add_notice, add_warning, add_stylesheet
 from trac.wiki.formatter import Formatter
 from trac.wiki.model import WikiPage
 from trac.wiki.parser import WikiParser
 
-from testmanager.model import TestCatalog, TestCase, TestCaseInPlan, TestPlan
-from testmanager.util import get_page_title
+from tracgenericclass.cache import GenericClassCacheSystem
 from tracgenericclass.model import GenericClassModelProvider
-from tracgenericclass.util import formatExceptionInfo, from_any_timestamp, \
-    upload_file_to_subdir, get_dictionary_from_string
+from tracgenericclass.util import *
 
+from testmanager.beans import *
+from testmanager.model import TestCatalog, TestCase, TestCaseInPlan, TestPlan
+from testmanager.util import *
+
+from testmanager.constants import Constants
 
 try:
     from trac.util.translation import domain_functions
     _, tag_, N_, add_domain = domain_functions('testmanager', ('_', 'tag_', 'N_', 'add_domain'))
 except ImportError:
-	from trac.util.translation import _, N_
-	tag_ = _
-	add_domain = lambda env_path, locale_dir: None
+    from trac.util.translation import _, N_
+    tag_ = _
+    add_domain = lambda env_path, locale_dir: None
 
     
 class TestManagerSystem(Component):
@@ -120,6 +120,7 @@ class TestManagerSystem(Component):
 
                 if row[0] == 'default':
                     self.default_outcome = row[1].lower()
+                    Constants.default_status = row[1].lower()
                 else:
                     color = row[0].partition('.')[0]
                     outcome = row[0].partition('.')[2].lower()
@@ -273,7 +274,7 @@ class TestManagerSystem(Component):
 
     # IPermissionRequestor methods
     def get_permission_actions(self):
-        return ['TEST_VIEW', 'TEST_MODIFY', 'TEST_EXECUTE', 'TEST_DELETE', 'TEST_PLAN_ADMIN']
+        return ['TEST_VIEW', 'TEST_MODIFY', 'TEST_EXECUTE', 'TEST_DELETE', 'TEST_PLAN_ADMIN', 'TEST_ADMIN']
 
         
     # IRequestHandler methods
@@ -311,6 +312,8 @@ class TestManagerSystem(Component):
         """
         author = get_reporter_id(req, 'author')
         remote_addr = req.remote_addr
+
+        GenericClassCacheSystem.clear_cache()
 
         if req.path_info.startswith('/teststatusupdate'):
             req.perm.require('TEST_EXECUTE')
@@ -435,6 +438,7 @@ class TestManagerSystem(Component):
         elif req.path_info.startswith('/testcreate'):
             object_type = req.args.get('type')
             path = req.args.get('path')
+            parent_id = req.args.get('parent_id')
             title = req.args.get('title')
 
             autosave = req.args.get('autosave', 'false')
@@ -446,15 +450,15 @@ class TestManagerSystem(Component):
             id = self.get_next_id(object_type)
 
             pagename = path
-            
+
             if object_type == 'catalog':
                 req.perm.require('TEST_MODIFY')
-                pagename += '_TT'+str(id)
+                pagename = 'TC_TT'+str(id)
 
                 try:
                     # Add template if exists...
                     new_content = self.get_default_tcat_template()
-                    new_tc = TestCatalog(self.env, id, pagename, title, new_content)
+                    new_tc = TestCatalog(self.env, id, pagename, parent_id, title, new_content)
                     new_tc.author = author
                     new_tc.remote_addr = remote_addr
                     # This also creates the Wiki page
@@ -527,7 +531,7 @@ class TestManagerSystem(Component):
                 
                 tcatId = req.args.get('tcatId')
                 planid = req.args.get('planid')
-		
+        
                 self.env.log.debug("About to add test case %s to test plans %s" % (tcId, planid))
 
                 tc = None
@@ -594,7 +598,7 @@ class TestManagerSystem(Component):
             elif object_type == 'testcase':
                 req.perm.require('TEST_MODIFY')
                 
-                pagename += '_TC'+str(id)
+                pagename = 'TC_TC'+str(id)
                 
                 if paste and paste != '':
                     # Handle move/paste of the test case into another catalog
@@ -674,7 +678,7 @@ class TestManagerSystem(Component):
                     try:
                         # Add template if it exists
                         new_content = self.get_tc_template(path)
-                        new_tc = TestCase(self.env, id, pagename, title, new_content)
+                        new_tc = TestCase(self.env, id, pagename, parent_id, title, new_content)
                         new_tc.author = author
                         new_tc.remote_addr = remote_addr
                         # This also creates the Wiki page
@@ -768,7 +772,7 @@ class TestManagerSystem(Component):
 
                     try:
                         # Copy the test plan properties into a new test plan
-                        new_tp = TestPlan(self.env, id, tp['catid'], tp['page_name'], new_name, author, 1, 0)
+                        new_tp = TestPlan(self.env, id, tp['catid'], tp['page_name'], new_name, author, True, False)
                         new_tp.insert()
                         
                         # If needed, clone the test cases in the plan, with a default status 
@@ -845,7 +849,9 @@ class TestManagerSystem(Component):
             context = Context.from_request(req, 'wiki', cat_name)
             formatter = Formatter(self.env, context)
 
-            data_model = self.get_test_catalog_data_model(cat_name, (planid != '-1'), planid)
+            tcat = TestCatalog(self.env, catid, cat_name)
+
+            data_model = self.get_test_catalog_data_model(catid, cat_name, tcat.title, (planid != '-1'), planid)
             csvstr = self.get_catalog_model_csv_markup(context, planid, data_model, catid, separator, (planid != '-1'), fulldetails, raw_wiki_format)
             
             if isinstance(csvstr, unicode): 
@@ -938,10 +944,11 @@ class TestManagerSystem(Component):
             elif action == 'copy':
                 try:
                     id = self.get_next_id('testcase')
-                    pagename = tcat['page_name'] + '_TC'+str(id)
+                    pagename = 'TC_TC'+str(id)
 
                     # Copy the test case with a new id into the new catalog
                     tc['page_name'] = pagename
+                    tc['parent_id'] = tcat['id']
                     tc['exec_order'] = new_order
                     tc.save_as({'id': id})
 
@@ -1109,43 +1116,13 @@ class TestManagerSystem(Component):
             self.env.log.error(formatExceptionInfo())
             return None
 
-    def get_default_tc_template_id(self):
-        """ get default TestCase template id """
-        try:
-            return self.get_config_property('TEST_CASE_DEFAULT_TEMPLATE')
-
-        except:
-            self.env.log.error("Error getting default test case template id")
-            self.env.log.error(formatExceptionInfo())
-            return None
-
-    def get_default_tc_template(self):
-        """ get default TestCase template """
-        try:
-            # first get template id from testconfig
-            t_id = self.get_config_property('TEST_CASE_DEFAULT_TEMPLATE')
-            if not t_id:
-                return ''
-
-            # now get template
-            result = self.get_template_by_id(t_id)
-            if not result:
-                return ''
-                
-            return result['content']
-
-        except:
-            self.env.log.error("Error getting default test case template")
-            self.env.log.error(formatExceptionInfo())
-            return None
-
     def get_tc_template_id_for_catalog(self, t_cat_id):
         """ get test case template for catalog with specified id """
         try:
             return self.get_config_property('TC_TEMPLATE_FOR_TCAT_' + t_cat_id)
 
         except:
-            self.env.log.error("Error getting default test case template id")
+            self.env.log.error("Error getting default test catalog template id")
             self.env.log.error(formatExceptionInfo())
             return None
 
@@ -1158,12 +1135,8 @@ class TestManagerSystem(Component):
 
             # now get Template ID
             t_id = self.get_tc_template_id_for_catalog(t_cat_id)
-            
-            if not t_id or t_id == '' or t_id == '0':
-                t_id = self.get_default_tc_template_id()
-
-                if not t_id or t_id == '':
-                    return ''
+            if not t_id:
+                return ''
 
             # and finally get the template
             result = self.get_template_by_id(t_id)
@@ -1317,30 +1290,35 @@ class TestManagerSystem(Component):
         
         db = self.env.get_read_db()
         cursor = db.cursor()
-        cursor.execute("SELECT id, page_name from testcatalog")
+        cursor.execute("SELECT * from testcatalog")
         items = []
-        for c_id, c_name in cursor:
+        for row in cursor:
+            c_id = row[0]
+            c_name = row[1]
             wikipage = WikiPage(self.env, c_name)
             c_title = get_page_title(wikipage.text)
-            c_template_id = self.get_tc_template_id_for_catalog(c_id)
-            cat = {'id': c_id, 'name': c_name, 'title': c_title, 'template': c_template_id}
+            c_template = self.get_tc_template_id_for_catalog(c_id)
+            cat = {'id': c_id, 'name': c_name, 'title': c_title, 'template': c_template}
             items.append(cat)
             
         return sorted(items, key=itemgetter('title'))
 
-    def get_test_catalog_data_model(self, pagename, include_status=False, planid=None, sortby='custom'):
+    def get_test_catalog_data_model_old(self, tcat_id, pagename=None, text=None, include_status=False, planid=None, sortby='custom'):
         
-        default_status = self.get_default_tc_status()
-        default_status_color = self.outcomes_by_name[default_status][0]
-        
+        if include_status:
+            default_status = self.get_default_tc_status()
+            default_status_color = self.outcomes_by_name[default_status][0]
+
         # Create the catalog subtree model
         if pagename != 'TC':
-            tcat_id = pagename.rpartition('_TT')[2]
-            tcat = TestCatalog(self.env, tcat_id)
-
-            components = {'id': pagename, 'tcat_id': tcat_id, 'name': pagename.rpartition('_')[2], 'title': tcat.title, 'childrenC': {},'childrenT': {}, 'tot': 0, 'color': 'none'}
+            if pagename is None or text is None:
+                tcat = TestCatalog(self.env, tcat_id)
+                pagename = tcat['page_name']
+                text = tcat.title
+            
+            components = {'page_name': pagename, 'tcat_id': tcat_id, 'title': get_page_title(text), 'parent_id': tcat_id, 'childrenC': {},'childrenT': {}, 'tot': 0, 'color': 'none'}
         else:
-            components = {'name': pagename, 'tcat_id': '-1', 'childrenC': {},'childrenT': {}, 'tot': 0, 'color': default_status_color}
+            components = {'page_name': pagename, 'tcat_id': '-1', 'parent_id': None, 'childrenC': {},'childrenT': {}, 'tot': 0, 'color': default_status_color}
 
         if planid is not None:
             tp = TestPlan(self.env, planid)
@@ -1357,104 +1335,124 @@ class TestManagerSystem(Component):
 
         unique_idx = 0
 
-        for subpage_name, text in self.list_matching_subpages(pagename+'_'):
+        # Get all sub catalogs
+        for sub_tcat_id, sub_tcat_page_name, text in self.list_subcatalogs_pages(tcat_id):
+            curr_subcatalog_components = self.get_test_catalog_data_model(sub_tcat_id, sub_tcat_page_name, text, include_status, planid, sortby)
+            
+            components['childrenC'][sub_tcat_id] = curr_subcatalog_components
+
+            if include_status:
+                components['color'] = self._calc_worse_color(components['color'], curr_subcatalog_components['color'], default_status_color)
+
+            components['tot'] += curr_subcatalog_components['tot']
+
+        # Get all contained test cases
+        for tc_id, tc_page_name, text in self.list_subcases_pages(tcat_id):
             subpage_title = get_page_title(text)
 
-            path_name = subpage_name.partition(pagename+'_')[2]
-            tokens = path_name.split("_")
-            parent = components
-            ltok = len(tokens)
-            curr_path = pagename
-            for tc in tokens:
-                old_path = curr_path
-                curr_path += '_'+tc
-                
-                if tc == '':
-                    break
+            if include_status:
+                tcip = TestCaseInPlan(self.env, tc_id, planid)
+                if tcip.exists:
+                    version = tcip['page_version']
 
-                if not tc.startswith('TC'):
-                    # It is a test catalog page
-                    sub_tcat_id = curr_path.rpartition('_TT')[2]
+                    for ts, author, status in tcip.list_history():
+                        break
                     
-                    comp = {}
-                    if (tc not in parent['childrenC']):
-                        comp = {'id': curr_path, 'tcat_id': sub_tcat_id, 'name': tc, 'title': subpage_title, 'childrenC': {},'childrenT': {}, 'tot': 0, 'color': 'none', 'parent': parent}
-                        parent['childrenC'][tc]=comp
-                    else:
-                        comp = parent['childrenC'][tc]
-                    parent = comp
-
+                    if not isinstance(ts, datetime):
+                        ts = from_any_timestamp(ts)
+                    
+                    if status == '':
+                        status = default_status
+                        
                 else:
-                    # It is a test case page
-                    tc_id = tc.partition('TC')[2]
-                    sub_tcat_id = old_path.rpartition('_TT')[2]
-                    
-                    if include_status:
-                        tcip = TestCaseInPlan(self.env, tc_id, planid)
-                        if tcip.exists:
-                            version = tcip['page_version']
-
-                            for ts, author, status in tcip.list_history():
-                                break
-                            
-                            if not isinstance(ts, datetime):
-                                ts = from_any_timestamp(ts)
-                            
-                            if status == '':
-                                status = default_status
-                                
-                        else:
-                            if not contains_all:
-                                continue
-                                
-                            ts = tp['time']
-                            author = tp['author']
-                            status = default_status
-                            version = -1                
-                    
-                    exec_order = "-1"
-                    if sortby == 'name':
-                        key = subpage_title
-                    elif sortby == 'custom':
-                        tc = TestCase(self.env, tc_id)
-                        if tc.exists:
-                            key = "%05d" % (tc['exec_order'],)
-                            exec_order = key
-                        else:
-                            key = subpage_title
-                    else:
-                        key = ts.isoformat()
-
-                    if key in parent['childrenT']:
-                        unique_idx += 1
-                        key = key+str(unique_idx)
+                    if not contains_all:
+                        continue
                         
-                    parent['childrenT'][key]={'id':curr_path, 'tcat_id': sub_tcat_id, 'tc_id': tc_id, 'title': subpage_title, 'status': status.lower(), 'ts': ts, 'author': author, 'version': version, 'exec_order': exec_order}
-                    compLoop = parent
-                    
-                    while (True):
-                        compLoop['tot']+=1
-                        
-                        if include_status:
-                            compLoop['color'] = self._calc_worse_color(compLoop['color'], status, default_status_color)
-                            
-                        if ('parent' in compLoop):
-                            compLoop = compLoop['parent']
-                        else:
-                            break
+                    ts = tp['time']
+                    author = tp['author']
+                    status = default_status
+                    version = -1                
+            
+            exec_order = "-1"
+            if sortby == 'name':
+                key = subpage_title
+            elif sortby == 'custom':
+                tc = TestCase(self.env, tc_id)
+                if tc.exists:
+                    key = "%05d" % (tc['exec_order'],)
+                    exec_order = key
+                else:
+                    key = subpage_title
+            else:
+                key = ts.isoformat()
+
+            if key in components['childrenT']:
+                unique_idx += 1
+                key = key+str(unique_idx)
+                
+            components['childrenT'][key]={'page_name': tc_page_name, 'tc_id': tc_id, 'parent_id': tcat_id, 'title': subpage_title, 'status': status.lower(), 'ts': ts, 'author': author, 'version': version, 'exec_order': exec_order}
+
+            if include_status:
+                components['color'] = self._calc_worse_color(components['color'], self.outcomes_by_name[status][0], default_status_color)
+
+            components['tot'] += 1
 
         return components
     
-    def _calc_worse_color(self, old_color, new_status, default_status_color):
-        new_color = self.outcomes_by_name[new_status][0]
+    def get_all_test_catalogs_data_model(self, sortby = 'custom'):
+        tcat_beans = []
         
-        if old_color == 'red' or new_color == 'red':
-            return 'red'
+        for tcat_id in self.list_subcatalogs('-1'):
+            tcat_beans.append(self.get_test_catalog_data_model(test_catalog = TestCatalog(self.env, tcat_id[0]), sortby = sortby))
             
-        if old_color == 'yellow' or new_color == 'yellow':
-            return 'yellow'
+        return tcat_beans
+
+    def get_test_catalog_data_model(self, test_catalog, sortby = 'custom', include_status = False, test_plan = None, unique_idx = 0):
         
-        return 'green'
+        # Create the catalog subtree model
+        test_catalog_bean = TestCatalogBean(test_catalog = test_catalog, test_plan = test_plan, has_status = include_status, unique_idx = unique_idx)
+        
+        # Get all sub catalogs
+        sub_unique_idx = 1
+        for sub_catalog_id in self.list_subcatalogs(test_catalog['id']):
+            sub_catalog = TestCatalog(self.env, sub_catalog_id)
+            
+            sub_catalog_bean = self.get_test_catalog_data_model(test_catalog = sub_catalog, sortby = sortby, include_status = include_status, test_plan = test_plan, unique_idx = sub_unique_idx)
+            test_catalog_bean.add_sub_catalog(sub_catalog_bean)
+            
+            sub_unique_idx += 1
+
+        # Get all contained test cases
+        sub_unique_idx = 1
+        for test_case_id in self.list_testcases(test_catalog['id']):
+
+            test_case = TestCase(self.env, test_case_id)
+
+            test_case_bean = self.get_test_case_data_model(test_case = test_case, include_status = include_status, test_plan = test_plan, unique_idx = sub_unique_idx)
+
+            test_catalog_bean.add_test_case(test_case_bean)
+            
+            sub_unique_idx += 1
+
+        return test_catalog_bean
+    
+    def get_test_case_data_model(self, test_case, include_status = False, test_plan = None, unique_idx = 0):
+        test_case_in_plan = None
+        color = None
+        
+        if include_status:
+            test_case_in_plan = TestCaseInPlan(self.env, test_case['id'], test_plan['id'])
+            color = self.outcomes_by_name[test_case_in_plan['status'][0]]
+            
+        test_case_bean = TestCaseBean(test_case = test_case, has_status = include_status, test_plan = test_plan, test_case_in_plan = test_case_in_plan, color = color, unique_idx = unique_idx)
+        
+        return test_case_bean
+    
+    def get_test_catalog_details_data_model(self, test_catalog, include_status = False, test_plan = None):
+        # Create the catalog model
+        test_catalog_bean = TestCatalogBean(test_catalog = test_catalog, test_plan = test_plan, has_status = include_status)
+        
+        return test_catalog_bean
     
     def get_catalog_model_csv_markup(self, context, planid, components, root_catalog_id, separator=',', include_status=False, fulldetails=False, raw_wiki_format=True):
         # Generate the markup
@@ -1750,16 +1748,58 @@ class TestManagerSystem(Component):
             
         return do_sort
         
-    def list_matching_subpages(self, curpage):
+    def list_subcatalogs_pages(self, parent_id):
         db = self.env.get_read_db()
         cursor = db.cursor()
 
-        sql = "SELECT w1.name, w1.text, w1.version FROM wiki w1, (SELECT name, max(version) as ver FROM wiki WHERE name LIKE '%s%%' GROUP BY name) w2 WHERE w1.version = w2.ver AND w1.name = w2.name ORDER BY w2.name" % curpage
+        #sql = "SELECT w1.name, w1.text, w1.version FROM wiki w1, (SELECT name, max(version) as ver FROM wiki WHERE name LIKE '%s%%' GROUP BY name) w2 WHERE w1.version = w2.ver AND w1.name = w2.name ORDER BY w2.name" % curpage
+        sql_testcatalogs = "SELECT tt.id, tt.page_name, w1.text FROM testcatalog tt, wiki w1, (SELECT name, max(version) as ver FROM wiki, testcatalog WHERE name = page_name GROUP BY name) w2 WHERE tt.parent_id = '%s' and w1.version = w2.ver AND w1.name = w2.name and w1.name = tt.page_name" % (parent_id,)
         
-        cursor.execute(sql)
-        for name, text, version in cursor:
-            yield name, text
+        cursor.execute(sql_testcatalogs)
+        for id, name, text in cursor:
+            yield id, name, text
         
         return
         
+    def list_subcatalogs(self, catalog_id):
+        db = self.env.get_read_db()
+        cursor = db.cursor()
+
+        sql_testcatalogs = "SELECT id FROM testcatalog WHERE parent_id = %s"
+        
+        cursor.execute(sql_testcatalogs, (catalog_id,))
+
+        result = []
+        for id in cursor:
+            self.env.log.debug("    =======    Found sub catalog of catalog with id '%s': id='%s'" % (catalog_id, id))
+            result.append(id[0])
+        
+        return result
+
+    def list_subcases_pages(self, parent_id):
+        db = self.env.get_read_db()
+        cursor = db.cursor()
+
+        #sql = "SELECT w1.name, w1.text, w1.version FROM wiki w1, (SELECT name, max(version) as ver FROM wiki WHERE name LIKE '%s%%' GROUP BY name) w2 WHERE w1.version = w2.ver AND w1.name = w2.name ORDER BY w2.name" % curpage
+        sql_testcases = "SELECT tt.id, tt.page_name, w1.text FROM testcase tt, wiki w1, (SELECT name, max(version) as ver FROM wiki, testcase WHERE name = page_name GROUP BY name) w2 WHERE tt.parent_id = '%s' and w1.version = w2.ver AND w1.name = w2.name and w1.name = tt.page_name" % (parent_id,)
+        
+        cursor.execute(sql_testcases)
+        for id, name, text in cursor:
+            yield id, name, text
+        
+        return
+        
+    def list_testcases(self, catalog_id):
+        db = self.env.get_read_db()
+        cursor = db.cursor()
+
+        sql_testcases = "SELECT id FROM testcase WHERE parent_id = %s"
+        
+        cursor.execute(sql_testcases, (catalog_id,))
+        
+        result = []
+        for id in cursor:
+            result.append(id[0])
+        
+        return result       
 

@@ -1,5 +1,5 @@
 # Korean translations for TestManager.
-# Copyright (C) 2013 Roberto Longobardi
+# Copyright (C) 2010-2015 Roberto Longobardi
 # This file is distributed under the same license as the TestManager
 # project.
 #
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Test Manager for Trac plugin\n"
 "Report-Msgid-Bugs-To: otrebor.dev@gmail.com\n"
-"POT-Creation-Date: 2014-12-13 20:50+0100\n"
+"POT-Creation-Date: 2015-07-19 23:16+0200\n"
 "PO-Revision-Date: 2013-08-20 01:52+0000\n"
 "Last-Translator: chohy <chohy@yahoo.com>\n"
 "Language-Team: Korean "
@@ -20,290 +20,296 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 
-#: testmanager/admin.py:53 testmanager/templates/testmanagerstats.html:88
+#: testmanager/admin.py:50 testmanager/templates/testmanagerstats.html:88
 #: testmanager/templates/testmanagerstats_compatible.html:75
 msgid "Settings"
-msgstr "설정 "
+msgstr ""
 
-#: testmanager/admin.py:54
+#: testmanager/admin.py:51
 msgid "Templates"
-msgstr "템플릿 "
+msgstr ""
+
+#: testmanager/admin.py:88
+msgid "Settings saved"
+msgstr ""
 
 #: testmanager/admin.py:91
-msgid "Settings saved"
-msgstr "설정 저장됨 "
-
-#: testmanager/admin.py:94
 msgid "Error saving the settings"
-msgstr "설정 저장 오류 "
+msgstr ""
 
-#: testmanager/admin.py:142
+#: testmanager/admin.py:138
 msgid "A Test Case template with that name already exists"
-msgstr "이름이 같은 테스트 케이스 템플릿이 있습니다. "
+msgstr ""
 
-#: testmanager/admin.py:150 testmanager/admin.py:168
+#: testmanager/admin.py:146 testmanager/admin.py:164
 msgid "Please enter a Template name first"
-msgstr "먼저 템플릿 이름을 입력하십시오. "
+msgstr ""
 
-#: testmanager/admin.py:160
+#: testmanager/admin.py:156
 msgid "A Test Catalog template with that name already exists"
-msgstr "이름이 같은 테스트 카탈로그 템플릿이 있습니다. "
+msgstr ""
 
-#: testmanager/admin.py:184 testmanager/admin.py:214
-#, python-format
-msgid "Template '%s' not removed as it is currently the default template"
-msgstr "'%s' 템플릿이 현재 기본 템플릿이어서 제거할 수 없습니다. "
-
-#: testmanager/admin.py:188
+#: testmanager/admin.py:172
 #, python-format
 msgid "Template '%s' not removed as it is in use for a Test Catalog"
-msgstr "'%s' 템플릿을 테스트 카탈로그로 사용중이라서 제거할 수 없습니다. "
+msgstr ""
 
-#: testmanager/admin.py:193
+#: testmanager/admin.py:177
 #, python-format
 msgid "Error deleting Test Case template '%s'"
-msgstr "'%s' 테스트 케이스 템플릿 삭제 오류 "
+msgstr ""
 
-#: testmanager/admin.py:195
+#: testmanager/admin.py:179
 #, python-format
 msgid "Test Case template '%s' deleted"
-msgstr "'%s' 테스트 케이스 템플릿이 삭제되었습니다. "
+msgstr ""
 
-#: testmanager/admin.py:219
+#: testmanager/admin.py:191
+#, python-format
+msgid "Template '%s' not removed as it is currently the default template"
+msgstr ""
+
+#: testmanager/admin.py:196
 #, python-format
 msgid "Error deleting Test Catalog template '%s'"
-msgstr "테스트 카탈로그 템플릿 '%s' 삭제 오류 "
+msgstr ""
 
-#: testmanager/admin.py:221
+#: testmanager/admin.py:198
 #, python-format
 msgid "Test Catalog template '%s' deleted"
-msgstr "'%s' 테스트 카탈로그 템플릿이 삭제되었습니다."
+msgstr ""
 
-#: testmanager/admin.py:230
+#: testmanager/admin.py:207
 msgid "Default Test Catalog template updated"
-msgstr "기본 테스트 카탈로그 템플릿이 업데이트되었습니다. "
+msgstr ""
 
-#: testmanager/admin.py:233 testmanager/admin.py:242
+#: testmanager/admin.py:210
 msgid "Failed to update default Test Catalog template"
-msgstr "기본 테스트 카탈로그 템플릿 업데이트 실패 "
+msgstr ""
 
-#: testmanager/admin.py:239
-#, fuzzy
-msgid "Default Test Case template updated"
-msgstr "기본 테스트 케이스 템플릿이 업데이트되었습니다. "
-
-#: testmanager/admin.py:254
+#: testmanager/admin.py:222
 msgid "Failed to update Test Case templates"
-msgstr "테스트 케이스 템플릿 업데이트 실패 "
+msgstr ""
 
-#: testmanager/admin.py:256
+#: testmanager/admin.py:224
 msgid "Default Test Case templates updated"
-msgstr "기본 테스트 케이스 템플릿이 업데이트되었습니다. "
+msgstr ""
 
-#: testmanager/admin.py:287
+#: testmanager/admin.py:255
 msgid "Template saved"
-msgstr "템플릿이 저장되었습니다. "
+msgstr ""
 
-#: testmanager/admin.py:338 testmanager/model.py:926 testmanager/wiki.py:991
+#: testmanager/admin.py:306 testmanager/model.py:936 testmanager/wiki.py:1020
 #: testmanager/templates/admin_settings.html:41
 #: testmanager/templates/admin_templates.html:30
 #: testmanager/templates/admin_templates.html:61
-#: testmanager/templates/admin_templates.html:152
+#: testmanager/templates/admin_templates.html:136
 msgid "Name"
-msgstr "이름 "
+msgstr ""
 
-#: testmanager/admin.py:346 testmanager/api.py:1483 testmanager/model.py:907
-#: testmanager/model.py:911 testmanager/model.py:916 testmanager/model.py:923
+#: testmanager/admin.py:314 testmanager/api.py:1481 testmanager/model.py:915
+#: testmanager/model.py:920 testmanager/model.py:926 testmanager/model.py:933
 msgid "ID"
-msgstr "ID "
+msgstr ""
 
-#: testmanager/admin.py:355 testmanager/api.py:239 testmanager/api.py:252
-#: testmanager/api.py:1517 testmanager/model.py:920 testmanager/wiki.py:1889
+#: testmanager/admin.py:323 testmanager/api.py:240 testmanager/api.py:253
+#: testmanager/api.py:1515 testmanager/model.py:930 testmanager/wiki.py:1912
 msgid "Status"
-msgstr "상태 "
+msgstr ""
 
-#: testmanager/admin.py:356 testmanager/api.py:239 testmanager/api.py:1517
-#: testmanager/model.py:927 testmanager/wiki.py:426 testmanager/wiki.py:831
-#: testmanager/wiki.py:991 testmanager/wiki.py:1289 testmanager/wiki.py:1889
+#: testmanager/admin.py:324 testmanager/api.py:240 testmanager/api.py:1515
+#: testmanager/model.py:937 testmanager/wiki.py:438 testmanager/wiki.py:860
+#: testmanager/wiki.py:1020 testmanager/wiki.py:1316 testmanager/wiki.py:1912
 msgid "Author"
-msgstr "저자 "
+msgstr ""
 
-#: testmanager/admin.py:357 testmanager/api.py:1517
+#: testmanager/admin.py:325 testmanager/api.py:1515
 msgid "Last Change"
-msgstr "마지막 변경 "
+msgstr ""
 
-#: testmanager/admin.py:365 testmanager/api.py:1495
+#: testmanager/admin.py:333 testmanager/api.py:1493
 #: testmanager/templates/admin_templates.html:30
 #: testmanager/templates/admin_templates.html:61
-#: testmanager/templates/admin_templates.html:157
+#: testmanager/templates/admin_templates.html:141
 msgid "Description"
-msgstr "설명 "
+msgstr ""
 
-#: testmanager/api.py:239 testmanager/wiki.py:831 testmanager/wiki.py:1289
-#: testmanager/wiki.py:1889
+#: testmanager/api.py:240 testmanager/wiki.py:860 testmanager/wiki.py:1316
+#: testmanager/wiki.py:1912
 msgid "Timestamp"
-msgstr "타임스탬프 "
+msgstr ""
 
-#: testmanager/api.py:427
+#: testmanager/api.py:430
 msgid "The operation was successful."
-msgstr "작업이 완료되었습니다. "
+msgstr ""
 
-#: testmanager/api.py:466
+#: testmanager/api.py:470
 msgid "An error occurred while adding the test catalog."
-msgstr "테스트 카탈로그를 추가하는 중에 오류가 발생했습니다. "
+msgstr ""
 
-#: testmanager/api.py:487
+#: testmanager/api.py:491
 msgid "The test case version was updated successfully."
-msgstr "테스트 케이스 버전 업데이트가 완료되었습니다. "
+msgstr ""
 
-#: testmanager/api.py:492
+#: testmanager/api.py:496
 msgid "An error occurred while updating the test case version."
-msgstr "테스트 케이스 버전을 업데이트하는 중에 오류가 발생했습니다. "
+msgstr ""
 
-#: testmanager/api.py:519
+#: testmanager/api.py:523
 msgid "An error occurred while generating the test plan."
-msgstr "테스트 계획을 생성하는 중에 오류가 발생했습니다. "
+msgstr ""
 
-#: testmanager/api.py:544
-#, fuzzy
+#: testmanager/api.py:548
 msgid "An error occurred while adding the test case into the selected Test Plans."
-msgstr "테스트 케이스를 계획에 추가하는 동안 오류가 발생했습니다. "
+msgstr ""
 
-#: testmanager/api.py:575
-#, fuzzy, python-format
+#: testmanager/api.py:579
+#, python-format
 msgid "The Test Case was already contained in the '%s' Test Plan."
-msgstr "지정된 테스트 계획에 테스트 케이스가 이미 포함되어 있습니다. "
+msgstr ""
 
-#: testmanager/api.py:581
-#, fuzzy, python-format
+#: testmanager/api.py:585
+#, python-format
 msgid "An error occurred while adding the test case into the '%s' Test Plan."
-msgstr "테스트 케이스를 계획에 추가하는 동안 오류가 발생했습니다. "
+msgstr ""
 
-#: testmanager/api.py:583
-#, fuzzy, python-format
+#: testmanager/api.py:587
+#, python-format
 msgid ""
 "An error occurred while adding the test case into the Test Plan with id "
 "'%s'."
-msgstr "테스트 케이스를 계획에 추가하는 동안 오류가 발생했습니다. "
+msgstr ""
 
-#: testmanager/api.py:586
-#, fuzzy, python-format
+#: testmanager/api.py:590
+#, python-format
 msgid "The Test Case was successfully added to %s Test Plans."
-msgstr "테스트 케이스가 계획에 추가되었습니다. "
+msgstr ""
 
-#: testmanager/api.py:635
+#: testmanager/api.py:639
 msgid "The Test Case(s) were successfully pasted into the catalog."
-msgstr "테스트 케이스를 카탈로그에 붙여넣었습니다. "
+msgstr ""
 
-#: testmanager/api.py:640
+#: testmanager/api.py:644
 msgid "An error occurred while pasting the test case(s) into the catalog."
-msgstr "테스트 케이스를 카탈로그에 붙여넣는 동안 오류가 발생했습니다. "
+msgstr ""
 
-#: testmanager/api.py:666
+#: testmanager/api.py:670
 msgid "An error occurred while duplicating the test case."
-msgstr "테스트 케이스르 복제하는 동안 오류가 발생했습니다. "
+msgstr ""
 
-#: testmanager/api.py:686
+#: testmanager/api.py:690
 msgid "An error occurred while adding the test case."
-msgstr "테스트 케이스를 추가하는 동안 오류가 발생했습니다. "
+msgstr ""
 
-#: testmanager/api.py:712
+#: testmanager/api.py:716
 msgid "The Test Plan was deleted successfully."
-msgstr "테스트 계획 삭제가 완료되었습니다. "
+msgstr ""
 
-#: testmanager/api.py:718
+#: testmanager/api.py:722
 msgid "An error occurred while deleting the test plan."
-msgstr "테스트 계획을 삭제하는 중에 오류가 발생했습니다. "
+msgstr ""
 
-#: testmanager/api.py:743
+#: testmanager/api.py:747
 msgid "The Test Case was successfully removed from the plan."
-msgstr "테스트 케이스를 계획에서 제거하였습니다. "
+msgstr ""
 
-#: testmanager/api.py:749
+#: testmanager/api.py:753
 msgid "An error occurred while removing the test case from the plan."
-msgstr "테스트 케이스를 계획에서 제거하는 동안 오류가 발생했습니다. "
-
-#: testmanager/api.py:794
-msgid "An error occurred while cloning the test plan."
-msgstr "테스트 계획 복제 중에 오류가 발생했습니다. "
+msgstr ""
 
 #: testmanager/api.py:798
-msgid "The test plan was cloned successfully."
-msgstr "테스트 계획 복제가 완료되었습니다. "
+msgid "An error occurred while cloning the test plan."
+msgstr ""
 
-#: testmanager/api.py:936
+#: testmanager/api.py:802
+msgid "The test plan was cloned successfully."
+msgstr ""
+
+#: testmanager/api.py:942
 #, python-format
 msgid "Error moving the test case with id %s and title '%s'."
-msgstr "id가 %s(이)고 타이틀이 '%s'인 테스트 케이스를 이동 중에 오류가 발생했습니다. "
+msgstr ""
 
-#: testmanager/api.py:951
+#: testmanager/api.py:958
 #, python-format
 msgid "Error copying the test case with id %s and title '%s'."
-msgstr "id가 %s(이)고 타이틀이 '%s'인 테스트 케이스를 복사 중에 오류가 발생했습니다. "
+msgstr ""
 
-#: testmanager/api.py:1483
+#: testmanager/api.py:1481
 msgid "Type"
-msgstr "타입 "
+msgstr ""
 
-#: testmanager/api.py:1483
+#: testmanager/api.py:1481
 msgid "Parent ID"
-msgstr "부모 ID "
+msgstr ""
+
+#: testmanager/api.py:1484
+msgid "Test Plan Title"
+msgstr ""
 
 #: testmanager/api.py:1486
-msgid "Test Plan Title"
-msgstr "테스트 계획 타이틀 "
-
-#: testmanager/api.py:1488
 msgid "Title"
-msgstr "타이틀 "
+msgstr ""
 
-#: testmanager/api.py:1491 testmanager/model.py:929 testmanager/wiki.py:428
-#: testmanager/wiki.py:1298
+#: testmanager/api.py:1489 testmanager/model.py:939 testmanager/wiki.py:440
+#: testmanager/wiki.py:1325
 msgid "Contains all Test Cases"
-msgstr "모든 테스트 케이스 포함 "
+msgstr ""
 
-#: testmanager/api.py:1491
+#: testmanager/api.py:1489
 msgid "Snapshot"
-msgstr "스냅샷 "
+msgstr ""
 
-#: testmanager/api.py:1556 testmanager/api.py:1557
+#: testmanager/api.py:1554 testmanager/api.py:1555
 msgid "No"
-msgstr "아니오 "
+msgstr ""
 
-#: testmanager/api.py:1556 testmanager/api.py:1557
+#: testmanager/api.py:1554 testmanager/api.py:1555
 msgid "Yes"
-msgstr "예 "
+msgstr ""
 
-#: testmanager/model.py:908 testmanager/model.py:912 testmanager/model.py:918
-#: testmanager/model.py:925
+#: testmanager/beans.py:342 testmanager/wiki.py:1166
+msgid "All Catalogs"
+msgstr ""
+
+#: testmanager/model.py:916 testmanager/model.py:921 testmanager/model.py:928
+#: testmanager/model.py:935
 msgid "Wiki page name"
-msgstr "Wiki 페이지 이름 "
-
-#: testmanager/model.py:913
-msgid "Order"
-msgstr "순서 "
+msgstr ""
 
 #: testmanager/model.py:917
+msgid "Parent catalog ID"
+msgstr ""
+
+#: testmanager/model.py:922
+msgid "Order"
+msgstr ""
+
+#: testmanager/model.py:923
+msgid "Enclosing catalog ID"
+msgstr ""
+
+#: testmanager/model.py:927
 msgid "Plan ID"
-msgstr "계획 ID "
+msgstr ""
 
-#: testmanager/model.py:919
+#: testmanager/model.py:929
 msgid "Wiki page version"
-msgstr "Wiki 페이지 버전 "
+msgstr ""
 
-#: testmanager/model.py:924
+#: testmanager/model.py:934
 msgid "Catalog ID"
-msgstr "카탈로그 ID "
+msgstr ""
 
-#: testmanager/model.py:928 testmanager/wiki.py:427 testmanager/wiki.py:991
+#: testmanager/model.py:938 testmanager/wiki.py:439 testmanager/wiki.py:1020
 msgid "Created"
-msgstr "생성됨 "
+msgstr ""
 
-#: testmanager/model.py:930
+#: testmanager/model.py:940
 msgid "Freeze Test Case versions"
-msgstr "테스트 케이스 버전 동결 "
+msgstr ""
 
-#: testmanager/model.py:1057
+#: testmanager/model.py:1067
 msgid ""
 "\n"
 "    Test Manager templates with blank IDs have been fixed.\n"
@@ -316,595 +322,578 @@ msgid ""
 "    You will have to manually fix any misconfiguration you should find.\n"
 "                    "
 msgstr ""
-"\n"
-"    ID가 비어 있는 Test Manager 템플릿이 수정되었습니다.\n"
-"\n"
-"    테스트 관리자 템플릿 섹션의 Administration(관리) 패널로 \n"
-"    이동하여, 템플릿, 테스트 케이스, 테스트 카탈로그의 \n"
-"    연결을 확인하십시오.\n"
-"\n"
-"    잘못된 구성을 발견하면 수동으로 수정해야 합니다. "
 
-#: testmanager/model.py:1079 testmanager/wiki.py:480 testmanager/wiki.py:540
+#: testmanager/model.py:1089 testmanager/wiki.py:492 testmanager/wiki.py:552
 msgid "Test Case"
-msgstr "테스트 케이스 "
+msgstr ""
 
-#: testmanager/model.py:1083
+#: testmanager/model.py:1093
 msgid "Test Plan"
-msgstr "테스트 계획 "
+msgstr ""
 
-#: testmanager/model.py:1088 testmanager/stats.py:374
+#: testmanager/model.py:1098 testmanager/stats.py:371
 msgid "Successful"
-msgstr "성공 "
+msgstr ""
 
-#: testmanager/model.py:1089
+#: testmanager/model.py:1099
 msgid "Untested"
-msgstr "테스트 안됨"
+msgstr ""
 
-#: testmanager/model.py:1090 testmanager/stats.py:375
+#: testmanager/model.py:1100 testmanager/stats.py:372
 msgid "Failed"
-msgstr "실패 "
+msgstr ""
 
-#: testmanager/stats.py:376
+#: testmanager/stats.py:373
 msgid "To be tested"
-msgstr "테스트 대상"
+msgstr ""
+
+#: testmanager/stats.py:381
+msgid "New Test Cases (bar)"
+msgstr ""
+
+#: testmanager/stats.py:382
+msgid "New Successful (bar)"
+msgstr ""
+
+#: testmanager/stats.py:383
+msgid "New Failed (bar)"
+msgstr ""
 
 #: testmanager/stats.py:384
-msgid "New Test Cases (bar)"
-msgstr "새로운 테스트 케이스(bar)"
+msgid "All Test Cases"
+msgstr ""
 
 #: testmanager/stats.py:385
-msgid "New Successful (bar)"
-msgstr "새로운 성공(bar)"
+msgid "All Successful"
+msgstr ""
 
 #: testmanager/stats.py:386
-msgid "New Failed (bar)"
-msgstr "새로운 실패(bar)"
+msgid "All Untested"
+msgstr ""
 
 #: testmanager/stats.py:387
-msgid "All Test Cases"
-msgstr "모든 테스트 케이스"
-
-#: testmanager/stats.py:388
-msgid "All Successful"
-msgstr "모두 성공 "
-
-#: testmanager/stats.py:389
-msgid "All Untested"
-msgstr "모두 테스트 안됨 "
-
-#: testmanager/stats.py:390
 msgid "All Failed"
-msgstr "모두 실패 "
+msgstr ""
 
-#: testmanager/stats.py:398
+#: testmanager/stats.py:395
 msgid "Total Tickets"
-msgstr "총 티켓 "
+msgstr ""
 
-#: testmanager/stats.py:399
+#: testmanager/stats.py:396
 msgid "Active Tickets"
-msgstr "활성 티켓"
+msgstr ""
 
-#: testmanager/stats.py:400
+#: testmanager/stats.py:397
 msgid "Closed Tickets"
-msgstr "닫힌 티켓"
+msgstr ""
 
-#: testmanager/stats.py:424
+#: testmanager/stats.py:421
 msgid ""
 "Date from;Date to;New Test Cases;Successful;Failed;Total Test Cases;Total"
 " Successful;Total Untested;Total Failed\r\n"
 msgstr ""
 
-#: testmanager/web_ui.py:69
+#: testmanager/web_ui.py:77 testmanager/templates/test_catalog.html:13
 msgid "Test Manager"
-msgstr "테스트 관리자 "
+msgstr ""
 
-#: testmanager/wiki.py:138
+#: testmanager/wiki.py:137
 msgid ""
 "You cannot rename Test Catalog, Test Case or Test Plan wiki pages this "
 "way. If you wish to modify the TITLE of the object, just Edit the page "
 "and change the text between '==' and '=='. If you wish to move the object"
 " elsewhere, instead, use the 'move' Test Manager functions."
 msgstr ""
-"테스트 카탈로그, 테스트 케이스, 테스트 계획 wiki 페이지 등의 이름을 이런 방식으로 바꿀 수 없습니다. 개체의 타이틀을 "
-"수정하려면 페이지를 편집하고 '=='와 '==' 사이에 있는 텍스트를 변경하십시오. 개체를 다른 곳으로 이동하려면, 'move' "
-"테스트 관리자 함수를 사용하십시오. "
 
-#: testmanager/wiki.py:173
+#: testmanager/wiki.py:177
 msgid ""
 "You cannot delete a Test Plan this way. Expand the Test Plans list under "
 "the corrisponding Catalog and use the X buttons to delete the Test Plans."
 msgstr ""
-"테스트 계획을 이런 방식으로 삭제할 수 없습니다. 해당 카탈로그 아래로 테스트 계획 목록을 열고 X 단추를 눌러서 테스트 계획을 "
-"삭제하십시오. "
 
-#: testmanager/wiki.py:182
+#: testmanager/wiki.py:188
 msgid "You cannot delete the root catalogs list."
-msgstr "루트 카탈로그 목록을 삭제할 수 없습니다. "
+msgstr ""
 
-#: testmanager/wiki.py:187
+#: testmanager/wiki.py:193
 msgid ""
 "Deleting this Test Catalog will delete all the contained Test Catalogs, "
 "Test Cases, Test Plans and the status history of them."
 msgstr ""
-"현재 테스트 카탈로그를 삭제하면 포함되어 있는  테스트 카탈로그, 테스트 케이스, 테스트 계획과 그에 해당하는 상태 기록이 모두 "
-"삭제됩니다. "
 
-#: testmanager/wiki.py:217
+#: testmanager/wiki.py:227
 msgid ""
 "Select the catalog into which to paste the Test Cases and click on 'Paste"
 " the copied Test Cases here'. "
-msgstr "테스트 케이스를 붙여넣을 카탈로그를 선택한 후 '복사한 테스트 케이스를 여기로 붙여넣기'를 클릭합니다."
+msgstr ""
 
-#: testmanager/wiki.py:218 testmanager/wiki.py:221 testmanager/wiki.py:237
-#: testmanager/wiki.py:241 testmanager/wiki.py:470 testmanager/wiki.py:475
-#: testmanager/wiki.py:775 testmanager/wiki.py:816 testmanager/wiki.py:905
-#: testmanager/wiki.py:969 testmanager/wiki.py:1030 testmanager/wiki.py:1053
-#: testmanager/templates/admin_templates.html:173
+#: testmanager/wiki.py:228 testmanager/wiki.py:231 testmanager/wiki.py:247
+#: testmanager/wiki.py:251 testmanager/wiki.py:482 testmanager/wiki.py:487
+#: testmanager/wiki.py:804 testmanager/wiki.py:845 testmanager/wiki.py:934
+#: testmanager/wiki.py:998 testmanager/wiki.py:1059 testmanager/wiki.py:1082
+#: testmanager/templates/admin_templates.html:157
+#: testmanager/templates/edit_title_dialog.html:19
+#: testmanager/templates/error_no_dialog.html:13
+#: testmanager/templates/new_test_case_dialog.html:23
+#: testmanager/templates/new_test_catalog_dialog.html:24
 msgid "Cancel"
-msgstr "취소 "
+msgstr ""
 
-#: testmanager/wiki.py:220
+#: testmanager/wiki.py:230
 msgid ""
 "Select the catalog into which to paste the Test Case and click on 'Move "
 "the copied Test Case here'. "
-msgstr "테스트 케이스를 붙여넣을 카탈로그를 선택한 후 '복사한 테스트 케이스를 여기로 이동'을 클릭합니다. "
+msgstr ""
 
-#: testmanager/wiki.py:223
+#: testmanager/wiki.py:233
 msgid "Test Catalogs List"
-msgstr "테스트 카탈로그 목록 "
-
-#: testmanager/wiki.py:226
-msgid "New Catalog:"
-msgstr "새로운 카탈로그: "
-
-#: testmanager/wiki.py:227
-msgid "Add a Catalog"
-msgstr "카탈로그 추가 "
+msgstr ""
 
 #: testmanager/wiki.py:236
+msgid "New Catalog:"
+msgstr ""
+
+#: testmanager/wiki.py:237
+msgid "Add a Catalog"
+msgstr ""
+
+#: testmanager/wiki.py:246
 msgid ""
 "Select the catalog (even this one) into which to paste the Test Cases and"
 " click on 'Paste the copied Test Cases here'. "
-msgstr "테스트 케이스를 붙여넣을 카탈로그를 (현재 것 포함) 선택한 후 '복사한 테스트 케이스를 여기로 붙여넣기'를 클릭합니다. "
+msgstr ""
 
-#: testmanager/wiki.py:240
+#: testmanager/wiki.py:250
 msgid ""
 "Select the catalog (even this one) into which to paste the Test Case and "
 "click on 'Move the copied Test Case here'. "
-msgstr "테스트 케이스를 붙여넣을 카탈로그를 (현재 것 포함) 선택한 후 '복사한 테스트 케이스를 여기로 이동'을 클릭합니다. "
+msgstr ""
 
-#: testmanager/wiki.py:244 testmanager/templates/admin_templates.html:119
+#: testmanager/wiki.py:254 testmanager/templates/admin_templates.html:104
 msgid "Test Catalog"
-msgstr "테스트 카탈로그 "
+msgstr ""
 
-#: testmanager/wiki.py:246
+#: testmanager/wiki.py:256
 msgid "New Sub-Catalog:"
-msgstr "새로운 하위 카탈로그: "
+msgstr ""
 
-#: testmanager/wiki.py:247
+#: testmanager/wiki.py:257
 msgid "Add a Sub-Catalog"
-msgstr "하위 카탈로그 추가 "
+msgstr ""
 
-#: testmanager/wiki.py:282
+#: testmanager/wiki.py:293
 msgid "New Test Case:"
-msgstr "새로운 테스트 케이스: "
+msgstr ""
 
-#: testmanager/wiki.py:289
+#: testmanager/wiki.py:301
 msgid "Add a Test Case"
-msgstr "테스트 케이스 추가 "
+msgstr ""
 
-#: testmanager/wiki.py:294
+#: testmanager/wiki.py:306
 msgid "New Test Plan:"
-msgstr "새로운 테스트 계획: "
+msgstr ""
 
-#: testmanager/wiki.py:305
+#: testmanager/wiki.py:317
 msgid "Generate a new Test Plan"
-msgstr "새로운 테스트 계획 생성 "
+msgstr ""
 
-#: testmanager/wiki.py:316
+#: testmanager/wiki.py:328
 msgid "Select Multiple Test Cases"
-msgstr "테스트 케이스 여러개 선택 "
+msgstr ""
 
-#: testmanager/wiki.py:319
+#: testmanager/wiki.py:331
 msgid "Copy the Selected Test Cases"
-msgstr "선택한 테스트 케이스 복사 "
+msgstr ""
 
-#: testmanager/wiki.py:323
+#: testmanager/wiki.py:335
 msgid "Paste the copied Test Cases here"
-msgstr "복사한 테스트 케이스를 여기로 붙여넣기 "
+msgstr ""
 
-#: testmanager/wiki.py:326
+#: testmanager/wiki.py:338
 msgid "Move the copied Test Case here"
-msgstr "복사한 테스트를 여기로 이동"
+msgstr ""
 
-#: testmanager/wiki.py:330 testmanager/wiki.py:859
+#: testmanager/wiki.py:342 testmanager/wiki.py:888
 msgid "Import Test Cases"
-msgstr "테스트 케이스 가져오기 "
+msgstr ""
 
-#: testmanager/wiki.py:333
+#: testmanager/wiki.py:345
 msgid "Export Test Catalog"
-msgstr "테스트 카탈로그 내보내기 "
+msgstr ""
 
-#: testmanager/wiki.py:337 testmanager/wiki.py:1043
+#: testmanager/wiki.py:349 testmanager/wiki.py:1072
 msgid "Organize Test Catalogs"
-msgstr "테스트 카탈로그 구성 "
+msgstr ""
 
-#: testmanager/wiki.py:352
+#: testmanager/wiki.py:364
 msgid "Delete this version"
-msgstr "이 버전 삭제 "
+msgstr ""
 
-#: testmanager/wiki.py:353
+#: testmanager/wiki.py:365
 msgid "Delete Test Catalog"
-msgstr "테스트 카탈로그 삭제 "
+msgstr ""
 
-#: testmanager/wiki.py:384 testmanager/wiki.py:594
-msgid "Back to the Catalog"
-msgstr "카탈로그로 돌아가기 "
-
-#: testmanager/wiki.py:389
+#: testmanager/wiki.py:401
 msgid "Test Plan: "
-msgstr "테스트 계획: "
+msgstr ""
 
-#: testmanager/wiki.py:403
+#: testmanager/wiki.py:415
 msgid "Export Test Plan"
-msgstr "테스트 계획 내보내기 "
+msgstr ""
 
-#: testmanager/wiki.py:404 testmanager/wiki.py:791 testmanager/wiki.py:815
+#: testmanager/wiki.py:416 testmanager/wiki.py:820 testmanager/wiki.py:844
 msgid "Clone Test Plan"
-msgstr "테스트 계획 복제 "
+msgstr ""
 
-#: testmanager/wiki.py:428 testmanager/wiki.py:1289
+#: testmanager/wiki.py:440 testmanager/wiki.py:1316
 msgid "Contained Test Cases"
-msgstr "포함된 테스트 케이스 "
+msgstr ""
 
-#: testmanager/wiki.py:428 testmanager/wiki.py:1298
+#: testmanager/wiki.py:440 testmanager/wiki.py:1325
 msgid "Contains selected Test Cases"
-msgstr "선택한 테스트 케이스 포함 "
+msgstr ""
 
-#: testmanager/wiki.py:429 testmanager/wiki.py:1289
+#: testmanager/wiki.py:441 testmanager/wiki.py:1316
 msgid "Test Case Versions"
-msgstr "테스트 케이스 버전 "
+msgstr ""
 
-#: testmanager/wiki.py:429 testmanager/wiki.py:1299
+#: testmanager/wiki.py:441 testmanager/wiki.py:1326
 msgid "Points to latest Test Case versions"
-msgstr "최신 테스트 케이스 버전으로 포인트 "
+msgstr ""
 
-#: testmanager/wiki.py:429 testmanager/wiki.py:1299
+#: testmanager/wiki.py:441 testmanager/wiki.py:1326
 msgid "Contains a snapshot of Test Case versions"
-msgstr "테스트 케이스 버전의 스냅샷 포함 "
+msgstr ""
 
-#: testmanager/wiki.py:437
+#: testmanager/wiki.py:449
 msgid "Switch to Tabular View"
-msgstr "표 형식 뷰로 전환 "
+msgstr ""
 
-#: testmanager/wiki.py:442
+#: testmanager/wiki.py:454
 msgid "Switch to Tree View"
-msgstr "트리 뷰로 전환"
+msgstr ""
 
-#: testmanager/wiki.py:469
+#: testmanager/wiki.py:481
 msgid ""
 "The Test Cases have been copied. Now select the catalog into which to "
 "paste the Test Cases and click on 'Paste the copied Test Cases here'.  "
 msgstr ""
-"테스트 케이스가 복사되었습니다. 테스트 케이스를 붙여넣을 카탈로그를 선택한 후 '복사한 테스트 케이스를 여기로 붙여넣기'를 "
-"클릭하십시오."
 
-#: testmanager/wiki.py:474
+#: testmanager/wiki.py:486
 msgid ""
 "The Test Case has been cut. Now select the catalog into which to move the"
 " Test Case and click on 'Move the copied Test Case here'. "
-msgstr "테스트 케이스를 잘라 내었습니다. 테스트 케이스를 이동할 카탈로그를 선택하고 '복사한 테스트 케이스를 여기로 이동'을 클릭하십시오. "
+msgstr ""
 
-#: testmanager/wiki.py:489 testmanager/wiki.py:552
+#: testmanager/wiki.py:501 testmanager/wiki.py:564
 msgid "Open a Ticket on this Test Case"
-msgstr "현재 테스트 케이스에 대해 티켓 열기 "
+msgstr ""
 
-#: testmanager/wiki.py:491 testmanager/wiki.py:554
+#: testmanager/wiki.py:503 testmanager/wiki.py:566
 msgid "Show Related Tickets"
-msgstr "관련된 티켓 표시 "
+msgstr ""
 
-#: testmanager/wiki.py:493
+#: testmanager/wiki.py:505
 msgid "Move the Test Case into another catalog"
-msgstr "테스트 케이스를 다른 카탈로그로 이동 "
+msgstr ""
 
-#: testmanager/wiki.py:495
+#: testmanager/wiki.py:507
 msgid "Duplicate the Test Case"
-msgstr "테스트 케이스 복제 "
+msgstr ""
 
-#: testmanager/wiki.py:497
+#: testmanager/wiki.py:509
 msgid "Add to a Test Plan"
-msgstr "테스트 계획에 추가 "
+msgstr ""
 
-#: testmanager/wiki.py:569
+#: testmanager/wiki.py:581
 msgid "Update to latest version of Test Case"
-msgstr "최신 버전 테스트 케이스로 업데이트 "
-
-#: testmanager/wiki.py:575
-msgid "Remove from the Test Plan"
-msgstr "테스트 계획에서 제거 "
+msgstr ""
 
 #: testmanager/wiki.py:587
+msgid "Remove from the Test Plan"
+msgstr ""
+
+#: testmanager/wiki.py:601
 msgid "Back to the Test Plan"
-msgstr "테스트 계획으로 돌아가기 "
+msgstr ""
 
-#: testmanager/wiki.py:715
+#: testmanager/wiki.py:610
+msgid "Back to the Catalog"
+msgstr ""
+
+#: testmanager/wiki.py:744
 msgid "Edit"
-msgstr "편집 "
+msgstr ""
 
-#: testmanager/wiki.py:716 testmanager/wiki.py:1052
+#: testmanager/wiki.py:745 testmanager/wiki.py:1081
 msgid "Save"
-msgstr "저장 "
+msgstr ""
 
-#: testmanager/wiki.py:727
+#: testmanager/wiki.py:756
 msgid "New Test Plan"
-msgstr "새로운 테스트 계획 "
-
-#: testmanager/wiki.py:729
-msgid "Specify the new Test Plan properties."
-msgstr "새로운 테스트 계획 속성을 지정하십시오. "
-
-#: testmanager/wiki.py:732
-msgid "Test Plan properties"
-msgstr "테스트 계획 속성 "
-
-#: testmanager/wiki.py:738
-msgid "The new Test Plan will contain:"
-msgstr "새로운 테스트 계획에 포함할 항목: "
-
-#: testmanager/wiki.py:745
-msgid "All the Test Cases in the Catalog"
-msgstr "카탈로그의 모든 테스트 케이스"
-
-#: testmanager/wiki.py:746
-msgid "Only the Test Cases selected before"
 msgstr ""
 
 #: testmanager/wiki.py:758
+msgid "Specify the new Test Plan properties."
+msgstr ""
+
+#: testmanager/wiki.py:761
+msgid "Test Plan properties"
+msgstr ""
+
+#: testmanager/wiki.py:767
+msgid "The new Test Plan will contain:"
+msgstr ""
+
+#: testmanager/wiki.py:774
+msgid "All the Test Cases in the Catalog"
+msgstr ""
+
+#: testmanager/wiki.py:775
+msgid "Only the Test Cases selected before"
+msgstr ""
+
+#: testmanager/wiki.py:787
 msgid "The new Test Plan will:"
 msgstr ""
 
-#: testmanager/wiki.py:765
+#: testmanager/wiki.py:794
 msgid "Refer to a current snapshot of the versions of the test cases"
-msgstr "테스트 케이스 버전의 현재 스냅샷을 참조 "
+msgstr ""
 
-#: testmanager/wiki.py:766
+#: testmanager/wiki.py:795
 msgid "Always point to the latest version of the Test Cases"
-msgstr "항상 최신 버전의 테스트 케이스를 포인트"
+msgstr ""
 
-#: testmanager/wiki.py:774
+#: testmanager/wiki.py:803
 msgid "Create Test Plan"
-msgstr "테스트 계획 만들기 "
+msgstr ""
 
-#: testmanager/wiki.py:788
+#: testmanager/wiki.py:817
 #, python-format
 msgid "Copy of %s"
-msgstr "%s의 사본 "
+msgstr ""
 
-#: testmanager/wiki.py:793
+#: testmanager/wiki.py:822
 msgid "Specify the name of the new Test Plan."
-msgstr "새로운 테스트 계획의 이름을 지정하십시오. "
+msgstr ""
 
-#: testmanager/wiki.py:801
+#: testmanager/wiki.py:830
 msgid "New Test Plan name:"
-msgstr "새로운 테스트 계획 이름: "
+msgstr ""
 
-#: testmanager/wiki.py:828
+#: testmanager/wiki.py:857
 msgid "Object change history"
-msgstr "개체 변경 기록 "
+msgstr ""
 
-#: testmanager/wiki.py:831
+#: testmanager/wiki.py:860
 msgid "Property"
-msgstr "속성 "
+msgstr ""
 
-#: testmanager/wiki.py:831
+#: testmanager/wiki.py:860
 msgid "Previous Value"
-msgstr "이전 값 "
+msgstr ""
 
-#: testmanager/wiki.py:831
+#: testmanager/wiki.py:860
 msgid "New Value"
-msgstr "새 값 "
+msgstr ""
 
-#: testmanager/wiki.py:861
+#: testmanager/wiki.py:890
 msgid "Select a file in CSV format to import the test cases from."
-msgstr "테스트 케이스를 가져올 CSV 형식의 파일을 선택합니다. "
+msgstr ""
 
-#: testmanager/wiki.py:863
+#: testmanager/wiki.py:892
 msgid ""
 "The first row will have column names. The data must start from the second"
 " row."
-msgstr "첫째 행은 열 이름에 사용됩니다. 데이터는 둘째 행부터 시작되어야 합니다. "
+msgstr ""
 
-#: testmanager/wiki.py:864
+#: testmanager/wiki.py:893
 msgid "The file should have the following required columns:"
-msgstr "파일에 다음과 같은 필수 열이 있어야 합니다. "
+msgstr ""
 
-#: testmanager/wiki.py:869
+#: testmanager/wiki.py:898
 msgid ""
 "Any subsequent columns are optional, and will generate <a href='http"
 "://trac-hacks.org/wiki/TestManagerForTracPlugin#Customfields' "
 "target='_blank'>custom test case fields</a>."
 msgstr ""
-"다음 열은 옵션이며, <a href='http://trac-"
-"hacks.org/wiki/TestManagerForTracPlugin#Customfields' "
-"target='_blank'>custom test case fields</a>를 생성합니다."
 
-#: testmanager/wiki.py:870
+#: testmanager/wiki.py:899
 msgid "Use lowercase identifiers, with no blanks, for the column names."
-msgstr "열 이름으로는 빈칸이 포함되지 않은 소문자 id를 사용하십시오."
+msgstr ""
 
-#: testmanager/wiki.py:873
+#: testmanager/wiki.py:902
 msgid "Upload file"
-msgstr "파일 업로드 "
+msgstr ""
 
-#: testmanager/wiki.py:879
+#: testmanager/wiki.py:908
 msgid "File name:"
-msgstr "파일 이름: "
+msgstr ""
 
-#: testmanager/wiki.py:891 testmanager/wiki.py:953
+#: testmanager/wiki.py:920 testmanager/wiki.py:982
 msgid "Column separator:"
-msgstr "열 구분자: "
+msgstr ""
 
-#: testmanager/wiki.py:904
+#: testmanager/wiki.py:933
 msgid "Import"
-msgstr "가져오기 "
+msgstr ""
 
-#: testmanager/wiki.py:918
+#: testmanager/wiki.py:947
 msgid "Export Test Cases"
-msgstr "테스트 케이스 내보내기 "
+msgstr ""
 
-#: testmanager/wiki.py:920
+#: testmanager/wiki.py:949
 msgid ""
 "Select a name and a location on your machine for the CSV file to export "
 "the test cases to."
-msgstr "테스트 케이스를 내보낼 CSV 파일의 이름과 경로를 사용자 컴퓨터에서 선택하십시오."
+msgstr ""
 
-#: testmanager/wiki.py:923
+#: testmanager/wiki.py:952
 msgid "Export options"
-msgstr "내보내기 옵션 "
+msgstr ""
 
-#: testmanager/wiki.py:929
+#: testmanager/wiki.py:958
 msgid "Include full description:"
-msgstr "전체 설명 포함: "
+msgstr ""
 
-#: testmanager/wiki.py:941
+#: testmanager/wiki.py:970
 msgid "Raw wiki syntax:"
-msgstr "원시 wiki 구문:"
+msgstr ""
 
-#: testmanager/wiki.py:968
+#: testmanager/wiki.py:997
 msgid "Export"
-msgstr "내보내기 "
+msgstr ""
 
-#: testmanager/wiki.py:982
+#: testmanager/wiki.py:1011
 msgid "Add Test Case to a Test Plan"
-msgstr "테스트 계획에 테스트 케이스 추가 "
+msgstr ""
 
-#: testmanager/wiki.py:984
+#: testmanager/wiki.py:1013
 msgid "Select the Test Plan to add the Test Case to."
-msgstr "테스트 케이스를 추가할 테스트 계획을 선택하십시오. "
+msgstr ""
 
-#: testmanager/wiki.py:987
+#: testmanager/wiki.py:1016
 msgid "Test Plans"
-msgstr "테스트 계획 "
+msgstr ""
 
-#: testmanager/wiki.py:1020
+#: testmanager/wiki.py:1049
 msgid "No suitable Test Plans (i.e. with only selected Test Cases) found."
-msgstr "적절한 테스트 계획이(예를들어, 선택한 테스트 케이스만으로는) 없습니다."
+msgstr ""
 
-#: testmanager/wiki.py:1029
+#: testmanager/wiki.py:1058
 msgid "Add to Test Plan"
-msgstr "테스트 계획에 추가 "
+msgstr ""
 
-#: testmanager/wiki.py:1045
+#: testmanager/wiki.py:1074
 msgid ""
 "Drag and drop the test cases to reorder them, or to move them to "
 "different catalogs."
-msgstr "테스트 케이스를 재구성하거나 다른 카탈로그로 이동하려면 끌어서 놓으십시오. "
+msgstr ""
 
-#: testmanager/wiki.py:1064 testmanager/templates/testimportresults.html:29
+#: testmanager/wiki.py:1093 testmanager/templates/testimportresults.html:29
 msgid "Error"
-msgstr "오류 "
+msgstr ""
 
-#: testmanager/wiki.py:1067
+#: testmanager/wiki.py:1096
 msgid "An error occurred performing the operation.<br /><br />Please try again."
-msgstr "작업 수행 중에 오류가 발생했습니다.<br /><br />다시 시도하십시오. "
+msgstr ""
 
-#: testmanager/wiki.py:1135
-msgid "All Catalogs"
-msgstr "모든 카탈로그 "
-
-#: testmanager/wiki.py:1176 testmanager/wiki.py:1185 testmanager/wiki.py:1229
-#: testmanager/wiki.py:1236 testmanager/wiki.py:1277
+#: testmanager/wiki.py:1210 testmanager/wiki.py:1219 testmanager/wiki.py:1261
+#: testmanager/wiki.py:1268 testmanager/wiki.py:1304
+#: testmanager/templates/testmanager.html:89
 msgid "Filter:"
-msgstr "필터: "
+msgstr ""
 
-#: testmanager/wiki.py:1176 testmanager/wiki.py:1185 testmanager/wiki.py:1229
-#: testmanager/wiki.py:1236
+#: testmanager/wiki.py:1210 testmanager/wiki.py:1219 testmanager/wiki.py:1261
+#: testmanager/wiki.py:1268 testmanager/templates/testmanager.html:90
 msgid ""
 "Type the test to search for, even more than one word. You can also filter"
 " on the test case status (untested, successful, failed)."
-msgstr "검색할 테스트를 입력하십시오. 한글자 이상도 가능합니다. 테스트 케이스로 상태(테스트 안됨, 성공, 실패)로도 필터할 수 있습니다. "
+msgstr ""
 
-#: testmanager/wiki.py:1177 testmanager/wiki.py:1230
+#: testmanager/wiki.py:1211 testmanager/wiki.py:1262
+#: testmanager/templates/testmanager.html:98
 msgid "Expand all"
-msgstr "모두 펴기 "
+msgstr ""
 
-#: testmanager/wiki.py:1177 testmanager/wiki.py:1230
+#: testmanager/wiki.py:1211 testmanager/wiki.py:1262
+#: testmanager/templates/testmanager.html:99
 msgid "Collapse all"
-msgstr "모두 접기 "
+msgstr ""
 
-#: testmanager/wiki.py:1276
+#: testmanager/wiki.py:1303
 msgid "Available Test Plans"
-msgstr "사용할 수 있는 테스트 계획 "
+msgstr ""
 
-#: testmanager/wiki.py:1277
+#: testmanager/wiki.py:1304
 msgid "Type the test to search for, even more than one word."
-msgstr "검색할 테스트를 입력하십시오. 한글자 이상도 가능합니다. "
+msgstr ""
 
-#: testmanager/wiki.py:1289
+#: testmanager/wiki.py:1316
 msgid "Plan Name"
-msgstr "계획 이름 "
+msgstr ""
 
-#: testmanager/wiki.py:1295
+#: testmanager/wiki.py:1322
 msgid "Open Test Plan"
-msgstr "테스트 계획 열기"
+msgstr ""
 
-#: testmanager/wiki.py:1302
+#: testmanager/wiki.py:1329
 msgid "Delete"
-msgstr "삭제 "
+msgstr ""
 
-#: testmanager/wiki.py:1387 testmanager/wiki.py:1518
+#: testmanager/wiki.py:1406 testmanager/wiki.py:1541
 msgid "Open"
-msgstr "열기 "
+msgstr ""
 
-#: testmanager/wiki.py:1438 testmanager/wiki.py:1471 testmanager/wiki.py:1588
-#: testmanager/wiki.py:1896
+#: testmanager/wiki.py:1461 testmanager/wiki.py:1494 testmanager/wiki.py:1611
+#: testmanager/wiki.py:1919
 msgid "Unknown"
-msgstr "알수없음 "
+msgstr ""
 
-#: testmanager/wiki.py:1443 testmanager/wiki.py:1447
+#: testmanager/wiki.py:1466 testmanager/wiki.py:1470
 msgid "Edit the Test Case"
-msgstr "테스트 계획 편집 "
+msgstr ""
 
-#: testmanager/wiki.py:1656
+#: testmanager/wiki.py:1679
 msgid "(Sum)"
-msgstr "(합계) "
+msgstr ""
 
-#: testmanager/wiki.py:1658
+#: testmanager/wiki.py:1681
 msgid "(Average)"
-msgstr "(평균) "
+msgstr ""
 
-#: testmanager/wiki.py:1660
+#: testmanager/wiki.py:1683
 msgid "(Count)"
-msgstr "(갯수) "
+msgstr ""
 
-#: testmanager/wiki.py:1782 testmanager/wiki.py:1792 testmanager/wiki.py:1864
+#: testmanager/wiki.py:1805 testmanager/wiki.py:1815 testmanager/wiki.py:1887
 msgid "Set to: "
 msgstr ""
 
-#: testmanager/wiki.py:1787
+#: testmanager/wiki.py:1810
 msgid "Status color: "
 msgstr ""
 
-#: testmanager/wiki.py:1831
+#: testmanager/wiki.py:1854
 msgid "Change the Status:"
-msgstr "상태 변경: "
+msgstr ""
 
-#: testmanager/wiki.py:1886
+#: testmanager/wiki.py:1909
 msgid "Status change history"
-msgstr "상태 변경 기록 "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:14
 msgid "Test Manager Settings"
-msgstr "테스트 관리자 설정 "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:17
 msgid "Settings for Test Manager"
-msgstr "테스트 관리자에 대한 설정 "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:20
 msgid "Test Statistics default settings"
-msgstr "테스트 통계 기본 설정 "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:23
 msgid "Number of days shown by default:"
@@ -916,86 +905,86 @@ msgstr ""
 
 #: testmanager/templates/admin_settings.html:34
 msgid "Test Manager visualization settings"
-msgstr "테스트 관리자 시각화 설정 "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:37
 msgid "Sort a test plan's test cases by:"
-msgstr "테스트 계획의 테스트 케이스 정렬 기준: "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:40
 msgid "User-specified (use \"Organize Test Catalogs\" to set)"
-msgstr "사용자 지정됨(설정하려면 \"테스트 카탈로그 구성\"을 사용)"
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:42
 msgid "Modification time"
-msgstr "수정 시간: "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:47
 msgid "Open Test Cases in a new window:"
-msgstr "테스트 케이스를 새 창에서 열기: "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:51
 msgid "Default Test Catalog view type:"
-msgstr "기본 테스트 카탈로그 뷰 타입: "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:54
 #: testmanager/templates/admin_settings.html:63
 msgid "Tree"
-msgstr "트리 "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:55
 #: testmanager/templates/admin_settings.html:64
 msgid "Table"
-msgstr "표 "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:60
 msgid "Default Test Plan view type:"
-msgstr "기본 테스트 계획 뷰 타입: "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:72
 msgid "Visible Test Catalog columns in table view"
-msgstr "표 보기에 표시할 테스트 카탈로그 열"
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:74
 #: testmanager/templates/admin_settings.html:95
 msgid "Totals Row"
-msgstr "요약 행 "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:82
 #: testmanager/templates/admin_settings.html:103
 msgid "Sum"
-msgstr "합계 "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:83
 #: testmanager/templates/admin_settings.html:104
 msgid "Average"
-msgstr "평균 "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:84
 #: testmanager/templates/admin_settings.html:105
 msgid "Count"
-msgstr "갯수 "
+msgstr ""
 
 #: testmanager/templates/admin_settings.html:93
 msgid "Visible Test Plan columns in table view"
-msgstr "표 보기에 표시할 테스트 계획 열 "
+msgstr ""
 
 #: testmanager/templates/admin_templates.html:14
 msgid "Test Manager Templates"
-msgstr "테스트 관리자 템플릿 "
+msgstr ""
 
 #: testmanager/templates/admin_templates.html:21
 msgid "Test Manager Templates Configuration"
-msgstr "테스트 관리자 템플릿 구성 "
+msgstr ""
 
 #: testmanager/templates/admin_templates.html:24
 msgid "Test Catalog Templates"
-msgstr "테스트 카탈로그 템플릿 "
+msgstr ""
 
 #: testmanager/templates/admin_templates.html:25
 #: testmanager/templates/admin_templates.html:54
 msgid "No Templates created yet."
-msgstr "생성된 템플릿이 없습니다. "
+msgstr ""
 
 #: testmanager/templates/admin_templates.html:42
 #: testmanager/templates/admin_templates.html:73
@@ -1004,82 +993,103 @@ msgstr ""
 
 #: testmanager/templates/admin_templates.html:48
 msgid "Add Test Catalog Template"
-msgstr "테스트 카탈로그 템플릿 추가 "
+msgstr ""
 
 #: testmanager/templates/admin_templates.html:53
 msgid "Test Case Templates"
-msgstr "테스트 케이스 템플릿 "
+msgstr ""
 
 #: testmanager/templates/admin_templates.html:79
 msgid "Add Test Case Template"
-msgstr "테스트 케이스 템플릿 추가 "
+msgstr ""
 
 #: testmanager/templates/admin_templates.html:84
 msgid "Default template for Test Catalog"
-msgstr "테스트 카탈로그에 대한 기본 템플릿 "
+msgstr ""
 
 #: testmanager/templates/admin_templates.html:88
-#: testmanager/templates/admin_templates.html:103
+#: testmanager/templates/admin_templates.html:113
 msgid "None"
-msgstr "없음 "
+msgstr ""
 
 #: testmanager/templates/admin_templates.html:93
 msgid "Save Default Test Catalog Template"
-msgstr "기본 테스트 카탈로그 템플릿 저장 "
-
-#: testmanager/templates/admin_templates.html:99
-#, fuzzy
-msgid "Default template for Test Case"
-msgstr "테스트 카탈로그에 대한 기본 템플릿 "
-
-#: testmanager/templates/admin_templates.html:108
-#, fuzzy
-msgid "Save Default Test Case Template"
-msgstr "기본 테스트 카탈로그 템플릿 저장 "
-
-#: testmanager/templates/admin_templates.html:114
-#, fuzzy
-msgid ""
-"Default Test Case template for specific Test Catalogs (overrides default "
-"above)"
-msgstr "각 테스트 카탈로그에 대한 기본 테스트 케이스 템플릿 "
-
-#: testmanager/templates/admin_templates.html:119
-#, fuzzy
-msgid "Test Catalog ID"
-msgstr "테스트 카탈로그 "
-
-#: testmanager/templates/admin_templates.html:119
-msgid "Test Case Template"
-msgstr "테스트 케이스 템플릿 "
-
-#: testmanager/templates/admin_templates.html:129
-msgid "Default"
 msgstr ""
 
-#: testmanager/templates/admin_templates.html:138
-msgid "Save Template Configuration"
-msgstr "템플릿 구성 저장 "
+#: testmanager/templates/admin_templates.html:99
+msgid "Default Test Case template for each Test Catalog"
+msgstr ""
 
-#: testmanager/templates/admin_templates.html:148
+#: testmanager/templates/admin_templates.html:104
+msgid "Test Case Template"
+msgstr ""
+
+#: testmanager/templates/admin_templates.html:122
+msgid "Save Template Configuration"
+msgstr ""
+
+#: testmanager/templates/admin_templates.html:132
 msgid "Edit Template"
-msgstr "템플릿 편집 "
+msgstr ""
+
+#: testmanager/templates/admin_templates.html:146
+msgid "Content"
+msgstr ""
+
+#: testmanager/templates/admin_templates.html:156
+msgid "Submit Changes"
+msgstr ""
 
 #: testmanager/templates/admin_templates.html:162
-msgid "Content"
-msgstr "콘텐츠"
-
-#: testmanager/templates/admin_templates.html:172
-msgid "Submit Changes"
-msgstr "변경 전송 "
-
-#: testmanager/templates/admin_templates.html:178
 msgid "Preview"
-msgstr "미리보기 "
+msgstr ""
+
+#: testmanager/templates/edit_title_dialog.html:13
+msgid "New title"
+msgstr ""
+
+#: testmanager/templates/edit_title_dialog.html:18
+#: testmanager/templates/error_no_dialog.html:12
+#: testmanager/templates/new_test_case_dialog.html:22
+#: testmanager/templates/new_test_catalog_dialog.html:23
+msgid "OK"
+msgstr ""
+
+#: testmanager/templates/error_no_dialog.html:8
+msgid "Error: No dialog name was specified."
+msgstr ""
+
+#: testmanager/templates/new_test_case_dialog.html:11
+msgid "Add a new test case to the catalog \""
+msgstr ""
+
+#: testmanager/templates/new_test_case_dialog.html:17
+msgid "New test case name"
+msgstr ""
+
+#: testmanager/templates/new_test_catalog_dialog.html:11
+msgid "Add a new catalog as a sub-catalog of \""
+msgstr ""
+
+#: testmanager/templates/new_test_catalog_dialog.html:12
+msgid "Add a new root test catalog"
+msgstr ""
+
+#: testmanager/templates/new_test_catalog_dialog.html:18
+msgid "New test catalog name"
+msgstr ""
+
+#: testmanager/templates/test_catalog.html:11
+msgid "Add test case"
+msgstr ""
+
+#: testmanager/templates/test_catalog.html:12
+msgid "Edit title"
+msgstr ""
 
 #: testmanager/templates/testimportresults.html:19
 msgid "Test Case import results"
-msgstr "테스트 케이스 가져오기 결과 "
+msgstr ""
 
 #: testmanager/templates/testimportresults.html:20
 msgid "Got to the"
@@ -1091,40 +1101,48 @@ msgstr ""
 
 #: testmanager/templates/testimportresults.html:23
 msgid "Errors"
-msgstr "오류 "
+msgstr ""
 
 #: testmanager/templates/testimportresults.html:27
 msgid "Row number"
-msgstr "행 번호 "
+msgstr ""
 
 #: testmanager/templates/testimportresults.html:28
 #: testmanager/templates/testimportresults.html:49
 msgid "Test Title"
-msgstr "테스트 타이틀 "
+msgstr ""
 
 #: testmanager/templates/testimportresults.html:45
 msgid "Test Cases imported successfully"
-msgstr "테스트 케이스 가져오기 완료 "
+msgstr ""
+
+#: testmanager/templates/testmanager.html:75
+msgid "New root catalog"
+msgstr ""
+
+#: testmanager/templates/testmanager.html:102
+msgid "Loading..."
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:58
 #: testmanager/templates/testmanagerstats_compatible.html:45
 msgid "Test Management Statistics"
-msgstr "테스트 관리 통계 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:65
 #: testmanager/templates/testmanagerstats_compatible.html:52
 msgid "Test activity trend"
-msgstr "테스트 활동 추세 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:66
 #: testmanager/templates/testmanagerstats_compatible.html:53
 msgid "Current test status"
-msgstr "현재 테스트 상태 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:67
 #: testmanager/templates/testmanagerstats_compatible.html:54
 msgid "Tickets trend"
-msgstr "티켓 추세 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:76
 #: testmanager/templates/testmanagerstats_compatible.html:63
@@ -1144,87 +1162,882 @@ msgstr ""
 #: testmanager/templates/testmanagerstats.html:90
 #: testmanager/templates/testmanagerstats_compatible.html:77
 msgid "Start Date:"
-msgstr "시작 날짜: "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:91
 #: testmanager/templates/testmanagerstats.html:96
 #: testmanager/templates/testmanagerstats.html:113
 #, python-format
 msgid "Format: %(datehint)s"
-msgstr "형식: %(datehint)s "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:95
 #: testmanager/templates/testmanagerstats_compatible.html:79
 msgid "End Date:"
-msgstr "끝 날짜: "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:100
 #: testmanager/templates/testmanagerstats_compatible.html:81
 msgid "Resolution:"
-msgstr "해결 (방법): "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:102
 #: testmanager/templates/testmanagerstats_compatible.html:83
 msgid "1 Day"
-msgstr "1일 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:103
 #: testmanager/templates/testmanagerstats_compatible.html:84
 msgid "1 Week"
-msgstr "1주 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:104
 #: testmanager/templates/testmanagerstats_compatible.html:85
 msgid "2 Weeks"
-msgstr "2주 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:105
 #: testmanager/templates/testmanagerstats_compatible.html:86
 msgid "1 Month"
-msgstr "1달 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:106
 #: testmanager/templates/testmanagerstats_compatible.html:87
 msgid "2 Months"
-msgstr "2달 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:107
 #: testmanager/templates/testmanagerstats_compatible.html:88
 msgid "3 Months"
-msgstr "3달 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:108
 #: testmanager/templates/testmanagerstats_compatible.html:89
 msgid "6 Months"
-msgstr "6달 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:109
 #: testmanager/templates/testmanagerstats_compatible.html:90
 msgid "1 Year"
-msgstr "1년 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:115
 #: testmanager/templates/testmanagerstats_compatible.html:93
 msgid "Test Plan:"
-msgstr "테스트 계획: "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:117
 #: testmanager/templates/testmanagerstats_compatible.html:95
 msgid "All Test Plans"
-msgstr "모든 테스트 계획 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:125
 #: testmanager/templates/testmanagerstats_compatible.html:103
 msgid "URL to bookmark:"
-msgstr "책갈피할 URL: "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:139
 #: testmanager/templates/testmanagerstats_compatible.html:117
 msgid "Export this data to Excel"
-msgstr "현재 데이터를 Excel로 내보내기 "
+msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:139
 #: testmanager/templates/testmanagerstats_compatible.html:117
 msgid "(CSV format)"
-msgstr "(CSV 형식) "
+msgstr ""
+
+#: testmanager/templates/toolbar.html:22
+msgid "New root test catalog"
+msgstr ""
+
+#: testmanager/templates/toolbar.html:29
+msgid "Tree view"
+msgstr ""
+
+#: testmanager/templates/toolbar.html:30
+msgid "Table view"
+msgstr ""
+
+#~ msgid "Wiki"
+#~ msgstr ""
+
+#~ msgid "Timeline"
+#~ msgstr ""
+
+#~ msgid "Roadmap"
+#~ msgstr ""
+
+#~ msgid "View Tickets"
+#~ msgstr "닫힌 티켓"
+
+#~ msgid "Settings"
+#~ msgstr "설정 "
+
+#~ msgid "Templates"
+#~ msgstr "템플릿 "
+
+#~ msgid "Settings saved"
+#~ msgstr "설정 저장됨 "
+
+#~ msgid "Error saving the settings"
+#~ msgstr "설정 저장 오류 "
+
+#~ msgid "A Test Case template with that name already exists"
+#~ msgstr "이름이 같은 테스트 케이스 템플릿이 있습니다. "
+
+#~ msgid "Please enter a Template name first"
+#~ msgstr "먼저 템플릿 이름을 입력하십시오. "
+
+#~ msgid "A Test Catalog template with that name already exists"
+#~ msgstr "이름이 같은 테스트 카탈로그 템플릿이 있습니다. "
+
+#~ msgid "Template '%s' not removed as it is in use for a Test Catalog"
+#~ msgstr "'%s' 템플릿을 테스트 카탈로그로 사용중이라서 제거할 수 없습니다. "
+
+#~ msgid "Error deleting Test Case template '%s'"
+#~ msgstr "'%s' 테스트 케이스 템플릿 삭제 오류 "
+
+#~ msgid "Test Case template '%s' deleted"
+#~ msgstr "'%s' 테스트 케이스 템플릿이 삭제되었습니다. "
+
+#~ msgid "Template '%s' not removed as it is currently the default template"
+#~ msgstr "'%s' 템플릿이 현재 기본 템플릿이어서 제거할 수 없습니다. "
+
+#~ msgid "Error deleting Test Catalog template '%s'"
+#~ msgstr "테스트 카탈로그 템플릿 '%s' 삭제 오류 "
+
+#~ msgid "Test Catalog template '%s' deleted"
+#~ msgstr "'%s' 테스트 카탈로그 템플릿이 삭제되었습니다."
+
+#~ msgid "Default Test Catalog template updated"
+#~ msgstr "기본 테스트 카탈로그 템플릿이 업데이트되었습니다. "
+
+#~ msgid "Failed to update default Test Catalog template"
+#~ msgstr "기본 테스트 카탈로그 템플릿 업데이트 실패 "
+
+#~ msgid "Failed to update Test Case templates"
+#~ msgstr "테스트 케이스 템플릿 업데이트 실패 "
+
+#~ msgid "Default Test Case templates updated"
+#~ msgstr "기본 테스트 케이스 템플릿이 업데이트되었습니다. "
+
+#~ msgid "Template saved"
+#~ msgstr "템플릿이 저장되었습니다. "
+
+#~ msgid "Name"
+#~ msgstr "이름 "
+
+#~ msgid "ID"
+#~ msgstr "ID "
+
+#~ msgid "Status"
+#~ msgstr "상태 "
+
+#~ msgid "Author"
+#~ msgstr "저자 "
+
+#~ msgid "Last Change"
+#~ msgstr "마지막 변경 "
+
+#~ msgid "Description"
+#~ msgstr "설명 "
+
+#~ msgid "Timestamp"
+#~ msgstr "타임스탬프 "
+
+#~ msgid "The operation was successful."
+#~ msgstr "작업이 완료되었습니다. "
+
+#~ msgid "An error occurred while adding the test catalog."
+#~ msgstr "테스트 카탈로그를 추가하는 중에 오류가 발생했습니다. "
+
+#~ msgid "The test case version was updated successfully."
+#~ msgstr "테스트 케이스 버전 업데이트가 완료되었습니다. "
+
+#~ msgid "An error occurred while updating the test case version."
+#~ msgstr "테스트 케이스 버전을 업데이트하는 중에 오류가 발생했습니다. "
+
+#~ msgid "An error occurred while generating the test plan."
+#~ msgstr "테스트 계획을 생성하는 중에 오류가 발생했습니다. "
+
+#~ msgid ""
+#~ msgstr ""
+
+#~ msgid "The Test Case was already contained in the '%s' Test Plan."
+#~ msgstr "지정된 테스트 계획에 테스트 케이스가 이미 포함되어 있습니다. "
+
+#~ msgid "An error occurred while adding the test case into the '%s' Test Plan."
+#~ msgstr "테스트 케이스를 계획에 추가하는 동안 오류가 발생했습니다. "
+
+#~ msgid "The Test Case was successfully added to %s Test Plans."
+#~ msgstr "테스트 케이스가 계획에 추가되었습니다. "
+
+#~ msgid "The Test Case(s) were successfully pasted into the catalog."
+#~ msgstr "테스트 케이스를 카탈로그에 붙여넣었습니다. "
+
+#~ msgid "An error occurred while pasting the test case(s) into the catalog."
+#~ msgstr "테스트 케이스를 카탈로그에 붙여넣는 동안 오류가 발생했습니다. "
+
+#~ msgid "An error occurred while duplicating the test case."
+#~ msgstr "테스트 케이스르 복제하는 동안 오류가 발생했습니다. "
+
+#~ msgid "An error occurred while adding the test case."
+#~ msgstr "테스트 케이스를 추가하는 동안 오류가 발생했습니다. "
+
+#~ msgid "The Test Plan was deleted successfully."
+#~ msgstr "테스트 계획 삭제가 완료되었습니다. "
+
+#~ msgid "An error occurred while deleting the test plan."
+#~ msgstr "테스트 계획을 삭제하는 중에 오류가 발생했습니다. "
+
+#~ msgid "The Test Case was successfully removed from the plan."
+#~ msgstr "테스트 케이스를 계획에서 제거하였습니다. "
+
+#~ msgid "An error occurred while removing the test case from the plan."
+#~ msgstr "테스트 케이스를 계획에서 제거하는 동안 오류가 발생했습니다. "
+
+#~ msgid "An error occurred while cloning the test plan."
+#~ msgstr "테스트 계획 복제 중에 오류가 발생했습니다. "
+
+#~ msgid "The test plan was cloned successfully."
+#~ msgstr "테스트 계획 복제가 완료되었습니다. "
+
+#~ msgid "Error moving the test case with id %s and title '%s'."
+#~ msgstr "id가 %s(이)고 타이틀이 '%s'인 테스트 케이스를 이동 중에 오류가 발생했습니다. "
+
+#~ msgid "Error copying the test case with id %s and title '%s'."
+#~ msgstr "id가 %s(이)고 타이틀이 '%s'인 테스트 케이스를 복사 중에 오류가 발생했습니다. "
+
+#~ msgid "Type"
+#~ msgstr "타입 "
+
+#~ msgid "Parent ID"
+#~ msgstr "부모 ID "
+
+#~ msgid "Test Plan Title"
+#~ msgstr "테스트 계획 타이틀 "
+
+#~ msgid "Title"
+#~ msgstr "타이틀 "
+
+#~ msgid "Contains all Test Cases"
+#~ msgstr "모든 테스트 케이스 포함 "
+
+#~ msgid "Snapshot"
+#~ msgstr "스냅샷 "
+
+#~ msgid "No"
+#~ msgstr "아니오 "
+
+#~ msgid "Yes"
+#~ msgstr "예 "
+
+#~ msgid "All Catalogs"
+#~ msgstr "모든 카탈로그 "
+
+#~ msgid "Wiki page name"
+#~ msgstr "Wiki 페이지 이름 "
+
+#~ msgid "Parent catalog ID"
+#~ msgstr "테스트 카탈로그 목록 "
+
+#~ msgid "Order"
+#~ msgstr "순서 "
+
+#~ msgid "Enclosing catalog ID"
+#~ msgstr ""
+
+#~ msgid "Plan ID"
+#~ msgstr "계획 ID "
+
+#~ msgid "Wiki page version"
+#~ msgstr "Wiki 페이지 버전 "
+
+#~ msgid "Catalog ID"
+#~ msgstr "카탈로그 ID "
+
+#~ msgid "Created"
+#~ msgstr "생성됨 "
+
+#~ msgid "Freeze Test Case versions"
+#~ msgstr "테스트 케이스 버전 동결 "
+
+#~ msgid "Test Case"
+#~ msgstr "테스트 케이스 "
+
+#~ msgid "Test Plan"
+#~ msgstr "테스트 계획 "
+
+#~ msgid "Successful"
+#~ msgstr "성공 "
+
+#~ msgid "Untested"
+#~ msgstr "테스트 안됨"
+
+#~ msgid "Failed"
+#~ msgstr "실패 "
+
+#~ msgid "To be tested"
+#~ msgstr "테스트 대상"
+
+#~ msgid "New Test Cases (bar)"
+#~ msgstr "새로운 테스트 케이스(bar)"
+
+#~ msgid "New Successful (bar)"
+#~ msgstr "새로운 성공(bar)"
+
+#~ msgid "New Failed (bar)"
+#~ msgstr "새로운 실패(bar)"
+
+#~ msgid "All Test Cases"
+#~ msgstr "모든 테스트 케이스"
+
+#~ msgid "All Successful"
+#~ msgstr "모두 성공 "
+
+#~ msgid "All Untested"
+#~ msgstr "모두 테스트 안됨 "
+
+#~ msgid "All Failed"
+#~ msgstr "모두 실패 "
+
+#~ msgid "Total Tickets"
+#~ msgstr "총 티켓 "
+
+#~ msgid "Active Tickets"
+#~ msgstr "활성 티켓"
+
+#~ msgid "Closed Tickets"
+#~ msgstr "닫힌 티켓"
+
+#~ msgid "Test Manager"
+#~ msgstr "테스트 관리자 "
+
+#~ msgid "You cannot delete the root catalogs list."
+#~ msgstr "루트 카탈로그 목록을 삭제할 수 없습니다. "
+
+#~ msgid "Cancel"
+#~ msgstr "취소 "
+
+#~ msgid "Test Catalogs List"
+#~ msgstr "테스트 카탈로그 목록 "
+
+#~ msgid "New Catalog:"
+#~ msgstr "새로운 카탈로그: "
+
+#~ msgid "Add a Catalog"
+#~ msgstr "카탈로그 추가 "
+
+#~ msgid "Test Catalog"
+#~ msgstr "테스트 카탈로그 "
+
+#~ msgid "New Sub-Catalog:"
+#~ msgstr "새로운 하위 카탈로그: "
+
+#~ msgid "Add a Sub-Catalog"
+#~ msgstr "하위 카탈로그 추가 "
+
+#~ msgid "New Test Case:"
+#~ msgstr "새로운 테스트 케이스: "
+
+#~ msgid "Add a Test Case"
+#~ msgstr "테스트 케이스 추가 "
+
+#~ msgid "New Test Plan:"
+#~ msgstr "새로운 테스트 계획: "
+
+#~ msgid "Generate a new Test Plan"
+#~ msgstr "새로운 테스트 계획 생성 "
+
+#~ msgid "Select Multiple Test Cases"
+#~ msgstr "테스트 케이스 여러개 선택 "
+
+#~ msgid "Copy the Selected Test Cases"
+#~ msgstr "선택한 테스트 케이스 복사 "
+
+#~ msgid "Paste the copied Test Cases here"
+#~ msgstr "복사한 테스트 케이스를 여기로 붙여넣기 "
+
+#~ msgid "Move the copied Test Case here"
+#~ msgstr "복사한 테스트를 여기로 이동"
+
+#~ msgid "Import Test Cases"
+#~ msgstr "테스트 케이스 가져오기 "
+
+#~ msgid "Export Test Catalog"
+#~ msgstr "테스트 카탈로그 내보내기 "
+
+#~ msgid "Organize Test Catalogs"
+#~ msgstr "테스트 카탈로그 구성 "
+
+#~ msgid "Delete this version"
+#~ msgstr "이 버전 삭제 "
+
+#~ msgid "Delete Test Catalog"
+#~ msgstr "테스트 카탈로그 삭제 "
+
+#~ msgid "Test Plan: "
+#~ msgstr "테스트 계획: "
+
+#~ msgid "Export Test Plan"
+#~ msgstr "테스트 계획 내보내기 "
+
+#~ msgid "Clone Test Plan"
+#~ msgstr "테스트 계획 복제 "
+
+#~ msgid "Contained Test Cases"
+#~ msgstr "포함된 테스트 케이스 "
+
+#~ msgid "Contains selected Test Cases"
+#~ msgstr "선택한 테스트 케이스 포함 "
+
+#~ msgid "Test Case Versions"
+#~ msgstr "테스트 케이스 버전 "
+
+#~ msgid "Points to latest Test Case versions"
+#~ msgstr "최신 테스트 케이스 버전으로 포인트 "
+
+#~ msgid "Contains a snapshot of Test Case versions"
+#~ msgstr "테스트 케이스 버전의 스냅샷 포함 "
+
+#~ msgid "Switch to Tabular View"
+#~ msgstr "표 형식 뷰로 전환 "
+
+#~ msgid "Switch to Tree View"
+#~ msgstr "트리 뷰로 전환"
+
+#~ msgid "Open a Ticket on this Test Case"
+#~ msgstr "현재 테스트 케이스에 대해 티켓 열기 "
+
+#~ msgid "Show Related Tickets"
+#~ msgstr "관련된 티켓 표시 "
+
+#~ msgid "Move the Test Case into another catalog"
+#~ msgstr "테스트 케이스를 다른 카탈로그로 이동 "
+
+#~ msgid "Duplicate the Test Case"
+#~ msgstr "테스트 케이스 복제 "
+
+#~ msgid "Add to a Test Plan"
+#~ msgstr "테스트 계획에 추가 "
+
+#~ msgid "Update to latest version of Test Case"
+#~ msgstr "최신 버전 테스트 케이스로 업데이트 "
+
+#~ msgid "Remove from the Test Plan"
+#~ msgstr "테스트 계획에서 제거 "
+
+#~ msgid "Back to the Test Plan"
+#~ msgstr "테스트 계획으로 돌아가기 "
+
+#~ msgid "Back to the Catalog"
+#~ msgstr "카탈로그로 돌아가기 "
+
+#~ msgid "Edit"
+#~ msgstr "편집 "
+
+#~ msgid "Save"
+#~ msgstr "저장 "
+
+#~ msgid "New Test Plan"
+#~ msgstr "새로운 테스트 계획 "
+
+#~ msgid "Specify the new Test Plan properties."
+#~ msgstr "새로운 테스트 계획 속성을 지정하십시오. "
+
+#~ msgid "Test Plan properties"
+#~ msgstr "테스트 계획 속성 "
+
+#~ msgid "The new Test Plan will contain:"
+#~ msgstr "새로운 테스트 계획에 포함할 항목: "
+
+#~ msgid "All the Test Cases in the Catalog"
+#~ msgstr "카탈로그의 모든 테스트 케이스"
+
+#~ msgid "Only the Test Cases selected before"
+#~ msgstr ""
+
+#~ msgid "The new Test Plan will:"
+#~ msgstr ""
+
+#~ msgid "Refer to a current snapshot of the versions of the test cases"
+#~ msgstr "테스트 케이스 버전의 현재 스냅샷을 참조 "
+
+#~ msgid "Always point to the latest version of the Test Cases"
+#~ msgstr "항상 최신 버전의 테스트 케이스를 포인트"
+
+#~ msgid "Create Test Plan"
+#~ msgstr "테스트 계획 만들기 "
+
+#~ msgid "Copy of %s"
+#~ msgstr "%s의 사본 "
+
+#~ msgid "Specify the name of the new Test Plan."
+#~ msgstr "새로운 테스트 계획의 이름을 지정하십시오. "
+
+#~ msgid "New Test Plan name:"
+#~ msgstr "새로운 테스트 계획 이름: "
+
+#~ msgid "Object change history"
+#~ msgstr "개체 변경 기록 "
+
+#~ msgid "Property"
+#~ msgstr "속성 "
+
+#~ msgid "Previous Value"
+#~ msgstr "이전 값 "
+
+#~ msgid "New Value"
+#~ msgstr "새 값 "
+
+#~ msgid "Select a file in CSV format to import the test cases from."
+#~ msgstr "테스트 케이스를 가져올 CSV 형식의 파일을 선택합니다. "
+
+#~ msgid "The file should have the following required columns:"
+#~ msgstr "파일에 다음과 같은 필수 열이 있어야 합니다. "
+
+#~ msgid "Use lowercase identifiers, with no blanks, for the column names."
+#~ msgstr "열 이름으로는 빈칸이 포함되지 않은 소문자 id를 사용하십시오."
+
+#~ msgid "Upload file"
+#~ msgstr "파일 업로드 "
+
+#~ msgid "File name:"
+#~ msgstr "파일 이름: "
+
+#~ msgid "Column separator:"
+#~ msgstr "열 구분자: "
+
+#~ msgid "Import"
+#~ msgstr "가져오기 "
+
+#~ msgid "Export Test Cases"
+#~ msgstr "테스트 케이스 내보내기 "
+
+#~ msgid "Export options"
+#~ msgstr "내보내기 옵션 "
+
+#~ msgid "Include full description:"
+#~ msgstr "전체 설명 포함: "
+
+#~ msgid "Raw wiki syntax:"
+#~ msgstr "원시 wiki 구문:"
+
+#~ msgid "Export"
+#~ msgstr "내보내기 "
+
+#~ msgid "Add Test Case to a Test Plan"
+#~ msgstr "테스트 계획에 테스트 케이스 추가 "
+
+#~ msgid "Select the Test Plan to add the Test Case to."
+#~ msgstr "테스트 케이스를 추가할 테스트 계획을 선택하십시오. "
+
+#~ msgid "Test Plans"
+#~ msgstr "테스트 계획 "
+
+#~ msgid "No suitable Test Plans (i.e. with only selected Test Cases) found."
+#~ msgstr "적절한 테스트 계획이(예를들어, 선택한 테스트 케이스만으로는) 없습니다."
+
+#~ msgid "Add to Test Plan"
+#~ msgstr "테스트 계획에 추가 "
+
+#~ msgid "Error"
+#~ msgstr "오류 "
+
+#~ msgid "Filter:"
+#~ msgstr "필터: "
+
+#~ msgid "Expand all"
+#~ msgstr "모두 펴기 "
+
+#~ msgid "Collapse all"
+#~ msgstr "모두 접기 "
+
+#~ msgid "Available Test Plans"
+#~ msgstr "사용할 수 있는 테스트 계획 "
+
+#~ msgid "Type the test to search for, even more than one word."
+#~ msgstr "검색할 테스트를 입력하십시오. 한글자 이상도 가능합니다. "
+
+#~ msgid "Plan Name"
+#~ msgstr "계획 이름 "
+
+#~ msgid "Open Test Plan"
+#~ msgstr "테스트 계획 열기"
+
+#~ msgid "Delete"
+#~ msgstr "삭제 "
+
+#~ msgid "Open"
+#~ msgstr "열기 "
+
+#~ msgid "Unknown"
+#~ msgstr "알수없음 "
+
+#~ msgid "Edit the Test Case"
+#~ msgstr "테스트 계획 편집 "
+
+#~ msgid "(Sum)"
+#~ msgstr "(합계) "
+
+#~ msgid "(Average)"
+#~ msgstr "(평균) "
+
+#~ msgid "(Count)"
+#~ msgstr "(갯수) "
+
+#~ msgid "Set to: "
+#~ msgstr ""
+
+#~ msgid "Status color: "
+#~ msgstr ""
+
+#~ msgid "Change the Status:"
+#~ msgstr "상태 변경: "
+
+#~ msgid "Status change history"
+#~ msgstr "상태 변경 기록 "
+
+#~ msgid "Test Manager Settings"
+#~ msgstr "테스트 관리자 설정 "
+
+#~ msgid "Settings for Test Manager"
+#~ msgstr "테스트 관리자에 대한 설정 "
+
+#~ msgid "Test Statistics default settings"
+#~ msgstr "테스트 통계 기본 설정 "
+
+#~ msgid "Number of days shown by default:"
+#~ msgstr ""
+
+#~ msgid "Number of days between each data point:"
+#~ msgstr ""
+
+#~ msgid "Test Manager visualization settings"
+#~ msgstr "테스트 관리자 시각화 설정 "
+
+#~ msgid "Sort a test plan's test cases by:"
+#~ msgstr "테스트 계획의 테스트 케이스 정렬 기준: "
+
+#~ msgid "User-specified (use \"Organize Test Catalogs\" to set)"
+#~ msgstr "사용자 지정됨(설정하려면 \"테스트 카탈로그 구성\"을 사용)"
+
+#~ msgid "Modification time"
+#~ msgstr "수정 시간: "
+
+#~ msgid "Open Test Cases in a new window:"
+#~ msgstr "테스트 케이스를 새 창에서 열기: "
+
+#~ msgid "Default Test Catalog view type:"
+#~ msgstr "기본 테스트 카탈로그 뷰 타입: "
+
+#~ msgid "Tree"
+#~ msgstr "트리 "
+
+#~ msgid "Table"
+#~ msgstr "표 "
+
+#~ msgid "Default Test Plan view type:"
+#~ msgstr "기본 테스트 계획 뷰 타입: "
+
+#~ msgid "Visible Test Catalog columns in table view"
+#~ msgstr "표 보기에 표시할 테스트 카탈로그 열"
+
+#~ msgid "Totals Row"
+#~ msgstr "요약 행 "
+
+#~ msgid "Sum"
+#~ msgstr "합계 "
+
+#~ msgid "Average"
+#~ msgstr "평균 "
+
+#~ msgid "Count"
+#~ msgstr "갯수 "
+
+#~ msgid "Visible Test Plan columns in table view"
+#~ msgstr "표 보기에 표시할 테스트 계획 열 "
+
+#~ msgid "Test Manager Templates"
+#~ msgstr "테스트 관리자 템플릿 "
+
+#~ msgid "Test Manager Templates Configuration"
+#~ msgstr "테스트 관리자 템플릿 구성 "
+
+#~ msgid "Test Catalog Templates"
+#~ msgstr "테스트 카탈로그 템플릿 "
+
+#~ msgid "No Templates created yet."
+#~ msgstr "생성된 템플릿이 없습니다. "
+
+#~ msgid "Delete Selected"
+#~ msgstr ""
+
+#~ msgid "Add Test Catalog Template"
+#~ msgstr "테스트 카탈로그 템플릿 추가 "
+
+#~ msgid "Test Case Templates"
+#~ msgstr "테스트 케이스 템플릿 "
+
+#~ msgid "Add Test Case Template"
+#~ msgstr "테스트 케이스 템플릿 추가 "
+
+#~ msgid "Default template for Test Catalog"
+#~ msgstr "테스트 카탈로그에 대한 기본 템플릿 "
+
+#~ msgid "None"
+#~ msgstr "없음 "
+
+#~ msgid "Save Default Test Catalog Template"
+#~ msgstr "기본 테스트 카탈로그 템플릿 저장 "
+
+#~ msgid "Default Test Case template for each Test Catalog"
+#~ msgstr "각 테스트 카탈로그에 대한 기본 테스트 케이스 템플릿 "
+
+#~ msgid "Test Case Template"
+#~ msgstr "테스트 케이스 템플릿 "
+
+#~ msgid "Save Template Configuration"
+#~ msgstr "템플릿 구성 저장 "
+
+#~ msgid "Edit Template"
+#~ msgstr "템플릿 편집 "
+
+#~ msgid "Content"
+#~ msgstr "콘텐츠"
+
+#~ msgid "Submit Changes"
+#~ msgstr "변경 전송 "
+
+#~ msgid "Preview"
+#~ msgstr "미리보기 "
+
+#~ msgid "New title"
+#~ msgstr "테스트 타이틀 "
+
+#~ msgid "OK"
+#~ msgstr ""
+
+#~ msgid "Error: No dialog name was specified."
+#~ msgstr ""
+
+#~ msgid "New test case name"
+#~ msgstr "새로운 테스트 계획 이름: "
+
+#~ msgid "New test catalog name"
+#~ msgstr "새로운 테스트 계획 이름: "
+
+#~ msgid "Add test case"
+#~ msgstr "테스트 케이스 추가 "
+
+#~ msgid "Edit title"
+#~ msgstr "테스트 타이틀 "
+
+#~ msgid "Test Case import results"
+#~ msgstr "테스트 케이스 가져오기 결과 "
+
+#~ msgid "Got to the"
+#~ msgstr ""
+
+#~ msgid "enclosing Test Catalog"
+#~ msgstr ""
+
+#~ msgid "Errors"
+#~ msgstr "오류 "
+
+#~ msgid "Row number"
+#~ msgstr "행 번호 "
+
+#~ msgid "Test Title"
+#~ msgstr "테스트 타이틀 "
+
+#~ msgid "Test Cases imported successfully"
+#~ msgstr "테스트 케이스 가져오기 완료 "
+
+#~ msgid "New root catalog"
+#~ msgstr "테스트 카탈로그 내보내기 "
+
+#~ msgid "Loading..."
+#~ msgstr ""
+
+#~ msgid "Test Management Statistics"
+#~ msgstr "테스트 관리 통계 "
+
+#~ msgid "Test activity trend"
+#~ msgstr "테스트 활동 추세 "
+
+#~ msgid "Current test status"
+#~ msgstr "현재 테스트 상태 "
+
+#~ msgid "Tickets trend"
+#~ msgstr "티켓 추세 "
+
+#~ msgid "No data available"
+#~ msgstr ""
+
+#~ msgid "Not applicable to \"All Test Plans\"."
+#~ msgstr ""
+
+#~ msgid "Select a Test Plan to see this chart."
+#~ msgstr ""
+
+#~ msgid "Start Date:"
+#~ msgstr "시작 날짜: "
+
+#~ msgid "Format: %(datehint)s"
+#~ msgstr "형식: %(datehint)s "
+
+#~ msgid "End Date:"
+#~ msgstr "끝 날짜: "
+
+#~ msgid "Resolution:"
+#~ msgstr "해결 (방법): "
+
+#~ msgid "1 Day"
+#~ msgstr "1일 "
+
+#~ msgid "1 Week"
+#~ msgstr "1주 "
+
+#~ msgid "2 Weeks"
+#~ msgstr "2주 "
+
+#~ msgid "1 Month"
+#~ msgstr "1달 "
+
+#~ msgid "2 Months"
+#~ msgstr "2달 "
+
+#~ msgid "3 Months"
+#~ msgstr "3달 "
+
+#~ msgid "6 Months"
+#~ msgstr "6달 "
+
+#~ msgid "1 Year"
+#~ msgstr "1년 "
+
+#~ msgid "Test Plan:"
+#~ msgstr "테스트 계획: "
+
+#~ msgid "All Test Plans"
+#~ msgstr "모든 테스트 계획 "
+
+#~ msgid "URL to bookmark:"
+#~ msgstr "책갈피할 URL: "
+
+#~ msgid "Export this data to Excel"
+#~ msgstr "현재 데이터를 Excel로 내보내기 "
+
+#~ msgid "(CSV format)"
+#~ msgstr "(CSV 형식) "
+
+#~ msgid "New root test catalog"
+#~ msgstr "테스트 카탈로그 내보내기 "
+
+#~ msgid "Tree view"
+#~ msgstr "미리보기 "
+
+#~ msgid "Table view"
+#~ msgstr ""
 

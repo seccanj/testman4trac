@@ -1,0 +1,35 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
+    <xi:include href="layout.html" />
+  <head>
+    <title>$title</title>
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+  </head>
+
+  <body>
+    <div xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:i18n="http://genshi.edgewall.org/i18n"
+          xmlns:py="http://genshi.edgewall.org/"
+          i18n:domain="testmanager">
+
+        <form id="tm_my_action_method_input_form" name="tm_my_action_method_input_form" 
+              action="${base_url}/action/testmanager.actions!tm_actions_method" method="post">
+              
+            <input type="text" name="a1" value="A1" />
+            <input type="text" name="a2" value="A2" />
+            <input type="text" name="a3" value="A3" />
+            <input type="text" name="a5" value="A5" />
+            <input type="text" name="a6" value="A6" />
+            <input type="text" name="a7" value="A7" />
+
+            <input type="submit" value="Submit" />
+        </form>
+    </div>
+  </body>
+</html>

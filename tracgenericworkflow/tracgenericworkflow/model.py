@@ -4,28 +4,27 @@
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
-# The Test Manager plugin for Trac is free software: you can 
-# redistribute it and/or modify it under the terms of the GNU 
-# General Public License as published by the Free Software Foundation, 
-# either version 3 of the License, or (at your option) any later 
-# version.
-# 
-# The Test Manager plugin for Trac is distributed in the hope that it 
-# will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with the Test Manager plugin for Trac. See the file LICENSE.txt. 
-# If not, see <http://www.gnu.org/licenses/>.
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at: 
+#   https://trac-hacks.org/wiki/TestManagerForTracPluginLicense
 #
+# Author: Roberto Longobardi <otrebor.dev@gmail.com>
+# 
 
-from trac.core import Component, implements
-from trac.db import Table, Column
+import re
+import time
+
+from datetime import date, datetime
+
+from trac.core import *
+from trac.db import Table, Column, Index
 from trac.env import IEnvironmentSetupParticipant
-from trac.util.translation import N_
+from trac.resource import Resource, ResourceNotFound
+from trac.util.translation import _, N_, gettext
 
 from tracgenericclass.model import IConcreteClassProvider, AbstractVariableFieldsObject, need_db_create_for_realm, create_db_for_realm, need_db_upgrade_for_realm, upgrade_db_for_realm
+from tracgenericclass.util import *
 
 
 class ResourceWorkflowState(AbstractVariableFieldsObject):
@@ -37,15 +36,27 @@ class ResourceWorkflowState(AbstractVariableFieldsObject):
     # Fields that must not be modified directly by the user
     protected_fields = ('id', 'res_realm', 'state')
 
-    def __init__(self, env, id_=None, res_realm=None, state='new', db=None):
+    def __new__(cls, env, id=None, res_realm=None, state='new', db=None):
+        key = None
+        if id is not None and res_realm is not None:
+            key = {'id': id, 'res_realm': res_realm}
+        
+        result = AbstractVariableFieldsObject.__new__(cls, env, 'resourceworkflowstate', key, db)
+            
+        return result
+
+    def __init__(self, env, id=None, res_realm=None, state='new', db=None):
         """
         The resource workflow state is related to a resource, the 'id' 
         and 'res_realm' arguments.
         The state can be any string.
         """
+        if self.is_initialized:
+            return
+
         self.values = {}
 
-        self.values['id'] = id_
+        self.values['id'] = id
         self.values['res_realm'] = res_realm
         self.values['state'] = state
 
@@ -53,7 +64,8 @@ class ResourceWorkflowState(AbstractVariableFieldsObject):
     
         AbstractVariableFieldsObject.__init__(self, env, 'resourceworkflowstate', key, db)
 
-    def get_key_prop_names(self):
+    @classmethod
+    def get_key_prop_names(cls):
         return ['id', 'res_realm']
         
     def create_instance(self, key):

@@ -1,0 +1,68 @@
+<?python from genshi import HTML ?>
+<html>
+<div xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      xmlns:py="http://genshi.edgewall.org/"
+      i18n:domain="testmanager">
+
+  <div id="tm_test_catalog_toolbar" class="tm-toolbar">
+    <ul>
+      <li class="first"><a href="#" class="tm-action-add_test_case">Add test case</a></li>
+      <li><a href="#" class="tm-action-edit_title">Edit title</a></li>
+      <li class="last"><a href="?action=history">Test Manager</a></li>
+    </ul>
+  </div>
+  
+    <h1>${test_catalog_bean.title}</h1>
+
+<!--
+    <p>
+        ${test_catalog_bean.description}
+    </p>
+-->
+    <p>
+		${HTML(wiki_contents)}
+    </p>
+    
+    <form id="tm_wiki_markup_editor">
+        <textarea name="wiki_markup"></textarea>
+    </form>
+    
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+(function($) {
+    $(function() {
+		$('.tm-action-add_test_case').on('click', function(e) {
+			/* Load test catalog description */
+			e.preventDefault();
+			e.stopPropagation();
+			
+			var node = $(this);
+			var params = {};
+			params.parent_id = "${test_catalog_id}";
+			
+			tm_loadDialog("${base_url}", "new_test_case_dialog.html", params);
+		});
+
+		$('.tm-action-edit_title').on('click', function(e) {
+			/* Load test catalog description */
+			e.preventDefault();
+			e.stopPropagation();
+			
+			var node = $(this);
+			var params = {};
+			params.artifact = "catalog";
+			params.parent_id = "${test_catalog_id}";
+			params.id = "${test_catalog_id}";
+			
+			tm_loadDialog("${base_url}", "edit_title_dialog.html", params);
+		});
+    });        
+})(jQuery_testmanager);
+
+//]]>
+</script>
+</html>

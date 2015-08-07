@@ -4,31 +4,32 @@
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
-# The Test Manager plugin for Trac is free software: you can 
-# redistribute it and/or modify it under the terms of the GNU 
-# General Public License as published by the Free Software Foundation, 
-# either version 3 of the License, or (at your option) any later 
-# version.
-# 
-# The Test Manager plugin for Trac is distributed in the hope that it 
-# will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with the Test Manager plugin for Trac. See the file LICENSE.txt. 
-# If not, see <http://www.gnu.org/licenses/>.
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at: 
+#   https://trac-hacks.org/wiki/TestManagerForTracPluginLicense
 #
+# Author: Roberto Longobardi <otrebor.dev@gmail.com>
+# 
 
+import re
+import sys
+import time
+import traceback
+
+from datetime import datetime
+from trac.core import *
+from trac.perm import IPermissionRequestor, PermissionError
+from trac.resource import IResourceManager
 from trac.search import ISearchSource
 from trac.util import get_reporter_id
+from trac.util.datefmt import utc
+from trac.util.translation import _, N_, gettext
 from trac.web.api import IRequestHandler
 from trac.web.chrome import ITemplateProvider
 
-from tracgenericclass.model import GenericClassModelProvider
-from trac.core import Interface, Component, ExtensionPoint, implements
-from tracgenericclass.util import get_dictionary_from_string,\
-    formatExceptionInfo
+from tracgenericclass.model import AbstractVariableFieldsObject, GenericClassModelProvider
+from tracgenericclass.util import *
 
 
 class IGenericObjectChangeListener(Interface):
@@ -37,17 +38,17 @@ class IGenericObjectChangeListener(Interface):
     when objects are created, modified, or deleted.
     """
 
-    def object_created(self, g_object):
+    def object_created(g_object):
         """Called when an object is created."""
 
-    def object_changed(self, g_object, comment, author, old_values):
+    def object_changed(g_object, comment, author, old_values):
         """Called when an object is modified.
         
         `old_values` is a dictionary containing the previous values of the
         fields that have changed.
         """
 
-    def object_deleted(self, g_object):
+    def object_deleted(g_object):
         """Called when an object is deleted."""
 
 
@@ -59,8 +60,7 @@ class GenericClassSystem(Component):
     implements(IRequestHandler, ITemplateProvider, ISearchSource)
 
     change_listeners = ExtensionPoint(IGenericObjectChangeListener)
-
-        
+    
     # Change listeners management
 
     def object_created(self, testobject):

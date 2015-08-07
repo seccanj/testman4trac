@@ -1,0 +1,324 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      xmlns:py="http://genshi.edgewall.org/"
+      i18n:domain="testmanager"
+	  >
+  <xi:include href="layout.html" />
+  <xi:include href="macros.html" />
+  <head>
+
+    <script type="text/javascript">
+        var jQuery_trac_old = $.noConflict(true);
+    </script>
+	
+    <link rel="stylesheet" type="text/css" href="${base_url}/chrome/testmanager/js/jquery-ui-1.11.0/jquery-ui.css" />
+    <script src="${base_url}/chrome/testmanager/js/jquery-1.11.1/jquery-1.11.1.js"></script>
+    <script src="${base_url}/chrome/testmanager/js/jquery-ui-1.11.0/jquery-ui.js"></script>
+
+	<script language="javascript" type="text/javascript" src="${base_url}/chrome/testmanager/js/jquery-plugins/jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="${base_url}/chrome/testmanager/js/jquery-plugins/jquery.flot.pie.js"></script>
+
+    <script src="${base_url}/chrome/testmanager/js/igniteui/infragistics.js"></script>
+    <link href="${base_url}/chrome/testmanager/js/igniteui/css/themes/infragistics/infragistics.theme.css" rel="stylesheet"></link>
+    <link href="${base_url}/chrome/testmanager/js/igniteui/css/structure/infragistics.css" rel="stylesheet"></link>
+	
+    <script type="text/javascript">
+        var jQuery_testmanager = $.noConflict(true);
+		$ = jQuery_trac_old;
+		
+		var baseurl = "${base_url}";
+
+        var buildStatusChangeMenu = false;
+
+	</script>
+
+	<link rel="stylesheet" type="text/css" href="${base_url}/chrome/testmanager/css/testmanager.css" />
+
+	<script language="javascript" type="text/javascript" src="${base_url}/chrome/testmanager/js/cookies.js"></script>
+	<script language="javascript" type="text/javascript" src="${base_url}/chrome/testmanager/js/testmanager.js"></script>
+	<script language="javascript" type="text/javascript" src="${base_url}/chrome/testmanager/js/testman4trac.js"></script>
+
+    <style type="text/css">
+        .tm_node {
+            cursor: pointer;
+        }
+        
+        .tm_testcatalog_node:before {
+            content: "+";
+        }
+
+        .tm_testcatalog_node {
+            
+        }
+
+        .tm_testcase_node {
+        }
+
+        #tm_main_toolbar_new_root_catalog {
+            padding: 4px;
+            display: inline-block;
+        }
+    </style>
+
+  </head>
+
+
+  <body>
+      <div id="splitter">
+          <div id="tm_navigator" style="overflow: auto">
+              <div id="tm_navigator_toolbar" class="tm-toolbar">
+                <ul>
+                  <li class="first"><a href="#" class="tm-action-new_root_catalog">New root catalog</a></li>
+                </ul>
+              </div>
+
+            <!--
+            <div id="tm_navigator_toolbar">
+                <span id="tm_main_toolbar_viewtype">
+                    <input type="radio" id="tm_main_toolbar_viewtype_tree" name="viewtype" value="tree" checked="checked" /><label for="tm_main_toolbar_viewtype_tree">Tree view</label>
+                    <input type="radio" id="tm_main_toolbar_viewtype_table" name="viewtype" value="tree_table" /><label for="tm_main_toolbar_viewtype_table">Table view</label>
+                </span>
+            </div>
+            -->
+
+            <div id="tm_filter" class="tm_filter">
+                <label for="tm_filter_input">Filter:</label>
+                <input id="tm_filter_input" name="tm_filter_input" 
+                    title="Type the test to search for, even more than one word. You can also filter on the test case status (untested, successful, failed)." 
+                    type="text" 
+                    size="40" />
+                <span id="ticketContainer_searchResultsNumberId" style="font-weight: bold;"></span>
+            </div>
+
+            <div class="tm_expandcollapseall">
+                <a style="margin-right: 10px" onclick="toggleAll('ticketContainer', true)" href="javascript:void(0)">Expand all</a>
+                <a onclick="toggleAll('ticketContainer', false)" href="javascript:void(0)">Collapse all</a>
+            </div>
+
+            <div id="tm_tree">
+                Loading...
+            </div>
+        </div>
+
+        <div id="tm_artifact_details">
+            <div id="tm_artifact_menu">
+            </div>
+
+            <div id="tm_artifact_breadcrumbs">
+            </div>
+
+            <div id="tm_artifact_description" class="wikipage searchable">
+            </div>
+        </div>
+
+    </div>
+    
+    <form id="tm_dialog_form" name="tm_dialog_form">
+        <div id="tm_dialog_anchor">
+        </div>
+    </form>
+    
+    <script type="text/javascript">
+//<![CDATA[
+(function($) {
+    $(function() {
+        window.tm_loadTestCatalogs = function(selectType, selectId) {
+            /* Load list of root test catalogs */
+            var params = {
+                    mode: "${mode}",
+                    fulldetails: "${fulldetails}"
+                };
+                
+            doAjaxCall("${base_url}/action/testmanager.actions!loadtree", "GET", params, true, function(data) {
+                    var testCatalogJson = data;
+                    
+                    console.info("JSON: "+testCatalogJson);
+                    var testCatalogs = $.parseJSON(testCatalogJson);
+                    console.info("Object: ");
+                    console.dir(testCatalogs);
+
+                    var testCatalogMarkup = "";
+                    for (var i=0; i<testCatalogs.length; i++) {
+                        testCatalogMarkup += generateTestCatalogTree(testCatalogs[i]);
+                    }
+                    
+                    $("#tm_tree").html(testCatalogMarkup);
+                    
+                    attachTreeBehavior();
+                    
+                    if (selectType && selectId) {
+                        $('.tm_'+selectType+'_node[data-id="'+selectId+'"]').click();
+                    }
+                });
+        }
+        
+        function generateTestCatalogTree(testCatalog) {
+            var result = '';
+            
+            console.dir(testCatalog);
+            
+            result += '<ul class="tm_node tm_testcatalog_node" data-id="'+testCatalog.test_catalog.id+'" ';
+
+            if ('test_plan' in testCatalog) {
+                result += 'data-plan_id="'+testCatalog.test_plan.id+'" ';
+            }
+            
+            result += '>'+testCatalog.test_catalog.title;
+            
+            for (var subCatalog in testCatalog.sub_catalogs) {
+                result += generateTestCatalogTree(testCatalog.sub_catalogs[subCatalog]);
+            }
+            
+            for (var testCase in testCatalog.test_cases) {
+                result += generateTestCase(testCatalog.test_cases[testCase]);
+            }
+            
+            result += '</ul>';
+            
+            return result;
+        }
+        
+        function generateTestCase(testCase) {
+            var result = '';
+            
+            result += '<li class="tm_node tm_testcase_node" data-id="'+testCase.test_case.id+'" ';
+            if ('test_plan' in testCase) {
+                result += 'data-plan_id="'+testCase.test_plan.id+'" ';
+            }
+            
+            result += '>'+testCase.test_case.title;
+            
+            result += '</li>';
+            
+            return result;
+        }
+        
+        function attachTreeBehavior() {
+            $('.tm_testcatalog_node').on('click', function(e) {
+                    /* Load test catalog description */
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    var node = $(this);
+                    
+                    var params = {
+                            test_catalog_id: node.attr('data-id')
+                        };
+                    
+                    var planid = node.attr('data-plan_id');
+                    if (planid) {
+                        params.test_plan_id = planid;
+                    }
+
+					/*
+                    var params = {};
+                    
+                    doAjaxCall("${base_url}/wiki/TC_TT"+node.attr('data-id'), "GET", params, true, function(data) {
+                    */
+                    doAjaxCall("${base_url}/action/testmanager.actions!get_test_catalog_details", "GET", params, true, function(data) {
+                            var markup = data;
+                            
+                            console.info("Markup: "+markup);
+
+							/*
+                            var html = $.parseHTML(markup, null, true);
+                            var wikiPage = $(html).find("#content")[0];
+                            $("#tm_artifact_description").append(wikiPage);
+                            */
+                            
+                            $("#tm_artifact_description").html(markup);
+                            
+                            attachTestCatalogDescriptionBehavior();
+                        });
+                });
+
+            $('.tm_testcase_node').on('click', function(e) {
+                    /* Load test case description */
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    var node = $(this);
+                    var params = {
+                            test_case_id: node.attr('data-id')
+                        };
+                    
+                    var planid = node.attr('data-plan_id');
+                    if (planid) {
+                        params.test_plan_id = planid;
+                    }
+                    
+                    doAjaxCall("${base_url}/action/testmanager.actions!get_test_case_details", "GET", params, true, function(data) {
+                            var markup = data;
+                            
+                            console.info("Markup: "+markup);
+                            
+                            $("#tm_artifact_description").html(markup);
+                            
+                            attachTestCaseDescriptionBehavior();
+                        });
+                });
+        }
+        
+        function attachTestCatalogDescriptionBehavior() {
+            console.info("attachTestCatalogDescriptionBehavior()");
+        }
+        
+        function attachTestCaseDescriptionBehavior() {
+            console.info("attachTestCaseDescriptionBehavior()");
+        }
+        
+        $( document ).ready(function() {
+
+            $("#splitter").igSplitter({ height: "700px", panels: [{ size: 250, min: 50, max: 500 }] });
+
+            tm_loadTestCatalogs();
+            
+            $("#tm_filter_input").on("keyup", function(e) {
+                    console.info("onkeyup()");
+                });
+                
+            $( "#tm_main_toolbar_viewtype_tree" ).button({
+                    text: true,
+                    icons: {
+                        primary: "icon-sitemap"
+                    }
+                });
+            
+            $( "#tm_main_toolbar_viewtype_table" ).button({
+                    text: true,
+                    icons: {
+                        primary: "icon-list-ul"
+                    }
+                });
+
+            $('.tm-action-new_root_catalog').on('click', function(e) {
+                    /* Load test case description */
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    var params = {
+                            parent_id: '-1'
+                        };
+
+                    doAjaxCall("${base_url}/action/testmanager.actions!get_new_test_catalog_dialog", "GET", params, true, function(data) {
+                            var dialogMarkup = data;
+                            
+                            $("#tm_dialog_anchor").html(dialogMarkup);
+                            
+                            $( "#tm_dialog_anchor" ).dialog({ minWidth: 500, modal: true, autoOpen: true });
+                        });
+                });
+                
+        });
+    });        
+})(jQuery_testmanager);
+
+//]]>
+    </script>
+
+  </body>
+</html>

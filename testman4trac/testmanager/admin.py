@@ -1,42 +1,39 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2011 Christian Masopust and Roberto Longobardi. 
-# All rights reserved.
+# Copyright (C) 2010-2015 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
-# The Test Manager plugin for Trac is free software: you can 
-# redistribute it and/or modify it under the terms of the GNU 
-# General Public License as published by the Free Software Foundation, 
-# either version 3 of the License, or (at your option) any later 
-# version.
-# 
-# The Test Manager plugin for Trac is distributed in the hope that it 
-# will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with the Test Manager plugin for Trac. See the file LICENSE.txt. 
-# If not, see <http://www.gnu.org/licenses/>.
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at: 
+#   https://trac-hacks.org/wiki/TestManagerForTracPluginLicense
 #
+# Author: Roberto Longobardi <otrebor.dev@gmail.com>
+# 
 
-from trac.admin.web_ui import IAdminPanelProvider
-from trac.core import Component, implements
-from trac.mimeview.api import Context
+import re
+import os.path
+from operator import itemgetter
+
+from trac.core import *
+from trac.db import *
 from trac.web.chrome import add_notice, add_warning, add_stylesheet
+from trac.admin.web_ui import IAdminPanelProvider
 from trac.wiki.formatter import format_to_html
+from trac.mimeview.api import Context
 
-from testmanager.api import TestManagerSystem
 from tracgenericclass.model import GenericClassModelProvider
-from tracgenericclass.util import formatExceptionInfo
 
+from testmanager.api import *
+from tracgenericclass.util import *
+from testmanager.util import *
 
 try:
     from testmanager.api import _, tag_, N_
 except ImportError:
-	from trac.util.translation import _, N_
-	tag_ = _
+    from trac.util.translation import _, N_
+    tag_ = _
 
 class TestManagerAdmin(Component):
     """
@@ -127,7 +124,6 @@ class TestManagerAdmin(Component):
         data['tcat_templates'] = testmanagersystem.get_templates(testmanagersystem.TEMPLATE_TYPE_TESTCATALOG)
         data['tcat_list'] = testmanagersystem.get_testcatalogs()
         data['tcat_selected'] = testmanagersystem.get_default_tcat_template_id()
-        data['tc_selected'] = testmanagersystem.get_default_tc_template_id()
 
         if req.method == 'POST':
             
@@ -170,20 +166,8 @@ class TestManagerAdmin(Component):
             # delete a Test Case template?
             if req.args.get('tc_del'):
                 tc_sel = req.args.get('tc_sel')
-                tc_default = testmanagersystem.get_default_tc_template_id()
-                tc_to_delete = []
-                
-                if isinstance(tc_sel, basestring):
-                    tc_to_delete.append(tc_sel)
-                else:
-                    tc_to_delete = tc_sel
-
-                for t_id in tc_to_delete:
+                for t_id in tc_sel:
                     t = testmanagersystem.get_template_by_id(t_id)
-                    if t_id == tc_default:
-                        add_warning(req, _("Template '%s' not removed as it is currently the default template") % t['name'])
-                        continue
-                    
                     if testmanagersystem.template_in_use(t_id):
                         add_warning(req, _("Template '%s' not removed as it is in use for a Test Catalog") % t['name'])
                         continue
@@ -201,14 +185,7 @@ class TestManagerAdmin(Component):
             if req.args.get('tcat_del'):
                 tcat_sel = req.args.get('tcat_sel')
                 tcat_default = testmanagersystem.get_default_tcat_template_id()
-                tcat_to_delete = []
-                
-                if isinstance(tcat_sel, basestring):
-                    tcat_to_delete.append(tcat_sel)
-                else:
-                    tcat_to_delete = tcat_sel
-                    
-                for t_id in tcat_to_delete:
+                for t_id in tcat_sel:
                     t = testmanagersystem.get_template_by_id(t_id)
                     if t_id == tcat_default:
                         add_warning(req, _("Template '%s' not removed as it is currently the default template") % t['name'])
@@ -229,15 +206,6 @@ class TestManagerAdmin(Component):
                 if testmanagersystem.set_config_property('TEST_CATALOG_DEFAULT_TEMPLATE', tcat_default):
                     add_notice(req, _("Default Test Catalog template updated"))
                     data['tcat_selected'] = tcat_default
-                else:
-                    add_warning(req, _("Failed to update default Test Catalog template"))
-
-            # save default Test Case template
-            if req.args.get('tc_default_save'):
-                tc_default = req.args.get('tc_default')
-                if testmanagersystem.set_config_property('TEST_CASE_DEFAULT_TEMPLATE', tc_default):
-                    add_notice(req, _("Default Test Case template updated"))
-                    data['tc_selected'] = tc_default
                 else:
                     add_warning(req, _("Failed to update default Test Catalog template"))
 

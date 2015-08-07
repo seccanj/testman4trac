@@ -4,27 +4,26 @@
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
-# The Test Manager plugin for Trac is free software: you can 
-# redistribute it and/or modify it under the terms of the GNU 
-# General Public License as published by the Free Software Foundation, 
-# either version 3 of the License, or (at your option) any later 
-# version.
-# 
-# The Test Manager plugin for Trac is distributed in the hope that it 
-# will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with the Test Manager plugin for Trac. See the file LICENSE.txt. 
-# If not, see <http://www.gnu.org/licenses/>.
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at: 
+#   https://trac-hacks.org/wiki/TestManagerForTracPluginLicense
 #
+# Author: Roberto Longobardi <otrebor.dev@gmail.com>
+# 
+
+import re
+import sys
+import time
+import traceback
 
 from genshi.builder import tag
-from trac.core import Component, implements
+from datetime import datetime
+
+from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util.text import to_unicode
-from trac.util.translation import _
+from trac.util.text import CRLF, to_unicode
+from trac.util.translation import _, N_, gettext
 from trac.web.api import IRequestHandler
 from trac.web.chrome import ITemplateProvider, INavigationContributor
 

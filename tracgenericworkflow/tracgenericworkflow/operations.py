@@ -4,29 +4,29 @@
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
-# The Test Manager plugin for Trac is free software: you can 
-# redistribute it and/or modify it under the terms of the GNU 
-# General Public License as published by the Free Software Foundation, 
-# either version 3 of the License, or (at your option) any later 
-# version.
-# 
-# The Test Manager plugin for Trac is distributed in the hope that it 
-# will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with the Test Manager plugin for Trac. See the file LICENSE.txt. 
-# If not, see <http://www.gnu.org/licenses/>.
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at: 
+#   https://trac-hacks.org/wiki/TestManagerForTracPluginLicense
 #
+# Author: Roberto Longobardi <otrebor.dev@gmail.com>
+# 
 
-from genshi.builder import tag
-from trac.core import Component, implements
+from trac.core import *
 from trac.perm import PermissionSystem
-from trac.util.text import obfuscate_email_address
+from trac.resource import Resource
+from trac.util.datefmt import utc
+from trac.util.translation import _, N_, gettext
 from trac.web.chrome import Chrome
 
-from tracgenericworkflow.api import IWorkflowOperationProvider
+from genshi.builder import tag
+from genshi.filters.transform import Transformer
+from genshi import HTML
+
+from tracgenericclass.util import *
+
+from tracgenericworkflow.model import ResourceWorkflowState
+from tracgenericworkflow.api import IWorkflowOperationProvider, ResourceWorkflowSystem
 
 
 # Out-of-the-box operations
@@ -47,7 +47,7 @@ class WorkflowStandardOperations(Component):
     def get_operation_control(self, req, action, operation, res_wf_state, resource):
         self.log.debug(">>> WorkflowStandardOperations - get_operation_control: %s" % operation)
 
-        id_ = 'action_%s_operation_%s' % (action, operation)
+        id = 'action_%s_operation_%s' % (action, operation)
 
         # A custom field named "owner" is required in the ResourceWorkflowState 
         # class for this operation to be available
@@ -67,7 +67,7 @@ class WorkflowStandardOperations(Component):
 
             self.log.debug("Current owner is %s." % current_owner)
 
-            selected_owner = req.args.get(id_, req.authname)
+            selected_owner = req.args.get(id, req.authname)
 
             control = None
             hint = ''
@@ -86,13 +86,13 @@ class WorkflowStandardOperations(Component):
                     owners.sort()
 
             if owners == None:
-                owner = req.args.get(id_, req.authname)
+                owner = req.args.get(id, req.authname)
                 control = tag('Assign to ',
-                                    tag.input(type='text', id=id_,
-                                                    name=id_, value=owner))
+                                    tag.input(type='text', id=id,
+                                                    name=id, value=owner))
                 hint = "The owner will be changed from %s" % current_owner
             elif len(owners) == 1:
-                owner = tag.input(type='hidden', id=id_, name=id_,
+                owner = tag.input(type='hidden', id=id, name=id,
                                   value=owners[0])
                 formatted_owner = format_user(owners[0])
                 control = tag('Assign to ',
@@ -104,7 +104,7 @@ class WorkflowStandardOperations(Component):
                     [tag.option(format_user(x), value=x,
                                 selected=(x == selected_owner or None))
                      for x in owners],
-                    id=id_, name=id_))
+                    id=id, name=id))
                 hint = "The owner will be changed from %s" % current_owner
 
             return control, hint

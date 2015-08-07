@@ -4,40 +4,25 @@
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
-# The Test Manager plugin for Trac is free software: you can 
-# redistribute it and/or modify it under the terms of the GNU 
-# General Public License as published by the Free Software Foundation, 
-# either version 3 of the License, or (at your option) any later 
-# version.
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at: 
+#   https://trac-hacks.org/wiki/TestManagerForTracPluginLicense
+#
+# Author: Roberto Longobardi <otrebor.dev@gmail.com>
 # 
-# The Test Manager plugin for Trac is distributed in the hope that it 
-# will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with the Test Manager plugin for Trac. See the file LICENSE.txt. 
-# If not, see <http://www.gnu.org/licenses/>.
-#
-#
-# The structure of this plugin is copied from the Tracticketstats plugin, 
-# by Prentice Wongvibulisn
-#
 
 import cStringIO
-from datetime import timedelta
 import json
+import re
+
+from datetime import date, datetime, time, timedelta
+from time import strptime
 
 from genshi.builder import tag
-from trac.perm import IPermissionRequestor
-from trac.web import IRequestHandler
-from trac.web.chrome import Chrome, INavigationContributor, ITemplateProvider, add_script_data
 
-from testmanager.api import TestManagerSystem
-from testmanager.model import TestPlan
-from testmanager.util import *
-from tracgenericclass.util import *
-
+from trac.core import *
+from trac.config import Option, IntOption
 
 try:
     from trac.util.datefmt import (utc, parse_date, 
@@ -56,11 +41,23 @@ except ImportError:
 # TODO To be removed
 compatibility = True
 
+
+from trac.web import IRequestHandler
+from trac.web.chrome import Chrome, INavigationContributor, ITemplateProvider, add_script_data
+from trac.perm import IPermissionRequestor
+
+from tracgenericclass.util import *
+
+from testmanager.api import TestManagerSystem
+from testmanager.model import TestPlan
+from testmanager.util import *
+
+
 try:
     from testmanager.api import _, tag_, N_
 except ImportError:
-	from trac.util.translation import _, N_
-	tag_ = _
+    from trac.util.translation import _, N_
+    tag_ = _
 
 # ************************
 TESTMANAGER_DEFAULT_DAYS_BACK = 30*3 

@@ -1,0 +1,64 @@
+<html>
+<head>
+    <style>
+        #tree {
+            overflow: hidden;
+        }
+        @media all and (max-width: 480px) {
+            #splitter {
+                font-size: 16px;
+            }
+        }
+     
+        p { padding: 10px; }
+    </style>
+
+    <script src="jquery-1.11.1.js"></script>
+    <script src="jquery-ui.js"></script>
+
+    <script src="http://igniteui.com/js-data/continents-with-countries-and-cities"></script>
+
+    <script src="infragistics.js"></script>
+    <link href="css/themes/infragistics/infragistics.theme.css" rel="stylesheet"></link>
+    <link href="css/structure/infragistics.css" rel="stylesheet"></link>
+
+</head>
+<body>
+
+
+    <div id="splitter">
+        <div style="overflow: auto">
+            <ul id="tree"></ul>
+        </div>
+        <div><p>Select a destination from tree.</p></div>
+    </div>
+
+
+<script>
+$(function () {
+            $("#splitter").igSplitter({ height: "300px", panels: [{ size: 160, min: 100, max: 250 }] });
+            $("#tree").igTree({
+                dataSource: continentsWithCountries,
+                dataSourceType: "json",
+                bindings: {
+                    textKey: "Text",
+                    valueKey: "Text",
+                    childDataProperty: "Countries"
+                }
+            });
+            $("#tree").on("igtreeselectionchanged", function (sender, eventArgs) {
+                var node = eventArgs.selectedNodes[0];
+                if (node.data.Description) {
+                    $("#splitter").igSplitter("secondPanel").html($("<p></p>").text(node.data.Description));
+                } else {
+                    $("#splitter").igSplitter("secondPanel").html($("<p></p>").text("No information found."));
+                }
+            });
+        });
+
+</script>
+</body>
+
+
+</html>
+

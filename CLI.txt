@@ -1,0 +1,10 @@
+To use the CLI, you must first install PyCLI, as follows:
+
+pip install pyCLI
+
+
+You can then print the tm-admin usage as follows:
+
+./tm-admin.py -h
+
+
