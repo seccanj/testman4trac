@@ -337,6 +337,8 @@ class Actions(object):
             new_tc.remote_addr = self.req.remote_addr
             # This also creates the Wiki page
             new_tc.insert()
+            
+            self.test_catalog = TestCatalogBean(new_tc)
 
             jsdstr = '{"result": "OK", "id": ' + str(id) + '}'
 
@@ -349,6 +351,56 @@ class Actions(object):
         self.ajax_result = jsdstr
 
         self.env.log.debug("<< create_test_catalog")
+        
+        return 'success'
+
+
+    @Invocable(
+        {
+            'results': {
+                'success': {'kind': 'json', 'field_name': 'ajax_result'}
+            },
+            'required_roles': ('TEST_MODIFY', 'TEST_ADMIN')
+        }
+    )
+    def create_test_case(self, parent_id, title):
+        self.env.log.debug(">> create_test_case")
+
+        self.env.log.debug("parent_id: '%s'" % (parent_id))
+
+        test_manager_system = TestManagerSystem(self.env)
+
+        id = test_manager_system.get_next_id('testcase')
+        pagename = 'TC_TC'+str(id)
+
+        jsdstr = None
+        
+        try:
+            # Get containing catalog
+            parent_tcat = TestCatalog(self.env, parent_id)
+
+            # Add template if exists...
+            new_content = test_manager_system.get_tc_template(parent_tcat['page_name'])
+
+            new_tc = TestCase(self.env, id, pagename, parent_id, title, new_content)
+            new_tc.author = get_reporter_id(req, 'author')
+            new_tc.remote_addr = self.req.remote_addr
+
+            new_tc.insert()
+            
+            self.test_case = TestCaseBean(new_tc)
+
+            jsdstr = '{"result": "OK", "id": ' + str(id) + '}'
+
+        except:
+            self.env.log.error("Error adding test catalog!")
+            self.env.log.error(formatExceptionInfo())
+
+            jsdstr = '{"result": "ERROR", "message": "An error occurred while adding the test catalog."}'
+
+        self.ajax_result = jsdstr
+
+        self.env.log.debug("<< create_test_case")
         
         return 'success'
 

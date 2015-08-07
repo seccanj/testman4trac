@@ -36,16 +36,22 @@
 (function($) {
     $(function() {
 		$('.tm-action-add_test_case').on('click', function(e) {
-			/* Load test catalog description */
-			e.preventDefault();
-			e.stopPropagation();
+            /* Load the new test catalog dialog */
+            e.preventDefault();
+            e.stopPropagation();
+
+            var width = 500;
 			
-			var node = $(this);
-			var params = {};
-			params.parent_id = "${test_catalog_id}";
-			
-			tm_loadDialog("${base_url}", "new_test_case_dialog.html", params);
-		});
+            var params = {
+                    parent_id: '${test_catalog_bean.get_test_catalog_id()}'
+                };
+
+            doAjaxCall("${base_url}/action/testmanager.actions!get_new_test_case_dialog", "GET", params, true, function(data) {
+                    var dialogMarkup = data;
+                    $("#tm_dialog_anchor").html(dialogMarkup);
+                    $( "#tm_dialog_anchor" ).dialog({ width: width, modal: true, autoOpen: true });
+                });
+        });
 
 		$('.tm-action-edit_title').on('click', function(e) {
 			/* Load test catalog description */
