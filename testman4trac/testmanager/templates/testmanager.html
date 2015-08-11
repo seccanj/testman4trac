@@ -128,6 +128,10 @@
     $(function() {
         window.tm_loadTestCatalogs = function(selectType, selectId) {
             /* Load list of root test catalogs */
+            
+            var selectTypeVar = selectType;
+            var selectIdVar = selectId;
+            
             var params = {
                     mode: "${mode}",
                     fulldetails: "${fulldetails}"
@@ -150,8 +154,8 @@
                     
                     attachTreeBehavior();
                     
-                    if (selectType && selectId) {
-                        $('.tm_'+selectType+'_node[data-id="'+selectId+'"]').click();
+                    if (selectTypeVar && selectIdVar) {
+                        $('.tm_'+selectTypeVar+'_node[data-id="'+selectIdVar+'"]').click();
                     }
                 });
         }
@@ -300,17 +304,9 @@
                     e.preventDefault();
                     e.stopPropagation();
                     
-                    var params = {
-                            parent_id: '-1'
-                        };
+                    var params = {parent_id: '-1'};
 
-                    doAjaxCall("${base_url}/action/testmanager.actions!get_new_test_catalog_dialog", "GET", params, true, function(data) {
-                            var dialogMarkup = data;
-                            
-                            $("#tm_dialog_anchor").html(dialogMarkup);
-                            
-                            $( "#tm_dialog_anchor" ).dialog({ minWidth: 500, modal: true, autoOpen: true });
-                        });
+                    tm_loadDialog("${base_url}", "get_new_test_catalog_dialog", params, 500);
                 });
                 
         });

@@ -4,31 +4,31 @@
       xmlns:py="http://genshi.edgewall.org/"
       i18n:domain="testmanager"
 
-     id="tm_new_test_case_dialog_container"
+     id="tm_attachments_dialog_container"
      style="width: 300px;"
 >
     <div>
       <h2>Add a new test case to the catalog "${parent_test_catalog.title}"</h2>
     </div>
 
-    <div id="tm_new_test_case_dialog_message_holder"></div>
+    <div id="tm_attachments_dialog_message_holder"></div>
 
     <fieldset>
-        <label for="tm_new_test_case_dialog_parameter">New test case name</label>
-        <input id="tm_new_test_case_dialog_parameter" name="tm_new_test_case_dialog_parameter" size="40" />
+        <label for="tm_attachments_dialog_parameter">New test case name</label>
+        <input id="tm_attachments_dialog_parameter" name="tm_attachments_dialog_parameter" size="40" />
     </fieldset>
     
     <div>
-        <button id="tm_new_test_case_dialog_button_ok">OK</button>
-        <button id="tm_new_test_case_dialog_button_cancel">Cancel</button>
+        <button id="tm_attachments_dialog_button_ok">OK</button>
+        <button id="tm_attachments_dialog_button_cancel">Cancel</button>
     </div>
 
     <script type="text/javascript">
 
 	    tm_attachDialogEvents(
 	    	    "${base_url}", 
-	    	    "new_test_case_dialog", 
-	    	    "create_test_case", 
+	    	    "attachments_dialog", 
+	    	    "aaaaaaaaaaa", 
 	    	    "title", 
 	    	    {parent_id: "${parent_id}"},
 	    	    function(output){tm_loadTestCatalogs("testcase", output.id);}

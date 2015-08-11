@@ -124,6 +124,12 @@ class TestCatalogBean(object):
         
         return ''
 
+    def get_parent_id(self):
+        if self.test_catalog is not None:
+            return self.test_catalog['parent_id']
+        
+        return ''
+
     def get_test_plan_id(self):
         if self.test_plan is not None:
             return self.test_plan['id']
@@ -244,6 +250,12 @@ class TestCaseBean(object):
     def get_test_case_id(self):
         if self.test_case is not None:
             return self.test_case['id']
+        
+        return ''
+
+    def get_parent_id(self):
+        if self.test_case is not None:
+            return self.test_case['parent_id']
         
         return ''
 

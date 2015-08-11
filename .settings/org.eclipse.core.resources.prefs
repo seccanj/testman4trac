@@ -2,5 +2,6 @@ eclipse.preferences.version=1
 encoding//testman4trac/testmanager/actions.py=utf-8
 encoding//testman4trac/testmanager/api.py=utf-8
 encoding//testman4trac/testmanager/beans.py=utf-8
+encoding//testman4trac/testmanager/model.py=utf-8
 encoding//testman4trac/testmanager/view.py=utf-8
 encoding//tracstruts/tracstruts/tracstruts.py=utf-8

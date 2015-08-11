@@ -1,0 +1,42 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      xmlns:py="http://genshi.edgewall.org/"
+      i18n:domain="testmanager"
+
+     id="tm_edit_description_dialog_container"
+     style="width: 300px;"
+>
+    <div>
+      <h2>Edit description</h2>
+    </div>
+
+    <div id="tm_edit_description_dialog_message_holder"></div>
+
+    <fieldset>
+        <label for="tm_edit_description_dialog_parameter">Edit description</label>
+        <textarea id="tm_edit_description_dialog_parameter" name="tm_edit_description_dialog_parameter" rows="20" cols="80">${description}</textarea>
+    </fieldset>
+    
+    <div>
+        <button id="tm_edit_description_dialog_button_ok">OK</button>
+        <button id="tm_edit_description_dialog_button_cancel">Cancel</button>
+    </div>
+
+    <script type="text/javascript">
+
+	    tm_attachDialogEvents(
+	    	    "${base_url}", 
+	    	    "edit_description_dialog", 
+	    	    "change_description", 
+	    	    "description", 
+				{
+					artifact: "${artifact}",
+					id: "${id}"
+				},
+	    	    function(output){tm_loadTestCatalogs("${artifact}", output.id);}
+	    	);
+	    
+    </script>
+
+</div>

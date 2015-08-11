@@ -1,12 +1,72 @@
+<?python from genshi import HTML ?>
+<html>
 <div xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:py="http://genshi.edgewall.org/"
       i18n:domain="testmanager">
 
+  <div id="tm_test_case_toolbar" class="tm-toolbar">
+    <ul>
+      <li class="first"><a href="#" class="tm-action-edit_title">Edit title</a></li>
+      <li><a href="#" class="tm-action-edit_description">Edit description</a></li>
+      <li class="last"><a href="#" class="tm-action-attachments">Attachments</a></li>
+    </ul>
+  </div>
+  
     <h1>${test_case_bean.title}</h1>
 
     <p>
-        ${test_case_bean.description}
+		${HTML(wiki_contents)}
     </p>
 </div>
+
+<script type="text/javascript">
+//<![CDATA[
+(function($) {
+    $(function() {
+		$('.tm-action-edit_title').on('click', function(e) {
+			/* Load edit test catalog title dialog */
+			e.preventDefault();
+			e.stopPropagation();
+			
+			var params = {
+					artifact: "testcase",
+					id: "${test_case_bean.get_test_case_id()}"
+				};
+			
+			tm_loadDialog("${base_url}", "get_edit_title_dialog", params, 500);
+		});
+
+		$('.tm-action-edit_description').on('click', function(e) {
+			/* Load edit test catalog title dialog */
+			e.preventDefault();
+			e.stopPropagation();
+			
+			var params = {
+					artifact: "testcase",
+					id: "${test_case_bean.get_test_case_id()}"
+				};
+			
+			tm_loadDialog("${base_url}", "get_edit_description_dialog", params, 500);
+		});
+
+		$('.tm-action-attachments').on('click', function(e) {
+			/* Load edit test catalog title dialog */
+			e.preventDefault();
+			e.stopPropagation();
+			
+			var params = {
+					artifact: "testcase",
+					id: "${test_case_bean.get_test_case_id()}"
+				};
+			
+			tm_loadDialog("${base_url}", "get_attachments_dialog", params, 500);
+		});
+		
+    });        
+})(jQuery_testmanager);
+
+//]]>
+</script>
+</html>

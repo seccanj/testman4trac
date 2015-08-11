@@ -12,29 +12,25 @@
 # Author: Roberto Longobardi <otrebor.dev@gmail.com>
 # 
 
+from StringIO import StringIO
 import json
 
-from StringIO import StringIO
-
+from genshi.filters.transform import Transformer
+from testmanager.admin import get_all_table_columns_for_object
+from testmanager.api import TestManagerSystem
+from testmanager.beans import *
+from testmanager.model import TestCatalog, TestCase, TestCaseInPlan, TestPlan, TestManagerModelProvider
+from testmanager.util import *
 from trac.mimeview.api import Context
 from trac.util import get_reporter_id
 from trac.wiki.formatter import Formatter
 from trac.wiki.model import WikiPage
 from trac.wiki.parser import WikiParser
-
-from tracstruts.api import Invocable
-
 from tracgenericclass.cache import GenericClassCacheSystem
 from tracgenericclass.model import GenericClassModelProvider
 from tracgenericclass.util import *
+from tracstruts.api import Invocable
 
-from testmanager.beans import *
-from testmanager.util import *
-from testmanager.admin import get_all_table_columns_for_object
-from testmanager.api import TestManagerSystem
-from testmanager.model import TestCatalog, TestCase, TestCaseInPlan, TestPlan, TestManagerModelProvider
-
-from genshi.filters.transform import Transformer
 
 try:
     from testmanager.api import _, tag_, N_
@@ -174,7 +170,7 @@ class Actions(object):
         test_catalog = _get_test_catalog(test_catalog_id, self.env)
 
         self.test_catalog_bean = TestManagerSystem(self.env).get_test_catalog_details_data_model(test_catalog = test_catalog, include_status = include_status, test_plan = test_plan)
-        self.wiki_contents = self._get_wiki_page_contents(self.req, self.env, test_catalog['page_name'], test_catalog.description)
+        self.wiki_contents = _get_wiki_page_contents(self.req, self.env, test_catalog['page_name'], test_catalog.description)
             
         GenericClassCacheSystem.clear_cache()
 
@@ -218,8 +214,8 @@ class Actions(object):
         test_case = _get_test_case(test_case_id, self.env)
 
         self.test_case_bean = TestManagerSystem(self.env).get_test_case_data_model(test_case = test_case, include_status = include_status, test_plan = test_plan)
-        self.wiki_contents = self._get_wiki_page_contents(self.req, self.env, test_case['page_name'], test_case.description)
-            
+        self.wiki_contents = _get_wiki_page_contents(self.req, self.env, test_case['page_name'], test_case.description)
+
         GenericClassCacheSystem.clear_cache()
 
         self.env.log.debug("<< get_test_case_details")
@@ -303,6 +299,86 @@ class Actions(object):
         self.parent_test_catalog = _get_test_catalog(parent_id, self.env)
 
         self.env.log.debug("<< get_new_test_case_dialog")
+        
+        return 'success'
+
+
+    @Invocable(
+        {
+            'results': {
+                'success': {'kind': 'template', 'template_name': 'edit_title_dialog.html'}
+            },
+            'parameters': {
+                'artifact': 'in_out',
+                'id': 'in_out',
+                'title': 'out'
+            },
+            'required_roles': ('TEST_MODIFY', 'TEST_ADMIN')
+        }
+    )
+    def get_edit_title_dialog(self):
+        self.env.log.debug(">> get_edit_title_dialog")
+
+        self.env.log.debug("artifact: '%s', id: '%s'" % (self.artifact, self.id))
+
+        test_artifact = _get_test_artifact(self.artifact, self.id, self.env)
+        self.title = test_artifact.title
+        
+        self.env.log.debug("<< get_edit_title_dialog")
+        
+        return 'success'
+
+
+    @Invocable(
+        {
+            'results': {
+                'success': {'kind': 'template', 'template_name': 'edit_description_dialog.html'}
+            },
+            'parameters': {
+                'artifact': 'in_out',
+                'id': 'in_out',
+                'description': 'out'
+            },
+            'required_roles': ('TEST_MODIFY', 'TEST_ADMIN')
+        }
+    )
+    def get_edit_description_dialog(self):
+        self.env.log.debug(">> get_edit_description_dialog")
+
+        self.env.log.debug("artifact: '%s', id: '%s'" % (self.artifact, self.id))
+
+        test_artifact = _get_test_artifact(self.artifact, self.id, self.env)
+        self.description = test_artifact.description
+        
+        self.env.log.debug("<< get_edit_description_dialog")
+        
+        return 'success'
+
+
+    @Invocable(
+        {
+            'results': {
+                'success': {'kind': 'template', 'template_name': 'attachments_dialog.html'}
+            },
+            'parameters': {
+                'artifact': 'in_out',
+                'id': 'in_out',
+                'wikipage': 'out'
+            },
+            'required_roles': ('TEST_MODIFY', 'TEST_ADMIN')
+        }
+    )
+    def get_attachments_dialog(self):
+        self.env.log.debug(">> get_attachments_dialog")
+
+        self.env.log.debug("artifact: '%s', id: '%s'" % (self.artifact, self.id))
+
+        test_artifact = _get_test_artifact(self.artifact, self.id, self.env)
+        page_name = test_artifact['page_name']
+
+        self.wikipage = WikiPage(self.env, page_name)
+    
+        self.env.log.debug("<< get_attachments_dialog")
         
         return 'success'
 
@@ -408,6 +484,62 @@ class Actions(object):
     @Invocable(
         {
             'results': {
+                'success': {'kind': 'json', 'field_name': 'ajax_result'}
+            },
+            'parameters': {
+                'artifact': 'in_out',
+                'id': 'in_out',
+                'title': 'in'
+            },
+            'required_roles': ('TEST_MODIFY', 'TEST_ADMIN')
+        }
+    )
+    def change_title(self):
+        self.env.log.debug(">> change_title")
+
+        self.env.log.debug("artifact: '%s', id: '%s'" % (self.artifact, self.id))
+
+        test_artifact = _get_test_artifact(self.artifact, self.id, self.env)
+        test_artifact.title = self.title
+        
+        self.ajax_result = _save_modified_artifact(self.req, test_artifact, message="Title changed")
+
+        self.env.log.debug("<< change_title")
+        
+        return 'success'
+
+
+    @Invocable(
+        {
+            'results': {
+                'success': {'kind': 'json', 'field_name': 'ajax_result'}
+            },
+            'parameters': {
+                'artifact': 'in_out',
+                'id': 'in_out',
+                'description': 'in'
+            },
+            'required_roles': ('TEST_MODIFY', 'TEST_ADMIN')
+        }
+    )
+    def change_description(self):
+        self.env.log.debug(">> change_description")
+
+        self.env.log.debug("artifact: '%s', id: '%s'" % (self.artifact, self.id))
+
+        test_artifact = _get_test_artifact(self.artifact, self.id, self.env)
+        test_artifact.description = self.description
+        
+        self.ajax_result = _save_modified_artifact(self.req, test_artifact, message="Description changed")
+
+        self.env.log.debug("<< change_description")
+        
+        return 'success'
+
+
+    @Invocable(
+        {
+            'results': {
                 'success': {'kind': 'template', 'template_name': 'tm_action_output_template.html'},
                 'success_ajax': {'kind': 'json', 'field_name': 'ajax_result'}
             },
@@ -475,13 +607,13 @@ class Actions(object):
             
         elif artifact == 'test_case_details':
             self.test_case = TestManagerSystem(self.env).get_test_case_data_model(test_case = test_case, include_status = include_status, test_plan = test_plan)
-            self.wiki_contents = self._get_wiki_page_contents(req, test_case['page_name'], test_case.description)
+            self.wiki_contents = _get_wiki_page_contents(req, test_case['page_name'], test_case.description)
                 
             template = 'test_case.html'
 
         elif artifact == 'test_catalog_details':
             self.test_catalog = TestManagerSystem(self.env).get_test_catalog_details_data_model(test_catalog = test_catalog, include_status = include_status, test_plan = test_plan)
-            self.wiki_contents = self._get_wiki_page_contents(req, test_catalog['page_name'], test_catalog.description)
+            self.wiki_contents = _get_wiki_page_contents(req, test_catalog['page_name'], test_catalog.description)
             
             template = 'test_catalog.html'
 
@@ -581,3 +713,42 @@ def _get_test_case(test_case_id, env):
 
     return test_case
     
+def _get_test_artifact(artifact_type, id, env):
+    if artifact_type is None:
+        raise TracError("Artifact parameter must not be None")
+
+    result = None
+    if artifact_type == 'testcase':
+        result = _get_test_case(id, env)
+        
+    elif artifact_type == 'catalog':
+        result = _get_test_catalog(id, env)
+    
+    elif artifact_type == 'testplan':
+        result = _get_test_plan(id, env)
+    
+    else:
+        raise TracError("Unrecognized artifact type '%s'" % (artifact_type,))
+
+    return result
+
+def _save_modified_artifact(req, test_artifact, message="Property changed"):
+    jsdstr = None
+    
+    try:
+        author = get_reporter_id(req, 'author')
+        test_artifact.author = author
+        test_artifact.remote_addr = req.remote_addr
+
+        test_artifact.save_changes(author, message)
+
+        jsdstr = '{"result": "OK", "id": ' + str(test_artifact['id']) + '}'
+
+    except:
+        self.env.log.error("Error saving chaged object!")
+        self.env.log.error(formatExceptionInfo())
+
+        jsdstr = '{"result": "ERROR", "message": "An error occurred while saving the changes."}'
+        
+    return jsdstr
+
