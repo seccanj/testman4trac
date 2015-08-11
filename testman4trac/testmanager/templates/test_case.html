@@ -16,9 +16,9 @@
   
     <h1>${test_case_bean.title}</h1>
 
-    <p>
+    <div id="tm_artifact_description_wiki">
 		${HTML(wiki_contents)}
-    </p>
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -48,7 +48,7 @@
 					id: "${test_case_bean.get_test_case_id()}"
 				};
 			
-			tm_loadDialog("${base_url}", "get_edit_description_dialog", params, 500);
+			tm_loadDialog("${base_url}", "get_edit_description_dialog", params, 800);
 		});
 
 		$('.tm-action-attachments').on('click', function(e) {

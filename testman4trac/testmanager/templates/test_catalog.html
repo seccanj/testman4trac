@@ -18,9 +18,9 @@
   
     <h1>${test_catalog_bean.title}</h1>
 
-    <p>
+    <div id="tm_artifact_description_wiki">
 		${HTML(wiki_contents)}
-    </p>
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -70,7 +70,7 @@
 					id: "${test_catalog_bean.get_test_catalog_id()}"
 				};
 			
-			tm_loadDialog("${base_url}", "get_edit_description_dialog", params, 500);
+			tm_loadDialog("${base_url}", "get_edit_description_dialog", params, 800);
 		});
 
 		
