@@ -21,31 +21,34 @@
                 primary: "ui-icon-check"
               }
             })
-            .click(function() {
-              var parameterValue = $("#tm_"+dialogName+"_parameter").val();
-              console.info(parameterValue);
-
-              var okButton = $(this);
-              okButton.prop("disabled", true);
-
-              params[parameterName] = parameterValue;
-
-              doAjaxCall(base_url+"/action/testmanager.actions!"+actionName, "GET", params, true, function(data) {
-                    var resultJson = data;
-                    console.info(resultJson);
-
-                    var output = $.parseJSON(resultJson);
-                    
-                    if (output.result === "OK") {
-                        $("#tm_dialog_anchor").dialog("destroy");
-                        handlerFunction(output);
-                    } else {
-                        /* Show error within dialog */
-                    	$("#tm_"+dialogName+"_message_holder").addClass("ui-state-error");
-                    	$("#tm_"+dialogName+"_message_holder").html(output.message);
-                    	okButton.prop("disabled", false);
-                    }
-                });
+            .click(function(e) {
+            	  e.preventDefault();
+            	  e.stopPropagation();
+            	
+	              var parameterValue = $("#tm_"+dialogName+"_parameter").val();
+	              console.info(parameterValue);
+	
+	              var okButton = $(this);
+	              okButton.prop("disabled", true);
+	
+	              params[parameterName] = parameterValue;
+	
+	              doAjaxCall(base_url+"/action/testmanager.actions!"+actionName, "GET", params, true, function(data) {
+	                    var resultJson = data;
+	                    console.info(resultJson);
+	
+	                    var output = $.parseJSON(resultJson);
+	                    
+	                    if (output.result === "OK") {
+	                        $("#tm_dialog_anchor").dialog("destroy");
+	                        handlerFunction(output);
+	                    } else {
+	                        /* Show error within dialog */
+	                    	$("#tm_"+dialogName+"_message_holder").addClass("ui-state-error");
+	                    	$("#tm_"+dialogName+"_message_holder").html(output.message);
+	                    	okButton.prop("disabled", false);
+	                    }
+	                });
             });
 
             $("#tm_"+dialogName+"_button_cancel").button({

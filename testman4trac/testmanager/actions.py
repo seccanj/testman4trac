@@ -150,7 +150,8 @@ class Actions(object):
                 'fulldetails': 'in',
                 'test_catalog_bean': 'out',
                 'wiki_contents': 'out',
-                'attachments': 'out'
+                'attachments': 'out',
+                'can_modify': 'out'
             },
             'required_roles': ('TEST_VIEW', 'TEST_ADMIN')
         }
@@ -181,6 +182,7 @@ class Actions(object):
         page = WikiPage(self.env, test_catalog['page_name'], version=None)
         context = web_context(self.req, page.resource)
         self.attachments = AttachmentModule(self.env).attachment_data(context);
+        self.can_modify = _can_modify(self.req)
 
         GenericClassCacheSystem.clear_cache()
 
@@ -199,7 +201,8 @@ class Actions(object):
                 'fulldetails': 'in',
                 'test_case_bean': 'out',
                 'wiki_contents': 'out',
-                'attachments': 'out'
+                'attachments': 'out',
+                'can_modify': 'out'
             },
             'required_roles': ('TEST_VIEW', 'TEST_ADMIN')
         }
@@ -230,6 +233,7 @@ class Actions(object):
         page = WikiPage(self.env, test_case['page_name'], version=None)
         context = web_context(self.req, page.resource)
         self.attachments = AttachmentModule(self.env).attachment_data(context);
+        self.can_modify = _can_modify(self.req)
 
         GenericClassCacheSystem.clear_cache()
 
@@ -686,6 +690,25 @@ def _check_plan_admin_permission(req, env):
 def _check_admin_permission(req, env):
     if not req.perm.has_permission('TEST_ADMIN'):
         raise PermissionError('TEST_ADMIN', None, env)
+
+
+def _can_view(req):
+    return req.perm.has_permission('TEST_VIEW') or req.perm.has_permission('TEST_ADMIN')
+
+def _can_modify(req):
+    return req.perm.has_permission('TEST_MODIFY') or req.perm.has_permission('TEST_ADMIN')
+
+def _can_execute(req):
+    return req.perm.has_permission('TEST_EXECUTE') or req.perm.has_permission('TEST_ADMIN')
+
+def _can_delete(req):
+    return req.perm.has_permission('TEST_DELETE') or req.perm.has_permission('TEST_ADMIN')
+
+def _can_admin_plans(req):
+    return req.perm.has_permission('TEST_PLAN_ADMIN') or req.perm.has_permission('TEST_ADMIN')
+
+def _can_admin(req):
+    return req.perm.has_permission('TEST_ADMIN')
 
 
 def _get_wiki_page_contents(req, env, page_name, markup):

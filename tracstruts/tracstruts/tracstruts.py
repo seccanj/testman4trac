@@ -240,7 +240,7 @@ class TracStruts(Component):
                     
                     json.dump(tracstruts_context, io)
                     tracstruts_context_string = io.getvalue()
-                    data['tracstruts_context'] = tracstruts_context_string
+                    data['tracstruts_context'] = tracstruts_context_string.replace("\\", "\\\\")
 
                     self.env.log.debug("Tracstruts context JSON after action invocation is '%s'." % (tracstruts_context_string,))
 

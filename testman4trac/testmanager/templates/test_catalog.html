@@ -1,89 +1,97 @@
 <?python from genshi import HTML ?>
 <html>
-<div xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:xi="http://www.w3.org/2001/XInclude"
-      xmlns:i18n="http://genshi.edgewall.org/i18n"
-      xmlns:py="http://genshi.edgewall.org/"
-      i18n:domain="testmanager">
+	<head>
+	</head>
 
-  <div id="tm_test_catalog_toolbar" class="tm-toolbar">
-    <ul>
-      <li class="first"><a href="#" class="tm-action-add_test_case">Add test case</a></li>
-      <li><a href="#" class="tm-action-add_subcatalog">Add sub-catalog</a></li>
-      <li><a href="#" class="tm-action-edit_title">Edit title</a></li>
-      <li class="last"><a href="#" class="tm-action-edit_description">Edit description</a></li>
-    </ul>
-  </div>
-  
-    <h1>${test_catalog_bean.title}</h1>
-
-    <div id="tm_artifact_description_wiki">
-		${HTML(wiki_contents)}
-
-	    <div id="tm_artifact_ondemand" style="display:none;">
-	    </div>
-
-		<div id="tm_artifact_attachments">
-		    <xi:include href="list_of_attachments.html"
-	                    py:with="alist = attachments; compact = False; foldable = True"/>
-		</div>
-    </div>
-</div>
-
-<script type="text/javascript">
-//<![CDATA[
-(function($) {
-    $(function() {
-		$('.tm-action-add_test_case').on('click', function(e) {
-            /* Load the new test case dialog */
-            e.preventDefault();
-            e.stopPropagation();
-
-            var params = {parent_id: '${test_catalog_bean.get_test_catalog_id()}'};
-
-            tm_loadDialog("${base_url}", "get_new_test_case_dialog", params, 500);
-		});
-
-		$('.tm-action-add_subcatalog').on('click', function(e) {
-            /* Load the new test case dialog */
-            e.preventDefault();
-            e.stopPropagation();
-
-            var params = {parent_id: '${test_catalog_bean.get_test_catalog_id()}'};
-
-            tm_loadDialog("${base_url}", "get_new_test_catalog_dialog", params, 500);
-		});
-
-		$('.tm-action-edit_title').on('click', function(e) {
-			/* Load edit test catalog title dialog */
-			e.preventDefault();
-			e.stopPropagation();
-			
-			var params = {
-					artifact: "catalog",
-					id: "${test_catalog_bean.get_test_catalog_id()}"
-				};
-			
-			tm_loadDialog("${base_url}", "get_edit_title_dialog", params, 500);
-		});
-
-		$('.tm-action-edit_description').on('click', function(e) {
-			/* Load edit test catalog title dialog */
-			e.preventDefault();
-			e.stopPropagation();
-			
-			var params = {
-					artifact: "catalog",
-					id: "${test_catalog_bean.get_test_catalog_id()}"
-				};
-			
-			tm_loadDialog("${base_url}", "get_edit_description_dialog", params, 800);
-		});
-
+	<body>
+		<div xmlns="http://www.w3.org/1999/xhtml"
+		      xmlns:xi="http://www.w3.org/2001/XInclude"
+		      xmlns:i18n="http://genshi.edgewall.org/i18n"
+		      xmlns:py="http://genshi.edgewall.org/"
+		      i18n:domain="testmanager">
 		
-    });        
-})(jQuery_testmanager);
-
-//]]>
-</script>
+		  <div id="tm_test_catalog_toolbar" class="tm-toolbar">
+		    <ul>
+		        <py:if test="can_modify">
+			      <li class="first"><a href="#" class="tm-action-add_test_case">Add test case</a></li>
+			      <li><a href="#" class="tm-action-add_subcatalog">Add sub-catalog</a></li>
+			      <li><a href="#" class="tm-action-edit_title">Edit title</a></li>
+			      <li class="last"><a href="#" class="tm-action-edit_description">Edit description</a></li>
+			    </py:if>
+		    </ul>
+		  </div>
+		  
+		    <h1>${test_catalog_bean.title}</h1>
+		
+		    <div id="tm_artifact_description_wiki">
+				${HTML(wiki_contents)}
+		
+			    <div id="tm_artifact_ondemand" style="display:none;">
+			    </div>
+		
+				<div id="tm_artifact_attachments">
+				    <xi:include href="list_of_attachments.html"
+			                    py:with="alist = attachments; compact = (not can_modify); foldable = True"/>
+				</div>
+		    </div>
+		</div>
+		
+		<script type="text/javascript">
+		//<![CDATA[
+		(function($) {
+		    $(function() {
+				$('.tm-action-add_test_case').on('click', function(e) {
+		            /* Load the new test case dialog */
+		            e.preventDefault();
+		            e.stopPropagation();
+		
+		            var params = {parent_id: '${test_catalog_bean.get_test_catalog_id()}'};
+		
+		            tm_loadDialog("${base_url}", "get_new_test_case_dialog", params, 500);
+				});
+		
+				$('.tm-action-add_subcatalog').on('click', function(e) {
+		            /* Load the new test case dialog */
+		            e.preventDefault();
+		            e.stopPropagation();
+		
+		            var params = {parent_id: '${test_catalog_bean.get_test_catalog_id()}'};
+		
+		            tm_loadDialog("${base_url}", "get_new_test_catalog_dialog", params, 500);
+				});
+		
+				$('.tm-action-edit_title').on('click', function(e) {
+					/* Load edit test catalog title dialog */
+					e.preventDefault();
+					e.stopPropagation();
+					
+					var params = {
+							artifact: "catalog",
+							id: "${test_catalog_bean.get_test_catalog_id()}"
+						};
+					
+					tm_loadDialog("${base_url}", "get_edit_title_dialog", params, 500);
+				});
+		
+				$('.tm-action-edit_description').on('click', function(e) {
+					/* Load edit test catalog title dialog */
+					e.preventDefault();
+					e.stopPropagation();
+					
+					var params = {
+							artifact: "catalog",
+							id: "${test_catalog_bean.get_test_catalog_id()}"
+						};
+					
+					tm_loadDialog("${base_url}", "get_edit_description_dialog", params, 800);
+				});
+		
+				
+		    });        
+		})(jQuery_testmanager);
+		
+		//]]>
+		</script>
+		
+	</body>
 </html>
