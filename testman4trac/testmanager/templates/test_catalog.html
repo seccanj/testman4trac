@@ -11,8 +11,7 @@
       <li class="first"><a href="#" class="tm-action-add_test_case">Add test case</a></li>
       <li><a href="#" class="tm-action-add_subcatalog">Add sub-catalog</a></li>
       <li><a href="#" class="tm-action-edit_title">Edit title</a></li>
-      <li><a href="#" class="tm-action-edit_description">Edit description</a></li>
-      <li class="last"><a href="#" class="tm-action-attachments">Attachments</a></li>
+      <li class="last"><a href="#" class="tm-action-edit_description">Edit description</a></li>
     </ul>
   </div>
   
@@ -20,6 +19,14 @@
 
     <div id="tm_artifact_description_wiki">
 		${HTML(wiki_contents)}
+
+	    <div id="tm_artifact_ondemand" style="display:none;">
+	    </div>
+
+		<div id="tm_artifact_attachments">
+		    <xi:include href="list_of_attachments.html"
+	                    py:with="alist = attachments; compact = False; foldable = True"/>
+		</div>
     </div>
 </div>
 

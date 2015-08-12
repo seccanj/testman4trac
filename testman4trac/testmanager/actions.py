@@ -21,14 +21,19 @@ from testmanager.api import TestManagerSystem
 from testmanager.beans import *
 from testmanager.model import TestCatalog, TestCase, TestCaseInPlan, TestPlan, TestManagerModelProvider
 from testmanager.util import *
+
+from trac.attachment import AttachmentModule
 from trac.mimeview.api import Context
 from trac.util import get_reporter_id
+from trac.web.chrome import web_context
 from trac.wiki.formatter import Formatter
 from trac.wiki.model import WikiPage
 from trac.wiki.parser import WikiParser
+
 from tracgenericclass.cache import GenericClassCacheSystem
 from tracgenericclass.model import GenericClassModelProvider
 from tracgenericclass.util import *
+
 from tracstruts.api import Invocable
 
 
@@ -144,7 +149,8 @@ class Actions(object):
                 'mode': 'in',
                 'fulldetails': 'in',
                 'test_catalog_bean': 'out',
-                'wiki_contents': 'out'
+                'wiki_contents': 'out',
+                'attachments': 'out'
             },
             'required_roles': ('TEST_VIEW', 'TEST_ADMIN')
         }
@@ -172,6 +178,10 @@ class Actions(object):
         self.test_catalog_bean = TestManagerSystem(self.env).get_test_catalog_details_data_model(test_catalog = test_catalog, include_status = include_status, test_plan = test_plan)
         self.wiki_contents = _get_wiki_page_contents(self.req, self.env, test_catalog['page_name'], test_catalog.description)
             
+        page = WikiPage(self.env, test_catalog['page_name'], version=None)
+        context = web_context(self.req, page.resource)
+        self.attachments = AttachmentModule(self.env).attachment_data(context);
+
         GenericClassCacheSystem.clear_cache()
 
         self.env.log.debug("<< get_test_catalog_details")
@@ -188,7 +198,8 @@ class Actions(object):
                 'mode': 'in',
                 'fulldetails': 'in',
                 'test_case_bean': 'out',
-                'wiki_contents': 'out'
+                'wiki_contents': 'out',
+                'attachments': 'out'
             },
             'required_roles': ('TEST_VIEW', 'TEST_ADMIN')
         }
@@ -215,6 +226,10 @@ class Actions(object):
 
         self.test_case_bean = TestManagerSystem(self.env).get_test_case_data_model(test_case = test_case, include_status = include_status, test_plan = test_plan)
         self.wiki_contents = _get_wiki_page_contents(self.req, self.env, test_case['page_name'], test_case.description)
+        
+        page = WikiPage(self.env, test_case['page_name'], version=None)
+        context = web_context(self.req, page.resource)
+        self.attachments = AttachmentModule(self.env).attachment_data(context);
 
         GenericClassCacheSystem.clear_cache()
 

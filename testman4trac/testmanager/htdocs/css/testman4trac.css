@@ -1,9 +1,71 @@
+/**
+ Ripristinate base Trac styles that jQuery UI overwrites
+ */
+
+ /* Link styles */
+.ui-widget-content :link, 
+.ui-widget-content :visited {
+    text-decoration: none;
+    color: #b00;
+    border-bottom: 1px dotted #bbb;
+}
+
+.ui-widget-content :link:hover, 
+.ui-widget-content :visited:hover { 
+	background-color: #eee;
+	color: #555 
+}
+
+h1 :link, 
+h1 :visited ,
+h2 :link, 
+h2 :visited, 
+h3 :link, 
+h3 :visited,
+h4 :link, 
+h4 :visited, 
+h5 :link, 
+h5 :visited, 
+h6 :link, 
+h6 :visited {
+    color: inherit;
+}
+
+/* Heading anchors */
+.anchor:link, 
+.anchor:visited {
+    border: none;
+    color: #d7d7d7;
+    font-size: .8em;
+    vertical-align: text-top;
+}
+
+* > .anchor:link, * > .anchor:visited {
+ visibility: hidden;
+}
+
+h1:hover .anchor, h2:hover .anchor, h3:hover .anchor,
+h4:hover .anchor, h5:hover .anchor, h6:hover .anchor,
+span:hover .anchor {
+    visibility: visible;
+}
+
+h1:target, h2:target, h3:target, h4:target, h5:target, h6:target,
+span:target {
+    background: #ffb;
+    box-shadow: .1em .1em .4em .1em #DDA;
+    border-radius: .2em;
+}
+
+
+/**
+ * Toolbar
+ */
+
 #tm_main_toolbar_new_root_catalog {
     padding: 4px;
     display: inline-block;
 }
-
-/* Toolbars */
 
 .tm-toolbar {
  font: normal 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
@@ -55,17 +117,33 @@
  text-shadow: 1px 0 #eee;
 }
 
+/**
+ * Main tree
+ */
 
 .tm_node {
 	cursor: pointer;
 	list-style: none;
 }
 
-.tm_testcatalog_node:before {
+.tm_testcatalog_node i {
+    margin-left: -19px;
+    padding-right: 6px;
+}
+
+/*
+.tm_testcatalog_node .collapsed:before {
 	content: "+";
 	margin-left: -12px;
 	position: absolute;
 }
+
+.tm_testcatalog_node .expanded:before {
+	content: "-";
+	margin-left: -12px;
+	position: absolute;
+}
+*/
 
 .tm_testcatalog_node {
 	padding-left: 30px;
@@ -83,6 +161,7 @@
 	padding: 20px;
 }
 
+
 @media print {
     .collapsed > div, .collapsed > table, .collapsed > ul, .collapsed > dl { 
         display: block; 
@@ -92,4 +171,15 @@
     color: black;
     visibility: hidden;
 }
+
+
+/**
+ * Test artifact details
+ */
+
+#tm_artifact_attachments {
+	padding-top: 40px;
+}
+
+
 

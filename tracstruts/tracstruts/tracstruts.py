@@ -354,7 +354,17 @@ def _get_class(kls):
 _JSON_SUPPORTED_TYPES = (dict, list, tuple, str, unicode, int, long, float)
 
 def _is_type_json_supported(value):
-    return isinstance(value, _JSON_SUPPORTED_TYPES)
+    if not isinstance(value, _JSON_SUPPORTED_TYPES):
+        return False
+    
+    try:
+        io = StringIO()
+        json.dump(value, io)
+        json_value = io.getvalue()
+        
+        return True
+    except:
+        return False
     
 def formatExceptionInfo(maxTBlevel=5):
     cla, exc, trbk = sys.exc_info()

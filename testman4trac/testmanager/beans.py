@@ -150,6 +150,13 @@ class TestCatalogBean(object):
         
         return ''
 
+    @property
+    def page_name(self):
+        if self.test_catalog is not None:
+            return self.test_catalog['page_name']
+        
+        return ''
+
     def is_expandable(self):
         return tot > 0
 
@@ -270,6 +277,13 @@ class TestCaseBean(object):
     def description(self):
         if self.test_case is not None:
             return self.test_case.description
+        
+        return ''
+
+    @property
+    def page_name(self):
+        if self.test_case is not None:
+            return self.test_case['page_name']
         
         return ''
 

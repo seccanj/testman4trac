@@ -9,8 +9,7 @@
   <div id="tm_test_case_toolbar" class="tm-toolbar">
     <ul>
       <li class="first"><a href="#" class="tm-action-edit_title">Edit title</a></li>
-      <li><a href="#" class="tm-action-edit_description">Edit description</a></li>
-      <li class="last"><a href="#" class="tm-action-attachments">Attachments</a></li>
+      <li class="last"><a href="#" class="tm-action-edit_description">Edit description</a></li>
     </ul>
   </div>
   
@@ -18,7 +17,16 @@
 
     <div id="tm_artifact_description_wiki">
 		${HTML(wiki_contents)}
+
+	    <div id="tm_artifact_ondemand" style="display:none;">
+	    </div>
+
+		<div id="tm_artifact_attachments">
+		    <xi:include href="list_of_attachments.html"
+	                    py:with="alist = attachments; compact = False; foldable = True"/>
+		</div>
     </div>
+
 </div>
 
 <script type="text/javascript">
@@ -51,18 +59,20 @@
 			tm_loadDialog("${base_url}", "get_edit_description_dialog", params, 800);
 		});
 
+		/*
 		$('.tm-action-attachments').on('click', function(e) {
-			/* Load edit test catalog title dialog */
 			e.preventDefault();
 			e.stopPropagation();
-			
-			var params = {
-					artifact: "testcase",
-					id: "${test_case_bean.get_test_case_id()}"
-				};
-			
-			tm_loadDialog("${base_url}", "get_attachments_dialog", params, 500);
+
+            doAjaxCall("${base_url}/attachment/wiki/${test_case_bean.page_name}", "GET", {}, true, function(markup) {
+		            console.info("Markup: "+markup);
+		            var html = $.parseHTML(markup, null, true);
+		            var wikiPage = $(html).find("#attachments")[0];
+		            $("#tm_artifact_ondemand").append(wikiPage);
+		            $("#tm_artifact_ondemand").show();
+            	});
 		});
+		*/
 		
     });        
 })(jQuery_testmanager);

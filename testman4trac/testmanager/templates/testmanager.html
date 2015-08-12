@@ -25,6 +25,8 @@
     <script src="${base_url}/chrome/testmanager/js/igniteui/infragistics.js"></script>
     <link href="${base_url}/chrome/testmanager/js/igniteui/css/themes/infragistics/infragistics.theme.css" rel="stylesheet"></link>
     <link href="${base_url}/chrome/testmanager/js/igniteui/css/structure/infragistics.css" rel="stylesheet"></link>
+
+    <link href="${base_url}/chrome/testmanager/css/font-awesome-4.4.0/css/font-awesome.min.css" rel="stylesheet"></link>
 	
     <script type="text/javascript">
         var jQuery_testmanager = $.noConflict(true);
@@ -50,7 +52,7 @@
           <div id="tm_navigator" style="overflow: auto">
               <div id="tm_navigator_toolbar" class="tm-toolbar">
                 <ul>
-                  <li class="first"><a href="#" class="tm-action-new_root_catalog">New root catalog</a></li>
+                  <li class="first last"><a href="#" class="tm-action-new_root_catalog">New root catalog</a></li>
                 </ul>
               </div>
 
@@ -68,7 +70,7 @@
                 <input id="tm_filter_input" name="tm_filter_input" 
                     title="Type the test to search for, even more than one word. You can also filter on the test case status (untested, successful, failed)." 
                     type="text" 
-                    size="40" />
+                    size="32" />
                 <span id="ticketContainer_searchResultsNumberId" style="font-weight: bold;"></span>
             </div>
 
@@ -89,7 +91,7 @@
             <div id="tm_artifact_breadcrumbs">
             </div>
 
-            <div id="tm_artifact_description" class="wikipage searchable">
+            <div id="tm_artifact_description" class="searchable">
             </div>
         </div>
 
@@ -143,13 +145,13 @@
             
             console.dir(testCatalog);
             
-            result += '<ul class="tm_node tm_testcatalog_node" data-id="'+testCatalog.test_catalog.id+'" ';
+            result += '<ul class="tm_node tm_testcatalog_node expanded af-ul" data-id="'+testCatalog.test_catalog.id+'" ';
 
             if ('test_plan' in testCatalog) {
                 result += 'data-plan_id="'+testCatalog.test_plan.id+'" ';
             }
             
-            result += '>'+testCatalog.test_catalog.title;
+            result += '><i class="tm_toggle_node fa-ul fa fa-minus-square-o"></i>'+testCatalog.test_catalog.title;
             
             for (var subCatalog in testCatalog.sub_catalogs) {
                 result += generateTestCatalogTree(testCatalog.sub_catalogs[subCatalog]);
@@ -180,13 +182,24 @@
         }
         
         function attachTreeBehavior() {
+            $('.tm_toggle_node').on('click', function(e) {
+	                /* Expand or collapse sub tree */
+	                e.preventDefault();
+	                e.stopPropagation();
+	                
+	                var node = $(this);
+	                var catalogNode = node.parent('ul');
+	
+	                tm_toggleTreeNode(catalogNode);
+	            });
+            
             $('.tm_testcatalog_node').on('click', function(e) {
                     /* Load test catalog description */
                     e.preventDefault();
                     e.stopPropagation();
                     
                     var node = $(this);
-                    
+
                     var params = {
                             test_catalog_id: node.attr('data-id')
                         };
@@ -203,8 +216,10 @@
                     */
                     doAjaxCall("${base_url}/action/testmanager.actions!get_test_catalog_details", "GET", params, true, function(data) {
                             var markup = data;
-                            
+
+                            /*
                             console.info("Markup: "+markup);
+                            */
 
 							/*
                             var html = $.parseHTML(markup, null, true);

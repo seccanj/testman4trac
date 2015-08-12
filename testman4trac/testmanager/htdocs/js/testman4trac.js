@@ -65,6 +65,21 @@
 	        }
         };
         
+        window.tm_toggleTreeNode = function(treeNode) {
+	        if (treeNode.hasClass('expanded')) {
+	            treeNode.removeClass('expanded');
+	            treeNode.addClass('collapsed');
+	            treeNode.children('i').removeClass('fa-minus-square-o');
+	            treeNode.children('i').addClass('fa-plus-square-o');
+	            treeNode.children('ul, li').hide();
+	        } else {
+	            treeNode.removeClass('collapsed');
+	            treeNode.addClass('expanded');
+	            treeNode.children('i').removeClass('fa-plus-square-o');
+	            treeNode.children('i').addClass('fa-minus-square-o');
+	            treeNode.children('ul, li').show();
+	        }
+        };
         
     });        
 })(jQuery_testmanager);
