@@ -102,7 +102,7 @@ class TracStruts(Component):
             tracstruts_context = json.load(io)
         else:
             tracstruts_context_string = '{}'
-            tracstruts_context = {}        
+            tracstruts_context = {}
         
         self.env.log.debug("Tracstruts context JSON deserialized is '%s'." % (tracstruts_context_string,))
 

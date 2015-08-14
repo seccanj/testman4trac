@@ -75,8 +75,8 @@
             </div>
 
             <div class="tm_expandcollapseall">
-                <a style="margin-right: 10px" onclick="toggleAll('ticketContainer', true)" href="javascript:void(0)">Expand all</a>
-                <a onclick="toggleAll('ticketContainer', false)" href="javascript:void(0)">Collapse all</a>
+                <a id="tm_expandalltree_button" href="#">Expand all</a>
+                <a id="tm_collapsealltree_button" href="#">Collapse all</a>
             </div>
 
             <div id="tm_tree">
@@ -180,6 +180,22 @@
             
             return result;
         }
+
+        $('#tm_expandalltree_button').on('click', function(e) {
+            /* Expand or collapse sub tree */
+            e.preventDefault();
+            e.stopPropagation();
+            
+            tm_expandAllTreeNodes();
+        });
+        
+        $('#tm_collapsealltree_button').on('click', function(e) {
+            /* Expand or collapse sub tree */
+            e.preventDefault();
+            e.stopPropagation();
+            
+            tm_collapseAllTreeNodes();
+        });
         
         function attachTreeBehavior() {
             $('.tm_toggle_node').on('click', function(e) {

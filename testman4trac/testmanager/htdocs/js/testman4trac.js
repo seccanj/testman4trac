@@ -70,18 +70,44 @@
         
         window.tm_toggleTreeNode = function(treeNode) {
 	        if (treeNode.hasClass('expanded')) {
+	        	tm_collapseTreeNode(treeNode);
+	        } else {
+	        	tm_expandTreeNode(treeNode);
+	        }
+        };
+        
+        window.tm_collapseTreeNode = function(treeNode) {
+	        if (treeNode.hasClass('expanded')) {
 	            treeNode.removeClass('expanded');
 	            treeNode.addClass('collapsed');
 	            treeNode.children('i').removeClass('fa-minus-square-o');
 	            treeNode.children('i').addClass('fa-plus-square-o');
 	            treeNode.children('ul, li').hide();
-	        } else {
+	        }
+        };
+        
+        window.tm_expandTreeNode = function(treeNode) {
+	        if (treeNode.hasClass('collapsed')) {
 	            treeNode.removeClass('collapsed');
 	            treeNode.addClass('expanded');
 	            treeNode.children('i').removeClass('fa-plus-square-o');
 	            treeNode.children('i').addClass('fa-minus-square-o');
 	            treeNode.children('ul, li').show();
 	        }
+        };
+        
+        window.tm_collapseAllTreeNodes = function() {
+        	$('#tm_tree').find('ul').each(
+        			function() {
+        				tm_collapseTreeNode($(this));
+        			});
+        };
+        
+        window.tm_expandAllTreeNodes = function() {
+        	$('#tm_tree').find('ul').each(
+        			function() {
+        				tm_expandTreeNode($(this));
+        			});
         };
         
     });        
