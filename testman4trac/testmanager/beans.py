@@ -13,11 +13,12 @@
 # 
 
 import copy
+from datetime import date, datetime
 import re
 import time
 
-from datetime import date, datetime
-
+from testmanager.constants import Constants
+from testmanager.util import *
 from trac.core import *
 from trac.db import Table, Column, Index
 from trac.env import IEnvironmentSetupParticipant
@@ -28,13 +29,9 @@ from trac.util.text import CRLF
 from trac.wiki.api import WikiSystem
 from trac.wiki.model import WikiPage
 from trac.wiki.web_ui import WikiModule
-
 from tracgenericclass.model import IConcreteClassProvider, AbstractVariableFieldsObject, AbstractWikiPageWrapper, need_db_create_for_realm, create_db_for_realm, need_db_upgrade_for_realm, upgrade_db_for_realm
 from tracgenericclass.util import *
 
-from testmanager.util import *
-
-from testmanager.constants import Constants
 
 class TestCatalogBean(object):
     """
@@ -56,6 +53,8 @@ class TestCatalogBean(object):
     
         self.test_cases = {}
         
+        self.test_plans = None
+        
         self.tot = 0
         
         self.key = None
@@ -76,14 +75,23 @@ class TestCatalogBean(object):
         if self.has_status:
             self.color = self._calc_worse_color(test_case_bean.color)
 
+    def load_test_plans(self):
+        if self.test_plans is None:
+            self.test_plans = {}
+            i = 0
+            for tp in self.test_catalog.list_testplans():
+                test_plan_bean = TestPlanBean(self.test_catalog, tp, i)
+                self.test_plans[test_plan_bean.get_key()] = test_plan_bean 
+                i += 1
+            
     def iterator(self):
-        sorted_test_catalogs = sorted(self.sub_catalogs, key=self._test_sorting(self.sub_catalogs))
+        sorted_test_catalogs = sorted(self.sub_catalogs, key=_test_sorting(self.sub_catalogs))
 
         for sub_catalog_bean in sorted_test_catalogs:
             for item in sub_catalog_bean.iterator():
                 yield item
                 
-        sorted_test_cases = sorted(self.test_cases, key=self._test_sorting(self.test_cases))
+        sorted_test_cases = sorted(self.test_cases, key=_test_sorting(self.test_cases))
 
         for test_case_bean in sorted_test_cases:
             yield test_case_bean
@@ -91,16 +99,22 @@ class TestCatalogBean(object):
         yield TestListTerminatorBean()
 
     def sub_catalogs_iterator(self):
-        sorted_test_catalogs = sorted(self.sub_catalogs, key=self._test_sorting(self.sub_catalogs))
+        sorted_test_catalogs = sorted(self.sub_catalogs, key=_test_sorting(self.sub_catalogs))
 
         for sub_catalog_bean in sorted_test_catalogs:
             yield sub_catalog_bean
     
     def test_cases_iterator(self):
-        sorted_test_cases = sorted(self.test_cases, key=self._test_sorting(self.test_cases))
+        sorted_test_cases = sorted(self.test_cases, key=_test_sorting(self.test_cases))
 
         for test_case_bean in sorted_test_cases:
             yield test_case_bean
+
+    def test_plans_iterator(self):
+        sorted_test_plans = sorted(self.test_plans, key=_test_sorting(self.test_plans))
+
+        for test_plan_bean in sorted_test_plans:
+            yield self.test_plans[test_plan_bean]
 
     def get_key(self, sortby = 'custom'):
 
@@ -160,6 +174,9 @@ class TestCatalogBean(object):
     def is_expandable(self):
         return tot > 0
 
+    def has_test_plans(self):
+        return self.test_plans is not None and len(self.test_plans) > 0
+
     def _calc_worse_color(self, other_color):
         if self.color == 'red' or other_color == 'red':
             return 'red'
@@ -169,16 +186,6 @@ class TestCatalogBean(object):
         
         return 'green'
         
-    def _test_sorting(self, items, sortby = 'custom'):
-        #self.env.log.debug("  --> data=%s" % data)
-    
-        def do_sort(k):
-            #self.env.log.debug("      --> k=%s, data[k]=%s" % (k, data[k]))
-        
-            return items[k].get_key(sortby = sortby)
-            
-        return do_sort
-
     def as_dictionary(self):
         result = {'has_status': self.has_status, 'color': self.color, 'tot': self.tot, 'key': self.key}
         
@@ -307,6 +314,57 @@ class TestCaseBean(object):
         return result
         
 
+class TestPlanBean(object):
+    """
+    A test plan bean, used for presentation purposes.
+    """
+    
+    def __init__(self, test_catalog = None, test_plan = None, unique_idx = 0):
+        self.test_catalog = test_catalog
+        
+        self.test_plan = test_plan
+
+        self.unique_idx = unique_idx
+        
+        self.key = None
+
+    @property
+    def title(self):
+        if self.test_plan is not None:
+            return self.test_plan['name']
+        
+        return ''
+
+    @property
+    def contains_all(self):
+        if self.test_plan is not None:
+            return self.test_plan['contains_all']
+        
+        return 1
+
+    @property
+    def snapshot(self):
+        if self.test_plan is not None:
+            return self.test_plan['snapshot']
+        
+        return 0
+
+    @property
+    def author(self):
+        if self.test_plan is not None:
+            return self.test_plan['author']
+        
+        return ''
+
+    def get_key(self, sortby = 'custom'):
+
+        if self.key is None:
+            ts = self.test_plan['time']
+            self.key = ts.isoformat()
+        
+        return self.key
+
+        
 class TestListTerminatorBean(object):
     """
     Used as an indicator of the end of a list of test artifacts
@@ -367,3 +425,9 @@ class BreadcrumbBean(object):
 
         return _("All Catalogs")
 
+
+def _test_sorting(items, sortby = 'custom'):
+    def do_sort(k):
+        return items[k].get_key(sortby = sortby)
+        
+    return do_sort

@@ -14,7 +14,7 @@
     <div id="tm_edit_description_dialog_message_holder"></div>
 
     <fieldset>
-        <textarea id="tm_edit_description_dialog_parameter" name="tm_edit_description_dialog_parameter" rows="20" cols="112">${description}</textarea>
+        <textarea id="tm_edit_description_dialog_description" name="tm_edit_description_dialog_description" rows="20" cols="112">${description}</textarea>
     </fieldset>
     
     <div>
@@ -28,7 +28,7 @@
 	    	    "${base_url}", 
 	    	    "edit_description_dialog", 
 	    	    "change_description", 
-	    	    "description", 
+	    	    ["description"], 
 				{
 					artifact: "${artifact}",
 					id: "${id}"

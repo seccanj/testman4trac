@@ -16,7 +16,8 @@
 			      <li class="first"><a href="#" class="tm-action-add_test_case">Add test case</a></li>
 			      <li><a href="#" class="tm-action-add_subcatalog">Add sub-catalog</a></li>
 			      <li><a href="#" class="tm-action-edit_title">Edit title</a></li>
-			      <li class="last"><a href="#" class="tm-action-edit_description">Edit description</a></li>
+			      <li><a href="#" class="tm-action-edit_description">Edit description</a></li>
+			      <li class="last"><a href="#" class="tm-action-create_plan">Create test plan</a></li>
 			    </py:if>
 		    </ul>
 		  </div>
@@ -30,9 +31,24 @@
 			    </div>
 		
 				<div id="tm_artifact_attachments">
-				    <xi:include href="list_of_attachments.html"
-			                    py:with="alist = attachments; compact = (not can_modify); foldable = True"/>
+					<py:with vars="foldable = True">
+					    <xi:include href="list_of_attachments.html"
+				                    py:with="alist = attachments; compact = (not can_modify); foldable = True"/>
+				    </py:with>
 				</div>
+				
+				<div id="tm_artifact_testplans">
+			        <h3 class="foldable">Test plans <span class="trac-count">(${len(test_catalog_bean.test_plans)})</span></h3>
+			        <div>
+			          <ul>
+			            <py:for each="test_plan in test_catalog_bean.test_plans_iterator()">
+			              <li>
+			              ${test_plan.title} (${test_plan.author})
+			              </li>
+			            </py:for>
+			          </ul>
+			        </div>
+				</div>				
 		    </div>
 		</div>
 		
@@ -86,7 +102,16 @@
 					tm_loadDialog("${base_url}", "get_edit_description_dialog", params, 800);
 				});
 		
-				
+				$('.tm-action-create_plan').on('click', function(e) {
+		            /* Load the new test plan dialog */
+		            e.preventDefault();
+		            e.stopPropagation();
+		
+		            var params = {parent_id: '${test_catalog_bean.get_test_catalog_id()}'};
+		
+		            tm_loadDialog("${base_url}", "get_new_test_plan_dialog", params, 800);
+				});
+		
 		    });        
 		})(jQuery_testmanager);
 		

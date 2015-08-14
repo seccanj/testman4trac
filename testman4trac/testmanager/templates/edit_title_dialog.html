@@ -14,7 +14,7 @@
     <div id="tm_edit_title_dialog_message_holder"></div>
 
     <fieldset>
-        <input id="tm_edit_title_dialog_parameter" name="tm_edit_title_dialog_parameter" size="40" value="${title}" />
+        <input id="tm_edit_title_dialog_title" name="tm_edit_title_dialog_title" size="40" value="${title}" />
     </fieldset>
     
     <div>
@@ -28,7 +28,7 @@
 	    	    "${base_url}", 
 	    	    "edit_title_dialog", 
 	    	    "change_title", 
-	    	    "title", 
+	    	    ["title"], 
 				{
 					artifact: "${artifact}",
 					id: "${id}"

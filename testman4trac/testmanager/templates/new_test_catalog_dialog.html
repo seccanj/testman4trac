@@ -5,7 +5,6 @@
       i18n:domain="testmanager"
 
      id="tm_new_test_catalog_dialog_container"
-     style="width: 300px;"
 >
     <div py:choose="">
       <h2 py:when="parent_test_catalog is not None">Add a new catalog as a sub-catalog of "${parent_test_catalog.title}"</h2>
@@ -15,8 +14,8 @@
     <div id="tm_new_test_catalog_dialog_message_holder"></div>
 
     <fieldset>
-        <label for="tm_new_test_catalog_dialog_parameter">New test catalog name</label>
-        <input id="tm_new_test_catalog_dialog_parameter" name="tm_new_test_catalog_dialog_parameter" size="40" />
+        <label for="tm_new_test_catalog_dialog_title">New test catalog name</label>
+        <input id="tm_new_test_catalog_dialog_title" name="tm_new_test_catalog_dialog_title" size="40" />
     </fieldset>
     
     <div>
@@ -30,7 +29,7 @@
 	    	    "${base_url}", 
 	    	    "new_test_catalog_dialog", 
 	    	    "create_test_catalog", 
-	    	    "title", 
+	    	    ["title"], 
 	    	    {parent_id: "${parent_id or ''}"}, 
 	    	    function(output){tm_loadTestCatalogs("testcatalog", output.id);}
 	    	);

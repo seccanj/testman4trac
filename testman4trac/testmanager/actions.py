@@ -177,6 +177,7 @@ class Actions(object):
         test_catalog = _get_test_catalog(test_catalog_id, self.env)
 
         self.test_catalog_bean = TestManagerSystem(self.env).get_test_catalog_details_data_model(test_catalog = test_catalog, include_status = include_status, test_plan = test_plan)
+        self.test_catalog_bean.load_test_plans()
         self.wiki_contents = _get_wiki_page_contents(self.req, self.env, test_catalog['page_name'], test_catalog.description)
             
         page = WikiPage(self.env, test_catalog['page_name'], version=None)
@@ -325,6 +326,30 @@ class Actions(object):
     @Invocable(
         {
             'results': {
+                'success': {'kind': 'template', 'template_name': 'new_test_plan_dialog.html'}
+            },
+            'parameters': {
+                'parent_id': 'in_out',
+                'parent_test_catalog': 'out'
+            },
+            'required_roles': ('TEST_PLAN_ADMIN', 'TEST_ADMIN')
+        }
+    )
+    def get_new_test_plan_dialog(self):
+        self.env.log.debug(">> get_new_test_plan_dialog")
+
+        self.env.log.debug("parent_id: '%s'" % (parent_id))
+
+        self.parent_test_catalog = _get_test_catalog(parent_id, self.env)
+
+        self.env.log.debug("<< get_new_test_plan_dialog")
+        
+        return 'success'
+
+
+    @Invocable(
+        {
+            'results': {
                 'success': {'kind': 'template', 'template_name': 'edit_title_dialog.html'}
             },
             'parameters': {
@@ -415,6 +440,8 @@ class Actions(object):
 
         self.env.log.debug("parent_id: '%s'" % (parent_id))
 
+        GenericClassCacheSystem.clear_cache()
+
         test_manager_system = TestManagerSystem(self.env)
 
         id = test_manager_system.get_next_id('catalog')
@@ -428,13 +455,11 @@ class Actions(object):
             pagename = 'TC_TT'+str(id)
             new_tc = TestCatalog(self.env, id, pagename, parent_id, title, new_content)
 
-            new_tc.author = get_reporter_id(req, 'author')
+            new_tc.author = get_reporter_id(self.req, 'author')
             new_tc.remote_addr = self.req.remote_addr
             # This also creates the Wiki page
             new_tc.insert()
             
-            self.test_catalog = TestCatalogBean(new_tc)
-
             jsdstr = '{"result": "OK", "id": ' + str(id) + '}'
 
         except:
@@ -444,6 +469,8 @@ class Actions(object):
             jsdstr = '{"result": "ERROR", "message": "An error occurred while adding the test catalog."}'
 
         self.ajax_result = jsdstr
+
+        GenericClassCacheSystem.clear_cache()
 
         self.env.log.debug("<< create_test_catalog")
         
@@ -463,6 +490,8 @@ class Actions(object):
 
         self.env.log.debug("parent_id: '%s'" % (parent_id))
 
+        GenericClassCacheSystem.clear_cache()
+
         test_manager_system = TestManagerSystem(self.env)
 
         id = test_manager_system.get_next_id('testcase')
@@ -478,24 +507,74 @@ class Actions(object):
             new_content = test_manager_system.get_tc_template(parent_tcat['page_name'])
 
             new_tc = TestCase(self.env, id, pagename, parent_id, title, new_content)
-            new_tc.author = get_reporter_id(req, 'author')
+            new_tc.author = get_reporter_id(self.req, 'author')
             new_tc.remote_addr = self.req.remote_addr
 
             new_tc.insert()
             
-            self.test_case = TestCaseBean(new_tc)
-
             jsdstr = '{"result": "OK", "id": ' + str(id) + '}'
 
         except:
             self.env.log.error("Error adding test catalog!")
             self.env.log.error(formatExceptionInfo())
 
-            jsdstr = '{"result": "ERROR", "message": "An error occurred while adding the test catalog."}'
+            jsdstr = '{"result": "ERROR", "message": "An error occurred while adding the test case."}'
 
         self.ajax_result = jsdstr
 
+        GenericClassCacheSystem.clear_cache()
+
         self.env.log.debug("<< create_test_case")
+        
+        return 'success'
+
+
+    @Invocable(
+        {
+            'results': {
+                'success': {'kind': 'json', 'field_name': 'ajax_result'}
+            },
+            'required_roles': ('TEST_PLAN_ADMIN', 'TEST_ADMIN')
+        }
+    )
+    def create_test_plan(self, parent_id, title, contains_all, snapshot, selected_test_cases=""):
+        self.env.log.debug(">> create_test_plan")
+
+        self.env.log.debug("parent_id: '%s'" % (parent_id))
+
+        GenericClassCacheSystem.clear_cache()
+
+        test_manager_system = TestManagerSystem(self.env)
+        id = test_manager_system.get_next_id('testplan')
+
+        jsdstr = None
+        
+        try:
+            contains_all_int = (0, 1)[contains_all == 'true']
+            snapshot_int = (0, 1)[snapshot == 'true']
+            selected_tcs = []
+            if not contains_all_int and not selected_test_cases == "":
+                selected_tcs = selected_test_cases.split(',')
+
+            test_catalog = TestCatalog(self.env, parent_id)
+            new_tp = TestPlan(self.env, id, parent_id, test_catalog['page_name'], title, get_reporter_id(self.req, 'author'), contains_all_int, snapshot_int, selected_tcs)
+            new_tp.remote_addr = self.req.remote_addr
+
+            new_tp.insert()
+            
+            jsdstr = '{"result": "OK", "id": ' + str(id) + '}'
+
+        except:
+            self.env.log.error("Error adding test catalog!")
+            self.env.log.error(formatExceptionInfo())
+
+            jsdstr = '{"result": "ERROR", "message": "An error occurred while creating the test plan."}'
+
+        self.ajax_result = jsdstr
+
+        GenericClassCacheSystem.clear_cache()
+
+        self.env.log.debug("<< create_test_plan")
         
         return 'success'
 

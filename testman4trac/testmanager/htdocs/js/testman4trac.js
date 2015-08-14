@@ -12,7 +12,7 @@
                 });
         };
 
-        window.tm_attachDialogEvents = function(base_url, dialogName, actionName, parameterName, inParams, handlerFunction) {
+        window.tm_attachDialogEvents = function(base_url, dialogName, actionName, parameterNames, inParams, handlerFunction, valueGetterFunction) {
             var params = inParams != null ? inParams : {};
 
             $("#tm_"+dialogName+"_button_ok").button({
@@ -25,14 +25,26 @@
             	  e.preventDefault();
             	  e.stopPropagation();
             	
-	              var parameterValue = $("#tm_"+dialogName+"_parameter").val();
-	              console.info(parameterValue);
-	
 	              var okButton = $(this);
 	              okButton.prop("disabled", true);
 	
-	              params[parameterName] = parameterValue;
+	              if (parameterNames) {
+		              for (var i = 0; i < parameterNames.length; i++) {
+		                  parameterName = parameterNames[i];
+	    	              var parameterValue = $("#tm_"+dialogName+"_"+parameterName).val();
+	    	              console.info(parameterName+'='+parameterValue);
+
+	    	              params[parameterName] = parameterValue;
+	            	  }
+	              }
+            	  
+            	  if (valueGetterFunction) {
+            		  $.extend(params, valueGetterFunction());
+            	  }
 	
+            	  console.info("params: ");
+            	  console.dir(params);
+            	  
 	              doAjaxCall(base_url+"/action/testmanager.actions!"+actionName, "GET", params, true, function(data) {
 	                    var resultJson = data;
 	                    console.info(resultJson);
@@ -41,7 +53,9 @@
 	                    
 	                    if (output.result === "OK") {
 	                        $("#tm_dialog_anchor").dialog("destroy");
-	                        handlerFunction(output);
+	                        if (handlerFunction) {
+		                        handlerFunction(output);
+	                        }
 	                    } else {
 	                        /* Show error within dialog */
 	                    	$("#tm_"+dialogName+"_message_holder").addClass("ui-state-error");
