@@ -356,6 +356,13 @@ class TestPlanBean(object):
         
         return ''
 
+    @property
+    def date(self):
+        if self.test_plan is not None:
+            return self.test_plan['time']
+        
+        return ''
+
     def get_key(self, sortby = 'custom'):
 
         if self.key is None:

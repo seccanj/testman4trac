@@ -43,7 +43,7 @@
 			          <ul>
 			            <py:for each="test_plan in test_catalog_bean.test_plans_iterator()">
 			              <li>
-			              ${test_plan.title} (${test_plan.author})
+			              ${test_plan.title} - created by <em>${authorinfo(test_plan.author)}</em> ${pretty_dateinfo(test_plan.date)}.
 			              </li>
 			            </py:for>
 			          </ul>
