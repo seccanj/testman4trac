@@ -104,6 +104,9 @@
     
     <script type="text/javascript">
 //<![CDATA[
+           
+var currentSelectedTreeNode = null;
+           
 (function($) {
     $(function() {
         window.tm_loadTestCatalogs = function(selectType, selectId) {
@@ -214,13 +217,14 @@
                     e.preventDefault();
                     e.stopPropagation();
                     
-                    var node = $(this);
+                    var treeNode = $(this);
+            		selectNode(treeNode);
 
-                    var params = {
-                            test_catalog_id: node.attr('data-id')
+            		var params = {
+                            test_catalog_id: treeNode.attr('data-id')
                         };
                     
-                    var planid = node.attr('data-plan_id');
+                    var planid = treeNode.attr('data-plan_id');
                     if (planid) {
                         params.test_plan_id = planid;
                     }
@@ -232,17 +236,6 @@
                     */
                     doAjaxCall("${base_url}/action/testmanager.actions!get_test_catalog_details", "GET", params, true, function(data) {
                             var markup = data;
-
-                            /*
-                            console.info("Markup: "+markup);
-                            */
-
-							/*
-                            var html = $.parseHTML(markup, null, true);
-                            var wikiPage = $(html).find("#content")[0];
-                            $("#tm_artifact_description").append(wikiPage);
-                            */
-                            
                             $("#tm_artifact_description").html(markup);
                             
                             attachTestCatalogDescriptionBehavior();
@@ -254,27 +247,35 @@
                     e.preventDefault();
                     e.stopPropagation();
                     
-                    var node = $(this);
-                    var params = {
-                            test_case_id: node.attr('data-id')
+                    var treeNode = $(this);
+            		selectNode(treeNode);
+
+            		var params = {
+                            test_case_id: treeNode.attr('data-id')
                         };
                     
-                    var planid = node.attr('data-plan_id');
+                    var planid = treeNode.attr('data-plan_id');
                     if (planid) {
                         params.test_plan_id = planid;
                     }
                     
                     doAjaxCall("${base_url}/action/testmanager.actions!get_test_case_details", "GET", params, true, function(data) {
-                            var markup = data;
-                            
-                            console.info("Markup: "+markup);
-                            
+	                		var markup = data;
                             $("#tm_artifact_description").html(markup);
                             
                             attachTestCaseDescriptionBehavior();
                         });
                 });
         }
+
+		function selectNode(treeNode) {
+    		if (currentSelectedTreeNode) {
+        		currentSelectedTreeNode.removeClass('selected');
+        	}
+
+    		treeNode.addClass('selected');
+    		currentSelectedTreeNode = treeNode;
+		}
         
         function attachTestCatalogDescriptionBehavior() {
             console.info("attachTestCatalogDescriptionBehavior()");

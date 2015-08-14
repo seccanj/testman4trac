@@ -126,6 +126,16 @@ span:target {
 	list-style: none;
 }
 
+/** Highlight currently selected node in the tree */
+.tm_node.selected {
+	font-weight: bold;
+}
+
+/** Un-highlight descendant nodes, otherwise all test cases inside a catalog would be highlighted */
+.tm_node.selected * {
+	font-weight: normal;
+}
+
 .tm_testcatalog_node i {
     margin-left: -19px;
     padding-right: 6px;
