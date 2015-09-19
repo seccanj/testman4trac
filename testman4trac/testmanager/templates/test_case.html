@@ -19,7 +19,12 @@
 		    </ul>
 		  </div>
 		  
-		    <h1 class="tm_artifact_status ${statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][0]}" title="${statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][1]}">${test_case_bean.title}</h1>
+			<py:if test="not test_case_bean.has_status">
+			    <h1>${test_case_bean.title}</h1>
+			</py:if>
+			<py:if test="test_case_bean.has_status">
+			    <h1 class="tm_artifact_status ${statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][0]}" title="${statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][1]}">${test_case_bean.title}</h1>
+			</py:if>
 		
 		    <div id="tm_artifact_description_wiki">
 				${HTML(wiki_contents)}
