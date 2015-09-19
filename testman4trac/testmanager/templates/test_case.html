@@ -19,14 +19,14 @@
 		    </ul>
 		  </div>
 		  
-		    <h1>${test_case_bean.title}</h1>
+		    <h1 class="tm_artifact_status ${statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][0]}" title="${statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][1]}">${test_case_bean.title}</h1>
 		
 		    <div id="tm_artifact_description_wiki">
 				${HTML(wiki_contents)}
 		
 				<py:if test="test_case_bean.has_status">
 				    <div id="tm_artifact_status">
-				    	${test_case_bean.test_case_in_plan['status'] or default_outcome}
+				    	Status: ${statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][1]}
 				    </div>
 			    </py:if>
 

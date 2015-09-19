@@ -204,7 +204,8 @@ class Actions(object):
                 'wiki_contents': 'out',
                 'attachments': 'out',
                 'can_modify': 'out',
-                'default_outcome': 'out'
+                'default_outcome': 'out',
+                'statuses_by_name': 'out'
             },
             'required_roles': ('TEST_VIEW', 'TEST_ADMIN')
         }
@@ -227,6 +228,7 @@ class Actions(object):
         include_status = test_plan_id is not None
         
         self.default_outcome = TestManagerSystem(self.env).get_default_tc_status()
+        self.statuses_by_name = TestManagerSystem(self.env).get_tc_statuses_by_name()
 
         test_plan = _get_test_plan(test_plan_id, self.env)
         test_case = _get_test_case(test_case_id, self.env)

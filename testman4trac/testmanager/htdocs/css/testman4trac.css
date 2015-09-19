@@ -153,20 +153,20 @@ span:target {
 	color: red;
 }
 
-.tm_status_node:before {
+.tm_status_node:before, .tm_artifact_status:before {
 	font-family: FontAwesome;
 	content: "\f111   ";
 }
 
-.tm_status_node.yellow:before {
+.tm_status_node.yellow:before, .tm_artifact_status.yellow:before {
 	color: yellow;
 }
 
-.tm_status_node.green:before {
+.tm_status_node.green:before, .tm_artifact_status.green:before {
 	color: green;
 }
 
-.tm_status_node.red:before {
+.tm_status_node.red:before, .tm_artifact_status.red:before {
 	color: red;
 }
 
