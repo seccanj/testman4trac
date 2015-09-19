@@ -33,6 +33,11 @@
 				    <div id="tm_artifact_status">
 				    	Status: ${statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][1]}
 				    </div>
+				    <div>
+				    	<a href="#" class="tm-action-change_status tm_artifact_status red" data-status="failed">&nbsp;</a>
+				    	<a href="#" class="tm-action-change_status tm_artifact_status yellow" data-status="to_be_tested">&nbsp;</a>
+				    	<a href="#" class="tm-action-change_status tm_artifact_status green" data-status="successful">&nbsp;</a>
+				    </div>
 			    </py:if>
 
 			    <div id="tm_artifact_ondemand" style="display:none;">
@@ -53,7 +58,6 @@
 				$('.tm-action-edit_title').on('click', function(e) {
 					/* Load edit test catalog title dialog */
 					e.preventDefault();
-					e.stopPropagation();
 					
 					var params = {
 							artifact: "testcase",
@@ -66,7 +70,6 @@
 				$('.tm-action-edit_description').on('click', function(e) {
 					/* Load edit test catalog title dialog */
 					e.preventDefault();
-					e.stopPropagation();
 					
 					var params = {
 							artifact: "testcase",
@@ -74,6 +77,21 @@
 						};
 					
 					tm_loadDialog("${base_url}", "get_edit_description_dialog", params, 800);
+				});
+		
+				$('.tm-action-change_status').on('click', function(e) {
+					/* Change status of the test case */
+					e.preventDefault();
+					
+					var params = {
+							test_case_id: "${test_case_bean.get_test_case_id()}",
+							test_plan_id: "${test_case_bean.get_test_plan_id()}",
+							new_status: $(this).data('status')
+						};
+					
+					doAjaxCall("${base_url}/action/testmanager.actions!change_test_case_status", "GET", params, true, function(data) {
+						tm_loadTestPlan('${test_case_bean.get_test_plan_id()}', 'testcase', '${test_case_bean.get_test_case_id()}');
+                    });
 				});
 		
 				/*

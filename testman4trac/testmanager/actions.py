@@ -261,13 +261,13 @@ class Actions(object):
             'required_roles': ('TEST_VIEW', 'TEST_EXECUTE', 'TEST_ADMIN')
         }
     )
-    def get_test_plan(self, test_catalog_id, test_plan_id):
+    def get_test_plan(self, test_plan_id):
         self.env.log.debug(">> get_test_plan")
 
         GenericClassCacheSystem.clear_cache()
 
-        test_catalog = TestCatalog(self.env, test_catalog_id)
-        test_plan = TestPlan(self.env, test_plan_id, test_catalog_id)
+        test_plan = TestPlan(self.env, test_plan_id)
+        test_catalog = TestCatalog(self.env, test_plan['catid'])
         test_catalog_bean = TestManagerSystem(self.env).get_test_catalog_data_model(test_catalog, sortby = self.sortby, include_status = True, test_plan = test_plan)
 
         jsdstr = '['
@@ -678,6 +678,57 @@ class Actions(object):
     @Invocable(
         {
             'results': {
+                'success': {'kind': 'json', 'field_name': 'ajax_result'}
+            },
+            'required_roles': ('TEST_EXECUTE', 'TEST_ADMIN')
+        }
+    )
+    def change_test_case_status(self, test_case_id, test_plan_id, new_status):
+        self.env.log.debug(">> change_test_case_status")
+
+        if test_case_id is None or test_plan_id is None:
+            raise TracException("Should provide a test case ID and a test plan ID.") 
+
+        GenericClassCacheSystem.clear_cache()
+
+        jsdstr = None
+        
+        try:
+            author = get_reporter_id(req, 'author')
+            
+            test_case_in_plan = TestCaseInPlan(self.env, test_case_id, test_plan_id)
+            test_case_in_plan.author = author
+            test_case_in_plan.remote_addr = req.remote_addr
+
+            test_case_in_plan.set_status(new_status, author)
+            
+            if not test_case_in_plan.exists:
+                test_case_in_plan.insert()
+            else:
+                test_case_in_plan.save_changes(author, "Status changed")
+    
+            jsdstr = '{"result": "OK", "id": ' + str(test_case_id) + '}'
+    
+        except:
+            self.env.log.error("Error changing the status of the test case!")
+            self.env.log.error(formatExceptionInfo())
+    
+            jsdstr = '{"result": "ERROR", "message": "An error occurred while changing the status of the test case."}'
+            
+        self.ajax_result = jsdstr
+
+        GenericClassCacheSystem.clear_cache()
+
+        self.env.log.debug("<< change_test_case_status")
+        
+        return 'success'
+
+
+##########################################################################################################
+
+    @Invocable(
+        {
+            'results': {
                 'success': {'kind': 'template', 'template_name': 'tm_action_output_template.html'},
                 'success_ajax': {'kind': 'json', 'field_name': 'ajax_result'}
             },
@@ -784,6 +835,9 @@ class Actions(object):
         self.env.log.debug("<< loadtree")
         
         return result
+
+##########################################################################################################
+
 
 
 def _check_view_permission(req, env):
@@ -902,7 +956,7 @@ def _save_modified_artifact(req, test_artifact, message="Property changed"):
         jsdstr = '{"result": "OK", "id": ' + str(test_artifact['id']) + '}'
 
     except:
-        self.env.log.error("Error saving chaged object!")
+        self.env.log.error("Error saving changed object!")
         self.env.log.error(formatExceptionInfo())
 
         jsdstr = '{"result": "ERROR", "message": "An error occurred while saving the changes."}'
