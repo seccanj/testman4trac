@@ -216,7 +216,9 @@ var currentSelectedTreeNode = null;
             result += '<li class="tm_node tm_testcase_node';
             if (testCase.has_status) {
                 result += ' tm_status_node '+testCase.color+'" ';
-                result += 'data-plan_id="'+testCase.test_plan_id+'" ';
+                result += ' data-plan_id="'+testCase.test_plan_id+'" ';
+                result += ' data-status="'+testCase.test_case_in_plan.status+'" ';
+                result += ' data-color="'+testCase.color+'" ';
             } else {
                 result += '" ';
             }
@@ -265,15 +267,15 @@ var currentSelectedTreeNode = null;
                     var treeNode = $(this);
             		selectNode(treeNode);
 
-            		var params = {
-                            test_catalog_id: treeNode.attr('data-id')
-                        };
-                    
-                    var planid = treeNode.attr('data-plan_id');
+                    var planid = treeNode.data('plan_id');
                     if (planid) {
-                        params.test_plan_id = planid;
+                        return;
                     }
 
+            		var params = {
+                            test_catalog_id: treeNode.data('id')
+                        };
+                    
 					/*
                     var params = {};
                     
@@ -296,11 +298,11 @@ var currentSelectedTreeNode = null;
             		selectNode(treeNode);
 
             		var params = {
-                            test_case_id: treeNode.attr('data-id')
+                            test_case_id: treeNode.data('id')
                         };
                     
-                    var planid = treeNode.attr('data-plan_id');
-                    if (planid) {
+                    var planid = treeNode.data('plan_id');
+                    if (planid !== null && planid !== '') {
                         params.test_plan_id = planid;
                     }
                     
