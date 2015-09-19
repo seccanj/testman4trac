@@ -246,6 +246,43 @@ class Actions(object):
     @Invocable(
         {
             'results': {
+                'success': {'kind': 'json', 'field_name': 'ajax_result'}
+            },
+            'parameters': {
+                'mode': 'in',
+                'fulldetails': 'in',
+                'sortby': 'in'
+            },
+            'required_roles': ('TEST_VIEW', 'TEST_EXECUTE', 'TEST_ADMIN')
+        }
+    )
+    def get_test_plan(self, test_catalog_id, test_plan_id):
+        self.env.log.debug(">> get_test_plan")
+
+        GenericClassCacheSystem.clear_cache()
+
+        test_catalog = TestCatalog(self.env, test_catalog_id)
+        test_plan = TestPlan(self.env, test_plan_id, test_catalog_id)
+        test_catalog_bean = TestManagerSystem(self.env).get_test_catalog_data_model(test_catalog, sortby = self.sortby, include_status = True, test_plan = test_plan)
+
+        self.env.log.debug(">>>>>>>>>>>>>>>>>>> test_catalog_bean.as_dictionary(): %s" % (test_catalog_bean.as_dictionary(),))
+
+        jsdstr = '['
+        jsdstr += json.dumps(test_catalog_bean.as_dictionary())
+        jsdstr += ']'
+            
+        self.ajax_result = jsdstr
+
+        GenericClassCacheSystem.clear_cache()
+
+        self.env.log.debug("<< get_test_plan")
+        
+        return 'success'
+
+
+    @Invocable(
+        {
+            'results': {
                 'success': {'kind': 'template', 'template_name': 'breadcrumbs.html'}
             },
             'parameters': {

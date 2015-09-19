@@ -143,18 +143,59 @@ var currentSelectedTreeNode = null;
                 });
         }
         
+        window.tm_loadTestPlan = function(planId, catalogId, selectType, selectId) {
+            /* Load test plan */
+            
+            var planIdVar = planId;
+            var catalogIdVar = catalogId;
+            var selectTypeVar = selectType;
+            var selectIdVar = selectId;
+            
+            var params = {
+                    mode: "${mode}",
+                    fulldetails: "${fulldetails}",
+                    test_catalog_id: catalogId,
+                    test_plan_id: planId
+                };
+                
+            doAjaxCall("${base_url}/action/testmanager.actions!get_test_plan", "GET", params, true, function(data) {
+                    var testCatalogJson = data;
+                    
+                    console.info("JSON: "+testCatalogJson);
+                    var testCatalogs = $.parseJSON(testCatalogJson);
+                    console.info("Object: ");
+                    console.dir(testCatalogs);
+
+                    var testCatalogMarkup = "";
+                    for (var i=0; i<testCatalogs.length; i++) {
+                        testCatalogMarkup += generateTestCatalogTree(testCatalogs[i]);
+                    }
+                    
+                    $("#tm_tree").html(testCatalogMarkup);
+                    
+                    attachTreeBehavior();
+                    
+                    if (selectTypeVar && selectIdVar) {
+                        $('.tm_'+selectTypeVar+'_node[data-id="'+selectIdVar+'"]').click();
+                    }
+                });
+        }
+        
         function generateTestCatalogTree(testCatalog) {
             var result = '';
             
             console.dir(testCatalog);
             
-            result += '<ul class="tm_node tm_testcatalog_node expanded af-ul" data-id="'+testCatalog.test_catalog.id+'" ';
+            result += '<ul class="tm_node tm_testcatalog_node expanded af-ul';
 
-            if ('test_plan' in testCatalog) {
-                result += 'data-plan_id="'+testCatalog.test_plan.id+'" ';
+            if (testCatalog.has_status) {
+                result += ' tm_folderstatus_node '+testCatalog.color+'" ';
+                result += ' data-plan_id="'+testCatalog.test_plan_id+'" ';
+            } else {
+                result += '"';
             }
             
-            result += '><i class="tm_toggle_node fa-ul fa fa-minus-square-o"></i>'+testCatalog.test_catalog.title;
+            result += ' data-id="'+testCatalog.test_catalog.id+'"><i class="tm_toggle_node fa-ul fa fa-minus-square-o"></i>'+testCatalog.test_catalog.title;
             
             for (var subCatalog in testCatalog.sub_catalogs) {
                 result += generateTestCatalogTree(testCatalog.sub_catalogs[subCatalog]);
@@ -172,11 +213,15 @@ var currentSelectedTreeNode = null;
         function generateTestCase(testCase) {
             var result = '';
             
-            result += '<li class="tm_node tm_testcase_node" data-id="'+testCase.test_case.id+'" ';
-            if ('test_plan' in testCase) {
-                result += 'data-plan_id="'+testCase.test_plan.id+'" ';
+            result += '<li class="tm_node tm_testcase_node';
+            if (testCase.has_status) {
+                result += ' tm_status_node '+testCase.color+'" ';
+                result += 'data-plan_id="'+testCase.test_plan_id+'" ';
+            } else {
+                result += '" ';
             }
-            
+
+            result += ' data-id="'+testCase.test_case.id+'" ';
             result += '>'+testCase.test_case.title;
             
             result += '</li>';

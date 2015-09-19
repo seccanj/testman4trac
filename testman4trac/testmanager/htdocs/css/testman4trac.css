@@ -141,6 +141,35 @@ span:target {
     padding-right: 6px;
 }
 
+.tm_folderstatus_node.yellow > i {
+	color: yellow;
+}
+
+.tm_folderstatus_node.green > i {
+	color: green;
+}
+
+.tm_folderstatus_node.red > i {
+	color: red;
+}
+
+.tm_status_node:before {
+	font-family: FontAwesome;
+	content: "\f111   ";
+}
+
+.tm_status_node.yellow:before {
+	color: yellow;
+}
+
+.tm_status_node.green:before {
+	color: green;
+}
+
+.tm_status_node.red:before {
+	color: red;
+}
+
 /*
 .tm_testcatalog_node .collapsed:before {
 	content: "+";
@@ -172,17 +201,6 @@ span:target {
 }
 
 
-@media print {
-    .collapsed > div, .collapsed > table, .collapsed > ul, .collapsed > dl { 
-        display: block; 
-    }
-}
-.ninja {
-    color: black;
-    visibility: hidden;
-}
-
-
 /**
  * Test artifact details
  */
@@ -192,4 +210,14 @@ span:target {
 }
 
 
+@media print {
+    .collapsed > div, .collapsed > table, .collapsed > ul, .collapsed > dl { 
+        display: block; 
+    }
+}
+
+.ninja {
+    color: black;
+    visibility: hidden;
+}
 

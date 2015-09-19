@@ -43,7 +43,7 @@
 			          <ul>
 			            <py:for each="test_plan in test_catalog_bean.test_plans_iterator()">
 			              <li>
-			              ${test_plan.title} - created by <em>${authorinfo(test_plan.author)}</em> ${pretty_dateinfo(test_plan.date)}.
+			              <a href="#" class="tm-action-open_testplan" data-testplanid="${test_plan.get_test_plan_id()}">${test_plan.title}</a> - created by <em>${authorinfo(test_plan.author)}</em> ${pretty_dateinfo(test_plan.date)}.
 			              </li>
 			            </py:for>
 			          </ul>
@@ -111,7 +111,15 @@
 		
 		            tm_loadDialog("${base_url}", "get_new_test_plan_dialog", params, 800);
 				});
-		
+
+				$('.tm-action-open_testplan').on('click', function(e) {
+		            /* Load the new test plan dialog */
+		            e.preventDefault();
+		            e.stopPropagation();
+
+		            tm_loadTestPlan($(this).data('testplanid'), '${test_catalog_bean.get_test_catalog_id()}');
+				});
+
 		    });        
 		})(jQuery_testmanager);
 		

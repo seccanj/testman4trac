@@ -195,7 +195,8 @@ class TestCatalogBean(object):
             result['test_catalog']['description'] = self.test_catalog.description
 
         if self.test_plan is not None:
-            result['test_plan'] = self.test_plan.values
+            #result['test_plan'] = self.test_plan.values
+            result['test_plan_id'] = self.test_plan['id']
 
         result['sub_catalogs'] = {}
         for sub_catalog in self.sub_catalogs:
@@ -306,7 +307,7 @@ class TestCaseBean(object):
             result['test_case']['description'] = self.test_case.description
 
         if self.test_plan is not None:
-            result['test_plan'] = self.test_plan.values
+            result['test_plan_id'] = self.test_plan['id']
 
         if self.test_case_in_plan is not None:
             result['test_case_in_plan'] = self.test_case_in_plan.values
@@ -360,6 +361,18 @@ class TestPlanBean(object):
     def date(self):
         if self.test_plan is not None:
             return self.test_plan['time']
+        
+        return ''
+
+    def get_test_plan_id(self):
+        if self.test_plan is not None:
+            return self.test_plan['id']
+        
+        return ''
+
+    def get_test_catalog_id(self):
+        if self.test_plan is not None:
+            return self.test_plan['catid']
         
         return ''
 

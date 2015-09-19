@@ -1442,7 +1442,11 @@ class TestManagerSystem(Component):
         
         if include_status:
             test_case_in_plan = TestCaseInPlan(self.env, test_case['id'], test_plan['id'])
-            color = self.outcomes_by_name[test_case_in_plan['status'][0]]
+            
+            if test_case_in_plan['status'] is not None:
+                color = self.outcomes_by_name[test_case_in_plan['status']][0]
+            else:
+                color = self.outcomes_by_name[self.default_outcome][0]
             
         test_case_bean = TestCaseBean(test_case = test_case, has_status = include_status, test_plan = test_plan, test_case_in_plan = test_case_in_plan, color = color, unique_idx = unique_idx)
         
