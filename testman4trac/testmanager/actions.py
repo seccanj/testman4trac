@@ -203,7 +203,8 @@ class Actions(object):
     @Invocable(
         {
             'results': {
-                'success': {'kind': 'template', 'template_name': 'test_catalog.html'}
+                'test_catalog': {'kind': 'template', 'template_name': 'test_catalog.html'},
+                'test_plan': {'kind': 'template', 'template_name': 'test_plan.html'}
             },
             'parameters': {
                 'mode': 'in',
@@ -257,7 +258,10 @@ class Actions(object):
 
         self.env.log.debug("<< get_test_catalog_details")
         
-        return 'success'
+        if test_plan_id is not None and test_plan_id != '':
+            return 'test_plan'
+
+        return 'test_catalog'
 
 
     @Invocable(

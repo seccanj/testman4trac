@@ -1,0 +1,59 @@
+<?python from genshi import HTML ?>
+<html>
+	<head>
+	</head>
+
+	<body>
+		<div xmlns="http://www.w3.org/1999/xhtml"
+		      xmlns:xi="http://www.w3.org/2001/XInclude"
+		      xmlns:i18n="http://genshi.edgewall.org/i18n"
+		      xmlns:py="http://genshi.edgewall.org/"
+		      i18n:domain="testmanager">
+		
+		  <div id="tm_test_catalog_toolbar" class="tm-toolbar">
+		    <ul>
+			    <li class="first"><a href="#" class="tm-action-goto_testcatalog">Go to test catalog</a></li>
+	            <li class="last"><a href="${base_url}/wiki/${test_catalog_bean.page_name}?planid=${test_catalog_bean.get_test_plan_id()}">Go to wiki page</a></li>
+		    </ul>
+		  </div>
+		  
+		  <h1>Test plan - ${test_catalog_bean.get_test_plan_name()}</h1>
+		  <h3>For catalog: ${test_catalog_bean.title}</h3>
+
+			<div class="tm_metadata">
+				Created by <em>${authorinfo(test_catalog_bean.get_test_plan_author())}</em> ${pretty_dateinfo(test_catalog_bean.get_test_plan_date())}.
+			</div>
+		
+		    <div id="tm_artifact_description_wiki">
+				${HTML(wiki_contents)}
+		
+			    <div id="tm_artifact_ondemand" style="display:none;">
+			    </div>
+		
+				<div id="tm_artifact_attachments">
+					<py:with vars="foldable = True">
+					    <xi:include href="list_of_attachments.html"
+				                    py:with="alist = attachments; compact = (not can_modify); foldable = True"/>
+				    </py:with>
+				</div>
+		    </div>
+		</div>
+
+		<script type="text/javascript">
+		//<![CDATA[
+		(function($) {
+		    $(function() {
+				$('.tm-action-goto_testcatalog').on('click', function(e) {
+		            /* Load the new test plan dialog */
+		            e.preventDefault();
+
+		            tm_loadTestCatalogs('testcatalog', '${test_catalog_bean.get_test_catalog_id()}');
+				});
+
+		    });        
+		})(jQuery_testmanager);
+		
+		//]]>
+		</script>
+	</body>
+</html>

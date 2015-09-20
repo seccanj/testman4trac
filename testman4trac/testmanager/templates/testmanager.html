@@ -137,7 +137,7 @@ var currentSelectedTreeNode = null;
                 };
                 
             doAjaxCall("${base_url}/action/testmanager.actions!resetview", "GET", params, true, function(data) {
-                location.reload();
+            	window.location = window.location.pathname + window.location.hash;
             });
 		};
         
@@ -200,7 +200,7 @@ var currentSelectedTreeNode = null;
 
                     var testCatalogMarkup = "";
                     for (var i=0; i<testCatalogs.length; i++) {
-                        testCatalogMarkup += generateTestCatalogTree(testCatalogs[i]);
+                        testCatalogMarkup += generateTestCatalogTree(testCatalogs[i], 0);
                     }
                     
                     $("#tm_tree").html(testCatalogMarkup);
@@ -213,7 +213,7 @@ var currentSelectedTreeNode = null;
                 });
         }
         
-        function generateTestCatalogTree(testCatalog) {
+        function generateTestCatalogTree(testCatalog, level) {
             var result = '';
             
             console.dir(testCatalog);
@@ -222,7 +222,9 @@ var currentSelectedTreeNode = null;
 
             if (testCatalog.has_status) {
                 result += ' tm_folderstatus_node '+testCatalog.color+'" ';
-                result += ' data-plan_id="'+testCatalog.test_plan_id+'" ';
+                if (level == 0) {
+                    result += ' data-plan_id="'+testCatalog.test_plan_id+'" ';
+                }
             } else {
                 result += '"';
             }
@@ -230,7 +232,7 @@ var currentSelectedTreeNode = null;
             result += ' data-id="'+testCatalog.test_catalog.id+'"><i class="tm_toggle_node fa-ul fa fa-minus-square-o"></i>'+testCatalog.test_catalog.title;
             
             for (var subCatalog in testCatalog.sub_catalogs) {
-                result += generateTestCatalogTree(testCatalog.sub_catalogs[subCatalog]);
+                result += generateTestCatalogTree(testCatalog.sub_catalogs[subCatalog], level+1);
             }
             
             for (var testCase in testCatalog.test_cases) {
@@ -266,7 +268,6 @@ var currentSelectedTreeNode = null;
         $('#tm_expandalltree_button').on('click', function(e) {
             /* Expand or collapse sub tree */
             e.preventDefault();
-            e.stopPropagation();
             
             tm_expandAllTreeNodes();
         });
@@ -274,7 +275,6 @@ var currentSelectedTreeNode = null;
         $('#tm_collapsealltree_button').on('click', function(e) {
             /* Expand or collapse sub tree */
             e.preventDefault();
-            e.stopPropagation();
             
             tm_collapseAllTreeNodes();
         });
@@ -283,7 +283,7 @@ var currentSelectedTreeNode = null;
             $('.tm_toggle_node').on('click', function(e) {
 	                /* Expand or collapse sub tree */
 	                e.preventDefault();
-	                e.stopPropagation();
+		            e.stopPropagation();
 	                
 	                var node = $(this);
 	                var catalogNode = node.parent('ul');
@@ -294,21 +294,22 @@ var currentSelectedTreeNode = null;
             $('.tm_testcatalog_node').on('click', function(e) {
                     /* Load test catalog description */
                     e.preventDefault();
-                    e.stopPropagation();
+		            e.stopPropagation();
                     
                     var treeNode = $(this);
             		selectNode(treeNode);
-
-                    var planid = treeNode.data('plan_id');
-                    if (planid) {
-                        return;
-                    }
 
             		var params = {
                             test_catalog_id: treeNode.data('id')
                         };
                     
-					/*
+                    var planid = treeNode.data('plan_id');
+
+                    if (planid != undefined) {
+                    	params.test_plan_id = planid;
+                    }
+
+                    /*
                     var params = {};
                     
                     doAjaxCall("${base_url}/wiki/TC_TT"+node.attr('data-id'), "GET", params, true, function(data) {
@@ -324,7 +325,7 @@ var currentSelectedTreeNode = null;
             $('.tm_testcase_node').on('click', function(e) {
                     /* Load test case description */
                     e.preventDefault();
-                    e.stopPropagation();
+		            e.stopPropagation();
                     
                     var treeNode = $(this);
             		selectNode(treeNode);

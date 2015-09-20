@@ -19,6 +19,9 @@
 
 		        <li><a href="#" class="tm-action-create_ticket">Create related ticket</a></li>
 		        <li><a href="#" class="tm-action-open_tickets">Show related tickets</a></li>
+				<py:if test="test_case_bean.has_status">
+			        <li><a href="#" class="tm-action-goto_testplan">Go to test plan</a></li>
+				</py:if>
 		        <li class="last"><a href="${base_url}/wiki/${test_case_bean.page_name}?planid=${test_case_bean.get_test_plan_id()}">Go to wiki page</a></li>
 		    </ul>
 		  </div>
@@ -154,6 +157,13 @@
 				    }
 				    
 				    window.location = url;
+				});
+
+				$('.tm-action-goto_testplan').on('click', function(e) {
+		            /* Load the test plan */
+		            e.preventDefault();
+
+		            tm_loadTestPlan('${test_case_bean.get_test_plan_id()}', 'testcatalog', '${test_case_bean.get_test_plan_catalog_id()}');
 				});
 				
 				/*

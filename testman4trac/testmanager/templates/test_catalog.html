@@ -18,12 +18,12 @@
 			      <li><a href="#" class="tm-action-edit_title">Edit title</a></li>
 			      <li><a href="#" class="tm-action-edit_description">Edit description</a></li>
 			      <li><a href="#" class="tm-action-create_plan">Create test plan</a></li>
-		          <li class="last"><a href="${base_url}/wiki/${test_catalog_bean.page_name}?planid=${test_catalog_bean.get_test_plan_id()}">Go to wiki page</a></li>
 			    </py:if>
+	            <li class="last"><a href="${base_url}/wiki/${test_catalog_bean.page_name}">Go to wiki page</a></li>
 		    </ul>
 		  </div>
 		  
-		    <h1>${test_catalog_bean.title}</h1>
+		  <h1>${test_catalog_bean.title}</h1>
 		
 		    <div id="tm_artifact_description_wiki">
 				${HTML(wiki_contents)}
@@ -109,10 +109,10 @@
 				});
 
 				$('.tm-action-open_testplan').on('click', function(e) {
-		            /* Load the new test plan dialog */
+		            /* Load the test plan */
 		            e.preventDefault();
 
-		            tm_loadTestPlan($(this).data('testplanid'));
+		            tm_loadTestPlan($(this).data('testplanid'), 'testcatalog', '${test_catalog_bean.get_test_catalog_id()}');
 				});
 
 		    });        

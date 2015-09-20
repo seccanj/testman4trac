@@ -150,6 +150,24 @@ class TestCatalogBean(object):
         
         return ''
 
+    def get_test_plan_name(self):
+        if self.test_plan is not None:
+            return self.test_plan['name']
+        
+        return ''
+
+    def get_test_plan_author(self):
+        if self.test_plan is not None:
+            return self.test_plan['author']
+        
+        return ''
+
+    def get_test_plan_date(self):
+        if self.test_plan is not None:
+            return self.test_plan['time']
+        
+        return ''
+
     @property
     def title(self):
         if self.test_catalog is not None:
@@ -283,6 +301,12 @@ class TestCaseBean(object):
     def get_test_plan_name(self):
         if self.test_plan is not None:
             return self.test_plan['name']
+        
+        return ''
+
+    def get_test_plan_catalog_id(self):
+        if self.test_plan is not None:
+            return self.test_plan['catid']
         
         return ''
 

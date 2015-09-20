@@ -222,8 +222,13 @@ span:target {
 	padding-left: 30px;
 }
 
-#tm_artifact_description h1 {
+#tm_artifact_description h1  {
 	padding: 20px;
+}
+
+#tm_artifact_description h2,
+#tm_artifact_description h3 {
+	padding-left: 20px;
 }
 
 #tm_artifact_description_wiki {
@@ -237,6 +242,12 @@ span:target {
 
 #tm_artifact_attachments {
 	padding-top: 40px;
+}
+
+.tm_metadata {
+    padding-left: 20px;
+    font-size: small;
+    color: gray;	
 }
 
 
