@@ -160,7 +160,7 @@ class WikiTestManagerInterface(Component):
             if page_name.find('_TC') >= 0:
                 if filename == 'wiki_view.html':
                     if not planid or planid == '-1':
-                        insert1 = tag.div()(
+                        insert1 = tag.div(style='clear: both;')(
                                     tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
                                         tag.a(href=req.href('/').rstrip('/')+
                                               '/action/testmanager.actions!initview?'+
@@ -171,7 +171,7 @@ class WikiTestManagerInterface(Component):
                                     )
 
                     else:
-                        insert1 = tag.div()(
+                        insert1 = tag.div(style='clear: both;')(
                                     tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
                                         tag.a(href=req.href('/').rstrip('/')+
                                               '/action/testmanager.actions!initview?'+
@@ -185,7 +185,7 @@ class WikiTestManagerInterface(Component):
             elif page_name.find('_TT') >= 0:
                 if filename == 'wiki_view.html':
                     if not planid or planid == '-1':
-                        insert1 = tag.div()(
+                        insert1 = tag.div(style='clear: both;')(
                                     tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
                                         tag.a(href=req.href('/').rstrip('/')+
                                               '/action/testmanager.actions!initview?'+
@@ -196,7 +196,7 @@ class WikiTestManagerInterface(Component):
                                     )
 
                     else:
-                        insert1 = tag.div()(
+                        insert1 = tag.div(style='clear: both;')(
                                     tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
                                         tag.a(href=req.href('/').rstrip('/')+
                                               '/action/testmanager.actions!initview?'+
