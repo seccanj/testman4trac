@@ -13,8 +13,12 @@
 		  <div id="tm_test_case_toolbar" class="tm-toolbar">
 		    <ul>
 		        <py:if test="can_modify">
-			      <li class="first"><a href="#" class="tm-action-edit_title">Edit title</a></li>
-			      <li class="last"><a href="#" class="tm-action-edit_description">Edit description</a></li>
+			        <li class="first"><a href="#" class="tm-action-edit_title">Edit title</a></li>
+			        <li><a href="#" class="tm-action-edit_description">Edit description</a></li>
+		            <li class="last"><a href="${base_url}/wiki/${test_case_bean.page_name}">Go to wiki page</a></li>
+			    </py:if>
+		        <py:if test="not can_modify">
+		            <li class="first last"><a href="${base_url}/wiki/${test_case_bean.page_name}">Go to wiki page</a></li>
 			    </py:if>
 		    </ul>
 		  </div>

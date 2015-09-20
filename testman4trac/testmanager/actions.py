@@ -26,6 +26,7 @@ from trac.attachment import AttachmentModule
 from trac.mimeview.api import Context
 from trac.util import get_reporter_id
 from trac.web.chrome import web_context
+from trac.web.session import *
 from trac.wiki.formatter import Formatter
 from trac.wiki.model import WikiPage
 from trac.wiki.parser import WikiParser
@@ -71,13 +72,57 @@ class Actions(object):
             'required_roles': ('TEST_VIEW', 'TEST_ADMIN')
         }
     )
+    def get_session(self):
+        self.env.log.debug(">> get_session")
+        
+        session_attributes = _retrieve_session(self.env, self.req)
+        
+        jsdstr = json.dumps(session_attributes)
+            
+        self.ajax_result = jsdstr
+        
+        self.env.log.debug("<< get_session")
+        
+        return 'success'
+
+
+    @Invocable(
+        {
+            'results': {
+                'success': {'kind': 'json', 'field_name': 'ajax_result'}
+            },
+            'required_roles': ('TEST_VIEW', 'TEST_ADMIN')
+        }
+    )
+    def resetview(self):
+        self.env.log.debug(">> resetview")
+        
+        _save_session(self.env, self.req, {})
+        
+        jsdstr = '{}'
+            
+        self.ajax_result = jsdstr
+        
+        self.env.log.debug("<< resetview")
+        
+        return 'success'
+
+
+    @Invocable(
+        {
+            'results': {
+                'success': {'kind': 'json', 'field_name': 'ajax_result'}
+            },
+            'required_roles': ('TEST_VIEW', 'TEST_ADMIN')
+        }
+    )
     def loadtree(self):
         self.env.log.debug(">> loadtree")
 
         GenericClassCacheSystem.clear_cache()
 
         test_catalog_beans = TestManagerSystem(self.env).get_all_test_catalogs_data_model()
-
+        
         jsdstr = '['
         for idx, test_catalog_bean in enumerate(test_catalog_beans):
             jsdstr += json.dumps(test_catalog_bean.as_dictionary())
@@ -86,7 +131,7 @@ class Actions(object):
                 jsdstr += ','
         
         jsdstr += ']'
-            
+
         self.ajax_result = jsdstr
 
         GenericClassCacheSystem.clear_cache()
@@ -185,6 +230,14 @@ class Actions(object):
         self.attachments = AttachmentModule(self.env).attachment_data(context);
         self.can_modify = _can_modify(self.req)
 
+        session_attributes = {
+                'artifact_type': 'testcatalog',
+                'artifact_id': test_catalog_id,
+                'artifact_planid': test_plan_id
+            }
+        
+        _save_session(self.env, self.req, session_attributes)
+
         GenericClassCacheSystem.clear_cache()
 
         self.env.log.debug("<< get_test_catalog_details")
@@ -241,6 +294,14 @@ class Actions(object):
         self.attachments = AttachmentModule(self.env).attachment_data(context);
         self.can_modify = _can_modify(self.req)
 
+        session_attributes = {
+                'artifact_type': 'testcase',
+                'artifact_id': test_case_id,
+                'artifact_planid': test_plan_id
+            }
+        
+        _save_session(self.env, self.req, session_attributes)
+
         GenericClassCacheSystem.clear_cache()
 
         self.env.log.debug("<< get_test_case_details")
@@ -275,6 +336,14 @@ class Actions(object):
         jsdstr += ']'
             
         self.ajax_result = jsdstr
+
+        session_attributes = {
+                'artifact_type': 'testcatalog',
+                'artifact_id': test_plan['catid'],
+                'artifact_planid': test_plan_id
+            }
+        
+        _save_session(self.env, self.req, session_attributes)
 
         GenericClassCacheSystem.clear_cache()
 
@@ -962,4 +1031,54 @@ def _save_modified_artifact(req, test_artifact, message="Property changed"):
         jsdstr = '{"result": "ERROR", "message": "An error occurred while saving the changes."}'
         
     return jsdstr
+
+def _retrieve_session(env, req):
+    attributes = {}
+    
+    attributes['artifact_type'] = None
+    attributes['artifact_id'] = None
+    attributes['artifact_planid'] = None
+    
+    curr_session = Session(env, req)
+    
+    if 'tm_curr_artifact_type' in curr_session and curr_session['tm_curr_artifact_type'] != 'None':
+        attributes['artifact_type'] = curr_session['tm_curr_artifact_type']
+        
+    if 'tm_curr_artifact_id' in curr_session and curr_session['tm_curr_artifact_id'] != 'None':
+        attributes['artifact_id'] = curr_session['tm_curr_artifact_id']
+
+    if 'tm_curr_artifact_planid' in curr_session and curr_session['tm_curr_artifact_planid'] != 'None':
+        attributes['artifact_planid'] = curr_session['tm_curr_artifact_planid']
+
+    env.log.debug('retrieved session artifact_type: %s' % (attributes['artifact_type'],))
+    env.log.debug('retrieved session artifact_id: %s' % (attributes['artifact_id'],))
+    env.log.debug('retrieved session artifact_planid: %s' % (attributes['artifact_planid'],))
+    
+    return attributes
+    
+def _save_session(env, req, attributes):
+    curr_session = Session(env, req)
+    
+    if 'artifact_type' in attributes:
+        curr_session.set('tm_curr_artifact_type', attributes['artifact_type'])
+        env.log.debug('saved session artifact_type: %s' % (attributes['artifact_type'],))
+    else:
+        curr_session.pop('tm_curr_artifact_type', None)
+        env.log.debug('removed session artifact_type')
+
+    if 'artifact_id' in attributes:
+        curr_session.set('tm_curr_artifact_id', attributes['artifact_id'])
+        env.log.debug('saved session artifact_id: %s' % (attributes['artifact_id'],))
+    else:
+        curr_session.pop('tm_curr_artifact_id', None)
+        env.log.debug('removed session artifact_id')
+
+    if 'artifact_planid' in attributes:
+        curr_session.set('tm_curr_artifact_planid', attributes['artifact_planid'])
+        env.log.debug('saved session artifact_planid: %s' % (attributes['artifact_planid'],))
+    else:
+        curr_session.pop('tm_curr_artifact_planid', None)
+        env.log.debug('removed session artifact_planid')
+
+    curr_session.save()
 

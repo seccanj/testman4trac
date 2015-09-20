@@ -52,7 +52,8 @@
           <div id="tm_navigator" style="overflow: auto">
               <div id="tm_navigator_toolbar" class="tm-toolbar">
                 <ul>
-                  <li class="first last"><a href="#" class="tm-action-new_root_catalog">New root catalog</a></li>
+                  <li class="first"><a href="#" class="tm-action-new_root_catalog">New root catalog</a></li>
+                  <li class="last"><a href="#" class="tm-action-resetview">Reset view</a></li>
                 </ul>
               </div>
 
@@ -109,8 +110,41 @@ var currentSelectedTreeNode = null;
            
 (function($) {
     $(function() {
+		window.tm_initTestManager = function() {
+            var params = {
+                    random: new Date().getTime()
+                };
+                
+            doAjaxCall("${base_url}/action/testmanager.actions!get_session", "GET", params, true, function(data) {
+                    console.info("JSON: "+data);
+                    
+                    var sessionAttributes = $.parseJSON(data);
+
+                    console.info("Session attributes:");
+                    console.dir(sessionAttributes);
+                    
+                    if (sessionAttributes.artifact_planid) {
+                    	tm_loadTestPlan(sessionAttributes.artifact_planid, sessionAttributes.artifact_type, sessionAttributes.artifact_id);
+                    } else {
+                    	tm_loadTestCatalogs(sessionAttributes.artifact_type, sessionAttributes.artifact_id);
+                    }
+            });
+		};
+
+		window.tm_resetView = function() {
+            var params = {
+            		random: new Date().getTime()
+                };
+                
+            doAjaxCall("${base_url}/action/testmanager.actions!resetview", "GET", params, true, function(data) {
+                location.reload();
+            });
+		};
+        
         window.tm_loadTestCatalogs = function(selectType, selectId) {
             /* Load list of root test catalogs */
+            
+            console.info("selectType="+selectType+", selectId="+selectId);
             
             var selectTypeVar = selectType;
             var selectIdVar = selectId;
@@ -121,11 +155,11 @@ var currentSelectedTreeNode = null;
                 };
                 
             doAjaxCall("${base_url}/action/testmanager.actions!loadtree", "GET", params, true, function(data) {
-                    var testCatalogJson = data;
+                    console.info("JSON: "+data);
                     
-                    console.info("JSON: "+testCatalogJson);
-                    var testCatalogs = $.parseJSON(testCatalogJson);
-                    console.info("Object: ");
+                    var testCatalogs = $.parseJSON(data);
+
+                    console.info("Catalogs array:");
                     console.dir(testCatalogs);
 
                     var testCatalogMarkup = "";
@@ -334,7 +368,7 @@ var currentSelectedTreeNode = null;
 
             $("#splitter").igSplitter({ height: "700px", panels: [{ size: 250, min: 50, max: 500 }] });
 
-            tm_loadTestCatalogs();
+            tm_initTestManager();
             
             $("#tm_filter_input").on("keyup", function(e) {
                     console.info("onkeyup()");
@@ -357,12 +391,18 @@ var currentSelectedTreeNode = null;
             $('.tm-action-new_root_catalog').on('click', function(e) {
                     /* Load test case description */
                     e.preventDefault();
-                    e.stopPropagation();
                     
                     var params = {parent_id: '-1'};
 
                     tm_loadDialog("${base_url}", "get_new_test_catalog_dialog", params, 500);
                 });
+
+            $('.tm-action-resetview').on('click', function(e) {
+                /* Reset the tree view */
+                e.preventDefault();
+
+                tm_resetView();
+            });
                 
         });
     });        
