@@ -280,6 +280,12 @@ class TestCaseBean(object):
         
         return ''
 
+    def get_test_plan_name(self):
+        if self.test_plan is not None:
+            return self.test_plan['name']
+        
+        return ''
+
     @property
     def title(self):
         if self.test_case is not None:

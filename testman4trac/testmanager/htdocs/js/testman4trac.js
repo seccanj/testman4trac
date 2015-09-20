@@ -124,6 +124,11 @@
         			});
         };
         
+        window.tm_stripLessSpecialChars = function(str) {
+            return str.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/[;#&\?]/g, '');
+        };
+
+        
     });        
 })(jQuery_testmanager);
 

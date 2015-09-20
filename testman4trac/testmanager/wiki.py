@@ -49,6 +49,7 @@ class WikiTestManagerInterface(Component):
     """Implement generic template provider."""
     
     #implements(ITemplateStreamFilter, IWikiChangeListener)
+    implements(ITemplateStreamFilter)
     
     DOUBLE_QUOTES = re.compile("\"")
     
@@ -142,7 +143,7 @@ class WikiTestManagerInterface(Component):
         
         page_name = req.args.get('page', 'WikiStart')
         
-        if page_name.startswith('TC'):
+        if page_name.startswith('TC_'):
             req.perm.require('TEST_VIEW')
 
             self._parse_config_options()
@@ -155,30 +156,104 @@ class WikiTestManagerInterface(Component):
                 self.env, Context.from_request(req, Resource('testmanager'))
                 )
             
-            GenericClassCacheSystem.clear_cache()
-            
+            insert1 = HTML('')
             if page_name.find('_TC') >= 0:
                 if filename == 'wiki_view.html':
                     if not planid or planid == '-1':
-                        result = self._testcase_wiki_view(req, formatter, planid, page_name, stream)
+                        insert1 = tag.div()(
+                                    tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
+                                        tag.a(href=req.href('/').rstrip('/')+
+                                              '/action/testmanager.actions!initview?'+
+                                              'url_artifact_type=testcase'+
+                                              '&url_artifact_id='+page_name.rpartition('_TC')[2]
+                                              )(_("Open in Test Manager"))
+                                        )
+                                    )
+
                     else:
-                        result = self._testcase_in_plan_wiki_view(req, formatter, planid, page_name, stream)
-            elif page_name == 'TC' or page_name.find('_TT') >= 0:
+                        insert1 = tag.div()(
+                                    tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
+                                        tag.a(href=req.href('/').rstrip('/')+
+                                              '/action/testmanager.actions!initview?'+
+                                              'url_artifact_type=testcase'+
+                                              '&url_artifact_id='+page_name.rpartition('_TC')[2]+
+                                              '&url_artifact_planid='+planid
+                                              )(_("Open in Test Manager"))
+                                        )
+                                    )
+
+            elif page_name.find('_TT') >= 0:
                 if filename == 'wiki_view.html':
                     if not planid or planid == '-1':
-                        result = self._catalog_wiki_view(req, formatter, page_name, stream)
-                    else:
-                        result = self._testplan_wiki_view(req, formatter, page_name, planid, stream)
-                elif filename == 'wiki_delete.html':
-                    if not planid or planid == '-1':
-                        if not delete_version or delete_version == '' or version == '1':
-                            result = self._catalog_wiki_delete(req, formatter, page_name, stream)
-                    else:
-                        raise TracError(_("You cannot delete a Test Plan this way. Expand the Test Plans list under the corrisponding Catalog and use the X buttons to delete the Test Plans."))
+                        insert1 = tag.div()(
+                                    tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
+                                        tag.a(href=req.href('/').rstrip('/')+
+                                              '/action/testmanager.actions!initview?'+
+                                              'url_artifact_type=testcatalog'+
+                                              '&url_artifact_id='+page_name.rpartition('_TT')[2]
+                                              )(_("Open in Test Manager"))
+                                        )
+                                    )
 
-            GenericClassCacheSystem.clear_cache()
+                    else:
+                        insert1 = tag.div()(
+                                    tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
+                                        tag.a(href=req.href('/').rstrip('/')+
+                                              '/action/testmanager.actions!initview?'+
+                                              'url_artifact_type=testcatalog'+
+                                              '&url_artifact_id='+page_name.rpartition('_TT')[2]+
+                                              '&url_artifact_planid='+planid
+                                              )(_("Open in Test Manager"))
+                                        )
+                                    )
+
+            result = stream | Transformer('//div[contains(@id, "pagepath")]').after(insert1)
 
         return result
+
+        
+#    def filter_stream(self, req, method, filename, stream, data):
+#        result = stream
+#        
+#        page_name = req.args.get('page', 'WikiStart')
+#        
+#        if page_name.startswith('TC'):
+#            req.perm.require('TEST_VIEW')
+#
+#            self._parse_config_options()
+#
+#            planid = req.args.get('planid', '-1')
+#            delete_version = req.args.get('delete_version', '')
+#            version = req.args.get('version', '')
+#
+#            formatter = Formatter(
+#                self.env, Context.from_request(req, Resource('testmanager'))
+#                )
+#            
+#            GenericClassCacheSystem.clear_cache()
+#            
+#            if page_name.find('_TC') >= 0:
+#                if filename == 'wiki_view.html':
+#                    if not planid or planid == '-1':
+#                        result = self._testcase_wiki_view(req, formatter, planid, page_name, stream)
+#                    else:
+#                        result = self._testcase_in_plan_wiki_view(req, formatter, planid, page_name, stream)
+#            elif page_name == 'TC' or page_name.find('_TT') >= 0:
+#                if filename == 'wiki_view.html':
+#                    if not planid or planid == '-1':
+#                        result = self._catalog_wiki_view(req, formatter, page_name, stream)
+#                    else:
+#                        result = self._testplan_wiki_view(req, formatter, page_name, planid, stream)
+#                elif filename == 'wiki_delete.html':
+#                    if not planid or planid == '-1':
+#                        if not delete_version or delete_version == '' or version == '1':
+#                            result = self._catalog_wiki_delete(req, formatter, page_name, stream)
+#                    else:
+#                        raise TracError(_("You cannot delete a Test Plan this way. Expand the Test Plans list under the corrisponding Catalog and use the X buttons to delete the Test Plans."))
+#
+#            GenericClassCacheSystem.clear_cache()
+#
+#        return result
 
         
     # Internal methods

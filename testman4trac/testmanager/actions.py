@@ -53,11 +53,26 @@ class Actions(object):
             'results': {
                 'success': {'kind': 'template', 'template_name': 'testmanager.html'}
             },
+            'parameters': {
+                'url_artifact_type': 'in_out',
+                'url_artifact_id': 'in_out',
+                'url_artifact_planid': 'in_out'
+            },
             'required_roles': ('TEST_VIEW', 'TEST_ADMIN')
         }
     )
     def initview(self):
         self.env.log.debug(">> initview")
+        
+        if self.url_artifact_type is not None and self.url_artifact_type != '':
+            session_attributes = {
+                    'artifact_type': self.url_artifact_type,
+                    'artifact_id': self.url_artifact_id,
+                    'artifact_planid': self.url_artifact_planid
+                }
+            
+            _save_session(self.env, self.req, session_attributes)
+            
         
         self.env.log.debug("<< initview")
         

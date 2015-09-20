@@ -15,11 +15,11 @@
 		        <py:if test="can_modify">
 			        <li class="first"><a href="#" class="tm-action-edit_title">Edit title</a></li>
 			        <li><a href="#" class="tm-action-edit_description">Edit description</a></li>
-		            <li class="last"><a href="${base_url}/wiki/${test_case_bean.page_name}">Go to wiki page</a></li>
 			    </py:if>
-		        <py:if test="not can_modify">
-		            <li class="first last"><a href="${base_url}/wiki/${test_case_bean.page_name}">Go to wiki page</a></li>
-			    </py:if>
+
+		        <li><a href="#" class="tm-action-create_ticket">Create related ticket</a></li>
+		        <li><a href="#" class="tm-action-open_tickets">Show related tickets</a></li>
+		        <li class="last"><a href="${base_url}/wiki/${test_case_bean.page_name}?planid=${test_case_bean.get_test_plan_id()}">Go to wiki page</a></li>
 		    </ul>
 		  </div>
 		  
@@ -97,7 +97,65 @@
 						tm_loadTestPlan('${test_case_bean.get_test_plan_id()}', 'testcase', '${test_case_bean.get_test_case_id()}');
                     });
 				});
-		
+
+				$('.tm-action-create_ticket').on('click', function(e) {
+					/* Open a ticket related to this test case */
+					e.preventDefault();
+
+				    var fullSummary = "";
+
+				    /* TODO Read configuration options. See wiki.py */
+				    var ticketSummaryOption = 'test_case_title';
+				    switch(ticketSummaryOption) {
+				        case 'empty':
+				            break;
+
+				        case 'fixed_text':
+				            fullSummary = ticketSummaryText + ticketSummarySeparator;
+				            break;
+
+				        case 'test_case_title':
+				        	fullSummary = tm_stripLessSpecialChars("${test_case_bean.title}")+_(" fails - ");
+				            break;
+					        
+				        case 'last_n_catalogs':
+				        case 'full_path':
+				        default:
+				            var tokens = $('span[name=breadcrumb]').map(function() { return this.innerHTML; }).get();
+
+				            var start = 1;
+				            
+				            if (ticketSummaryOption == 'last_n_catalogs' && ticketSummaryNumCatalogs < tokens.length) {
+				                start = tokens.length - ticketSummaryNumCatalogs + 1;
+				            }
+				            
+				            for (var i=start; i<tokens.length; i++) {
+				                fullSummary += tokens[i] + ticketSummarySeparator;
+				            }
+				        
+				            fullSummary += summary + ticketSummarySeparator;
+				    }
+
+				    fullSummary += _("[Insert problem summary]");
+				    var testPlanName = tm_stripLessSpecialChars("${test_case_bean.get_test_plan_name()}");
+
+				    var url = '${base_url}/newticket?testcaseid=${test_case_bean.get_test_case_id()}&planid=${test_case_bean.get_test_plan_id()}&summary='+tm_stripLessSpecialChars(fullSummary)+'&description=Test%20Case:%20[wiki:${test_case_bean.page_name}?planid=${test_case_bean.get_test_plan_id()}],%20Test%20Plan:%20'+testPlanName+'%20(${test_case_bean.get_test_plan_id()})'; 
+				    window.location = url;
+				});
+
+				$('.tm-action-open_tickets').on('click', function(e) {
+					/* Display a list of tickets related to this test case */
+					e.preventDefault();
+
+				    var url = '${base_url}/query?testcaseid=${test_case_bean.get_test_case_id()}';
+
+				    if ("${test_case_bean.get_test_plan_id()}" != "") { 
+				        url += '&planid=${test_case_bean.get_test_plan_id()}'; 
+				    }
+				    
+				    window.location = url;
+				});
+				
 				/*
 				$('.tm-action-attachments').on('click', function(e) {
 					e.preventDefault();
