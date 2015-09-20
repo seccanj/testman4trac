@@ -62,10 +62,12 @@ span:target {
  * Toolbar
  */
 
+/*
 #tm_main_toolbar_new_root_catalog {
     padding: 4px;
     display: inline-block;
 }
+*/
 
 .tm-toolbar {
  font: normal 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
@@ -74,10 +76,15 @@ span:target {
  border-radius: .5em;
  margin: .66em 0 .33em;
 }
+
+.tm-toolbar ul {
+	padding-left: 12px;
+}
+
 .tm-toolbar li {
- background: white url(../topbar_gradient.png) 0 0;
+ background: white;
  border: 1px solid #e4e4e4;
- margin: -1px .3em 0 -.4em;
+ margin: -1px 0 0 -.4em;
  padding: .3em 0;
  display: inline-block;
 }
@@ -118,8 +125,31 @@ span:target {
 }
 
 /**
+ * Filter area
+ */
+.tm_filter {
+	padding-top: 10px;
+}
+ 
+.tm_expandcollapseall {
+	padding: 10px 5px 0 0;
+}
+
+/**
  * Main tree
  */
+
+#tm_tree {
+	width: 700px;
+}
+
+#tm_tree ul {
+	width: 500px;
+}
+
+.tm_tree li {
+	width: 500px;
+}
 
 .tm_node {
 	cursor: pointer;
