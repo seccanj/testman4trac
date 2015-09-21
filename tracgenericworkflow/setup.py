@@ -16,7 +16,7 @@ from setuptools import setup
 
 setup(
     name='TracGenericWorkflow',
-    version='1.0.4',
+    version='1.1.0',
     packages=['tracgenericworkflow','tracgenericworkflow.upgrades'],
     package_data={'tracgenericworkflow' : ['COPYING', '*.txt', 'templates/*.html', 'htdocs/*.*', 'htdocs/js/*.js', 'htdocs/css/*.css', 'htdocs/images/*.*']},
     author = 'Roberto Longobardi',

@@ -527,9 +527,9 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
     """
     
     # Fields that must not be modified directly by the user
-    protected_fields = ('id', 'planid', 'page_name', 'page_version', 'status')
+    protected_fields = ('id', 'planid', 'page_version', 'status')
 
-    def __new__(cls, env, id=None, planid=None, page_name=None, page_version=-1, status=None, db=None):
+    def __new__(cls, env, id=None, planid=None, page_version=-1, status=None, db=None):
         key = None
         if id is not None and planid is not None:
             key = {'id': id, 'planid': planid}
@@ -538,11 +538,10 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
             
         return result
 
-    def __init__(self, env, id=None, planid=None, page_name=None, page_version=-1, status=None, db=None):
+    def __init__(self, env, id=None, planid=None, page_version=-1, status=None, db=None):
         """
-        The test case in plan is related to a test case, the 'id' and 
-        'page_name' arguments, and to a test plan, the 'planid' 
-        argument.
+        The test case in plan is related to a test case, the 'id' argument, 
+        and to a test plan, the 'planid' argument.
         """
 
         if self.is_initialized:
@@ -552,7 +551,6 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
 
         self.values['id'] = id
         self.values['planid'] = planid
-        self.values['page_name'] = page_name
         self.values['page_version'] = page_version
         self.values['status'] = status
 
@@ -615,7 +613,7 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
             "(SELECT ticket FROM ticket_custom WHERE name='testcaseid' AND value=%s) " +
             "AND id in " +
             "(SELECT ticket FROM ticket_custom WHERE name='planid' AND value=%s) ",
-            (self.values['page_name'], self.values['planid']))
+            (self.values['id'], self.values['planid']))
             
         for row in cursor:
             self.env.log.debug('    ---> Found ticket %s' % row[0])
@@ -629,7 +627,7 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
         """
         self.env.log.debug('>>> update_version')
 
-        wikipage = WikiPage(self.env, self.values['page_name'])
+        wikipage = WikiPage(self.env, 'TC_TC'+self.values['id'])
         self['page_version'] = wikipage.version
         
         self.env.log.debug('<<< update_version')
@@ -671,11 +669,11 @@ class TestPlan(AbstractVariableFieldsObject):
     """
     
     # Fields that must not be modified directly by the user
-    protected_fields = ('id', 'catid', 'page_name', 'name', 'author', 'time', 'contains_all', 'freeze_tc_versions')
+    protected_fields = ('id', 'catid', 'name', 'author', 'time', 'contains_all', 'freeze_tc_versions')
     
     selected_tcs = []
 
-    def __new__(cls, env, id=None, catid=None, page_name=None, name=None, author=None, contains_all=1, snapshot=0, selected_tcs=[], db=None):
+    def __new__(cls, env, id=None, catid=None, name=None, author=None, contains_all=1, snapshot=0, selected_tcs=[], db=None):
         key = None
         if id is not None:
             key = {'id': id}
@@ -684,12 +682,12 @@ class TestPlan(AbstractVariableFieldsObject):
             
         return result
 
-    def __init__(self, env, id=None, catid=None, page_name=None, name=None, author=None, contains_all=1, snapshot=0, selected_tcs=[], db=None):
+    def __init__(self, env, id=None, catid=None, name=None, author=None, contains_all=1, snapshot=0, selected_tcs=[], db=None):
         """
         A test plan has an ID, generated at creation time and 
         independent on those for test catalogs and test cases.
-        It is associated to a test catalog, the 'catid' and 'page_name'
-        arguments.
+        It is associated to a test catalog, the 'catid'
+        argument.
         It has a name and an author.
         """
         if self.is_initialized:
@@ -699,7 +697,6 @@ class TestPlan(AbstractVariableFieldsObject):
 
         self.values['id'] = id
         self.values['catid'] = catid
-        self.values['page_name'] = page_name
         self.values['name'] = name
         self.values['author'] = author
         self.values['contains_all'] = contains_all
@@ -735,7 +732,6 @@ class TestPlan(AbstractVariableFieldsObject):
                     tcip = TestCaseInPlan(self.env, tc_id, self.values['id'])
                     if not tcip.exists:
                         tc = TestCase(self.env, tc_id)
-                        tcip['page_name'] = tc['page_name']
                         if self.values['freeze_tc_versions']:
                             # Set the wiki page version to the current latest version
                             tcip['page_version'] = tc.wikipage.version
@@ -745,7 +741,7 @@ class TestPlan(AbstractVariableFieldsObject):
         elif self.values['freeze_tc_versions']:
             # Create a TestCaseInPlan for each test case in the catalog, and
             # set the wiki page version to the current latest version
-            tcat = TestCatalog(self.env, self.values['catid'], self.values['page_name'])
+            tcat = TestCatalog(self.env, self.values['catid'])
 
             from testmanager.api import TestManagerSystem
             default_status = TestManagerSystem(self.env).get_default_tc_status()
@@ -755,7 +751,6 @@ class TestPlan(AbstractVariableFieldsObject):
             for tc in tcat.list_testcases(deep=True):
                 tcip = TestCaseInPlan(self.env, tc.values['id'], self.values['id'])
                 if not tcip.exists:
-                    tcip['page_name'] = tc['page_name']
                     tcip['page_version'] = tc.wikipage.version
                     tcip.set_status(default_status, author)
                     
@@ -874,12 +869,11 @@ class TestManagerModelProvider(Component):
                         Table('testcaseinplan', key = ('id', 'planid'))[
                               Column('id'),
                               Column('planid'),
-                              Column('page_name'),
                               Column('page_version', type='int'),
                               Column('status')],
                      'has_custom': True,
                      'has_change': True,
-                     'version': 2},
+                     'version': 3},
                 'testcasehistory':  
                     {'table':
                         Table('testcasehistory', key = ('id', 'planid', 'time'))[
@@ -897,7 +891,6 @@ class TestManagerModelProvider(Component):
                         Table('testplan', key = ('id'))[
                               Column('id'),
                               Column('catid'),
-                              Column('page_name'),
                               Column('name'),
                               Column('author'),
                               Column('time', type=get_timestamp_db_type()),
@@ -907,7 +900,7 @@ class TestManagerModelProvider(Component):
                               Index(['catid'])],
                      'has_custom': True,
                      'has_change': True,
-                     'version': 2}
+                     'version': 3}
             }
 
     FIELDS = {
@@ -925,14 +918,12 @@ class TestManagerModelProvider(Component):
                 'testcaseinplan': [
                     {'name': 'id', 'type': 'text', 'label': N_('ID')},
                     {'name': 'planid', 'type': 'text', 'label': N_('Plan ID')},
-                    {'name': 'page_name', 'type': 'text', 'label': N_('Wiki page name')},
                     {'name': 'page_version', 'type': 'int', 'label': N_('Wiki page version')},                    
                     {'name': 'status', 'type': 'text', 'label': N_('Status')}
                 ],
                 'testplan': [
                     {'name': 'id', 'type': 'text', 'label': N_('ID')},
                     {'name': 'catid', 'type': 'text', 'label': N_('Catalog ID')},
-                    {'name': 'page_name', 'type': 'text', 'label': N_('Wiki page name')},
                     {'name': 'name', 'type': 'text', 'label': N_('Name')},
                     {'name': 'author', 'type': 'text', 'label': N_('Author')},
                     {'name': 'time', 'type': 'time', 'label': N_('Created')},

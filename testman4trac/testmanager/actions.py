@@ -31,6 +31,8 @@ from trac.wiki.formatter import Formatter
 from trac.wiki.model import WikiPage
 from trac.wiki.parser import WikiParser
 
+from testmanager.util import *
+
 from tracgenericclass.cache import GenericClassCacheSystem
 from tracgenericclass.model import GenericClassModelProvider
 from tracgenericclass.util import *
@@ -240,7 +242,7 @@ class Actions(object):
         self.test_catalog_bean = TestManagerSystem(self.env).get_test_catalog_details_data_model(test_catalog = test_catalog, include_status = include_status, test_plan = test_plan)
         self.test_catalog_bean.load_test_plans()
         self.wiki_contents = _get_wiki_page_contents(self.req, self.env, test_catalog['page_name'], test_catalog.description)
-            
+        
         page = WikiPage(self.env, test_catalog['page_name'], version=None)
         context = web_context(self.req, page.resource)
         self.attachments = AttachmentModule(self.env).attachment_data(context);
@@ -306,9 +308,10 @@ class Actions(object):
         test_case = _get_test_case(test_case_id, self.env)
 
         self.test_case_bean = TestManagerSystem(self.env).get_test_case_data_model(test_case = test_case, include_status = include_status, test_plan = test_plan)
-        self.wiki_contents = _get_wiki_page_contents(self.req, self.env, test_case['page_name'], test_case.description)
+
+        self.wiki_contents = _get_wiki_page_contents(self.req, self.env, test_case['page_name'], self.test_case_bean.description)
         
-        page = WikiPage(self.env, test_case['page_name'], version=None)
+        page = WikiPage(self.env, name = test_case['page_name'])
         context = web_context(self.req, page.resource)
         self.attachments = AttachmentModule(self.env).attachment_data(context);
         self.can_modify = _can_modify(self.req)
@@ -353,7 +356,7 @@ class Actions(object):
         jsdstr = '['
         jsdstr += json.dumps(test_catalog_bean.as_dictionary())
         jsdstr += ']'
-            
+        
         self.ajax_result = jsdstr
 
         session_attributes = {

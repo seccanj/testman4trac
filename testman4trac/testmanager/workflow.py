@@ -102,6 +102,7 @@ class TestManagerWorkflowInterface(Component):
             res = Resource(realm, id)
 
             rwsystem = ResourceWorkflowSystem(self.env)
+
             workflow_markup = rwsystem.get_workflow_markup(req, '..', realm, res)
             
             self.log.debug("<<< TestManagerWorkflowInterface - filter_stream")

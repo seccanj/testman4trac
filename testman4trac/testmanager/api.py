@@ -265,11 +265,11 @@ class TestManagerSystem(Component):
         db = self.env.get_read_db()
         cursor = db.cursor()
 
-        sql = "SELECT id, catid, page_name, name, author, time FROM testplan ORDER BY catid, id"
+        sql = "SELECT id, catid, name, author, time FROM testplan ORDER BY catid, id"
         
         cursor.execute(sql)
-        for id, catid, page_name, name, author, ts  in cursor:
-            yield id, catid, page_name, name, author, str(from_any_timestamp(ts))
+        for id, catid, name, author, ts  in cursor:
+            yield id, catid, name, author, str(from_any_timestamp(ts))
 
 
     # IPermissionRequestor methods
@@ -333,7 +333,6 @@ class TestManagerSystem(Component):
                     tcip.save_changes(author, "Status changed")
                 else:
                     tc = TestCase(self.env, id)
-                    tcip['page_name'] = tc['page_name']
                     tcip.set_status(status, author)
                     tcip.insert()
 
@@ -561,7 +560,6 @@ class TestManagerSystem(Component):
                         # Add the test case to the plan, i.e. add a testcaseinplan object
                         tcip = TestCaseInPlan(self.env, tcId, curr_planid)
                         if not tcip.exists:
-                            tcip['page_name'] = page_name
                             if tp['freeze_tc_versions']:
                                 # Set the wiki page version to the current latest version
                                 tcip['page_version'] = tc.wikipage.version
@@ -754,7 +752,7 @@ class TestManagerSystem(Component):
                     req.redirect(req.href.wiki(tcId, planid=planid))
 
                 # Redirect to test plan, forcing a page refresh by means of a random request parameter
-                req.redirect(req.href.wiki(tp['page_name'], planid=planid, random=str(datetime.now(utc).microsecond)))
+                req.redirect(req.href.wiki('TC_TT'+tp['catid'], planid=planid, random=str(datetime.now(utc).microsecond)))
                 
         elif req.path_info.startswith('/testclone'):
             object_type = req.args.get('type')
@@ -772,7 +770,7 @@ class TestManagerSystem(Component):
 
                     try:
                         # Copy the test plan properties into a new test plan
-                        new_tp = TestPlan(self.env, id, tp['catid'], tp['page_name'], new_name, author, True, False)
+                        new_tp = TestPlan(self.env, id, tp['catid'], new_name, author, True, False)
                         new_tp.insert()
                         
                         # If needed, clone the test cases in the plan, with a default status 
@@ -796,7 +794,7 @@ class TestManagerSystem(Component):
                         self.env.log.error(formatExceptionInfo())
                         # Back to the previous test plan
                         add_warning(req, _("An error occurred while cloning the test plan."))
-                        req.redirect(req.href.wiki(tp['page_name'], planid=str(tp['id'])))
+                        req.redirect(req.href.wiki('TC_TT'+tp['catid'], planid=str(tp['id'])))
 
                     # Display the new test plan
                     add_notice(req, _("The test plan was cloned successfully."))
@@ -975,18 +973,24 @@ class TestManagerSystem(Component):
         obj = tmmodelprovider.get_object(resource.realm, get_dictionary_from_string(resource.id))
         
         if obj and obj.exists:
+            url = None
+            
             args = {}
             
             if resource.realm == 'testcaseinplan':
                 args = {'planid': obj['planid']}
+                url = 'TC_TC'+obj['id']
             elif resource.realm == 'testplan':
                 args = {'planid': obj['id']}
+                url = 'TC_TT'+obj['catid']
+            else:
+                url = obj['page_name']
 
             args.update(kwargs)
                  
             self.env.log.debug("<<< get_resource_url - exists")
 
-            return href('wiki', obj['page_name'], **args)
+            return href('wiki', url, **args)
         else:
             self.env.log.debug("<<< get_resource_url - does NOT exist")
             return href('wiki', 'TC', **kwargs)
@@ -1416,16 +1420,22 @@ class TestManagerSystem(Component):
         sub_unique_idx = 1
         for sub_catalog_id in self.list_subcatalogs(test_catalog['id']):
             sub_catalog = TestCatalog(self.env, sub_catalog_id)
-            
+
             sub_catalog_bean = self.get_test_catalog_data_model(test_catalog = sub_catalog, sortby = sortby, include_status = include_status, test_plan = test_plan, unique_idx = sub_unique_idx)
+            
             test_catalog_bean.add_sub_catalog(sub_catalog_bean)
             
             sub_unique_idx += 1
 
         # Get all contained test cases
-        sub_unique_idx = 1
-        for test_case_id in self.list_testcases(test_catalog['id']):
+        tc_list = None
+        if include_status and not test_plan['contains_all']:
+            tc_list = self.list_testcases_really_in_plan(test_catalog['id'], test_plan['id'])
+        else:
+            tc_list = self.list_testcases(test_catalog['id'])
 
+        sub_unique_idx = 1
+        for test_case_id in tc_list:
             test_case = TestCase(self.env, test_case_id)
 
             test_case_bean = self.get_test_case_data_model(test_case = test_case, include_status = include_status, test_plan = test_plan, unique_idx = sub_unique_idx)
@@ -1440,6 +1450,9 @@ class TestManagerSystem(Component):
         test_case_in_plan = None
         color = None
         
+        title = test_case.title
+        description = test_case.description
+
         if include_status:
             test_case_in_plan = TestCaseInPlan(self.env, test_case['id'], test_plan['id'])
             
@@ -1447,8 +1460,13 @@ class TestManagerSystem(Component):
                 color = self.outcomes_by_name[test_case_in_plan['status']][0]
             else:
                 color = self.outcomes_by_name[self.default_outcome][0]
-            
-        test_case_bean = TestCaseBean(test_case = test_case, has_status = include_status, test_plan = test_plan, test_case_in_plan = test_case_in_plan, color = color, unique_idx = unique_idx)
+                
+            if test_plan is not None and test_plan['freeze_tc_versions']:
+                page = WikiPage(self.env, name = test_case['page_name'], version = int(test_case_in_plan['page_version']))
+                title = get_page_title(page.text)
+                description = get_page_description(page.text)
+
+        test_case_bean = TestCaseBean(test_case = test_case, has_status = include_status, test_plan = test_plan, test_case_in_plan = test_case_in_plan, color = color, title = title, description = description, unique_idx = unique_idx)
         
         return test_case_bean
     
@@ -1802,8 +1820,22 @@ class TestManagerSystem(Component):
         cursor.execute(sql_testcases, (catalog_id,))
         
         result = []
-        for id in cursor:
-            result.append(id[0])
+        for row in cursor:
+            result.append(row[0])
         
-        return result       
+        return result
+
+    def list_testcases_really_in_plan(self, catalog_id, plan_id):
+        db = self.env.get_read_db()
+        cursor = db.cursor()
+
+        sql_testcases = "SELECT tcip.id FROM testcaseinplan as tcip, testcase as tc WHERE tc.parent_id = %s and tc.id = tcip.id and tcip.planid = %s ORDER BY tc.exec_order"
+        
+        cursor.execute(sql_testcases, (catalog_id, plan_id))
+        
+        result = []
+        for row in cursor:
+            result.append(row[0])
+        
+        return result
 

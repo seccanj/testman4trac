@@ -22,7 +22,7 @@
 				<py:if test="test_case_bean.has_status">
 			        <li><a href="#" class="tm-action-goto_testplan">Go to test plan</a></li>
 				</py:if>
-		        <li class="last"><a href="${base_url}/wiki/${test_case_bean.page_name}?planid=${test_case_bean.get_test_plan_id()}">Go to wiki page</a></li>
+		        <li class="last"><a href="${base_url}/wiki/${test_case_bean.page_name}${test_case_bean.get_plan_and_page_version_params() or ''}">Go to wiki page</a></li>
 		    </ul>
 		  </div>
 		  

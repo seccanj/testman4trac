@@ -21,9 +21,26 @@
 		  <h3>For catalog: ${test_catalog_bean.title}</h3>
 
 			<div class="tm_metadata">
-				Created by <em>${authorinfo(test_catalog_bean.get_test_plan_author())}</em> ${pretty_dateinfo(test_catalog_bean.get_test_plan_date())}.
+				<p>Created by <em>${authorinfo(test_catalog_bean.get_test_plan_author())}</em> ${pretty_dateinfo(test_catalog_bean.get_test_plan_date())}.</p>
+				<p>
+					<py:if test="test_catalog_bean.test_plan['contains_all']">Contains all test cases in the catalog.</py:if>
+					<py:if test="not test_catalog_bean.test_plan['contains_all']">Contains only selected test cases from the catalog.</py:if>
+				</p>
+				<p>
+					<py:if test="test_catalog_bean.test_plan['freeze_tc_versions']">Refers to a specific version of the test cases.</py:if>
+					<py:if test="not test_catalog_bean.test_plan['freeze_tc_versions']">Always refers to the latest version of the test cases.</py:if>
+				</p>
 			</div>
 		
+			<div id="tm_testplan-totals">
+				<p>Current status:</p>
+				<div class="tm_testplan-totals-colors">
+					<span class="tm_status_node green" id="tm_testplan-totals-green" title="Successful"></span>
+					<span class="tm_status_node yellow" id="tm_testplan-totals-yellow" title="To be tested"></span>
+					<span class="tm_status_node red" id="tm_testplan-totals-red" title="Failed"></span>
+				</div>
+			</div>
+			
 		    <div id="tm_artifact_description_wiki">
 				${HTML(wiki_contents)}
 		
@@ -43,6 +60,10 @@
 		//<![CDATA[
 		(function($) {
 		    $(function() {
+			    for (color in window.test_plan_tot_colors) {
+					$('#tm_testplan-totals-'+color).html(window.test_plan_tot_colors[color]);
+				}
+			    
 				$('.tm-action-goto_testcatalog').on('click', function(e) {
 		            /* Load the new test plan dialog */
 		            e.preventDefault();

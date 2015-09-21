@@ -110,6 +110,8 @@ var currentSelectedTreeNode = null;
            
 (function($) {
     $(function() {
+        window.test_plan_colors = null;
+        
 		window.tm_initTestManager = function() {
             var params = {
                     random: new Date().getTime()
@@ -191,15 +193,16 @@ var currentSelectedTreeNode = null;
                 };
                 
             doAjaxCall("${base_url}/action/testmanager.actions!get_test_plan", "GET", params, true, function(data) {
-                    var testCatalogJson = data;
-                    
-                    console.info("JSON: "+testCatalogJson);
-                    var testCatalogs = $.parseJSON(testCatalogJson);
+                	console.info("JSON: "+data);
+                	
+                    var testCatalogs = $.parseJSON(data);
+
                     console.info("Object: ");
                     console.dir(testCatalogs);
 
                     var testCatalogMarkup = "";
                     for (var i=0; i<testCatalogs.length; i++) {
+                        window.test_plan_tot_colors = testCatalogs[i].tot_colors;
                         testCatalogMarkup += generateTestCatalogTree(testCatalogs[i], 0);
                     }
                     
@@ -221,15 +224,17 @@ var currentSelectedTreeNode = null;
             result += '<ul class="tm_node tm_testcatalog_node expanded af-ul';
 
             if (testCatalog.has_status) {
-                result += ' tm_folderstatus_node '+testCatalog.color+'" ';
+                result += ' tm_folderstatus_node '+testCatalog.color+' ';
                 if (level == 0) {
-                    result += ' data-plan_id="'+testCatalog.test_plan_id+'" ';
+                    result += '" data-plan_id="'+testCatalog.test_plan_id+'" data-id="'+testCatalog.test_catalog.id+'" ';
+                } else {
+                	result += ' disabled" '
                 }
             } else {
-                result += '"';
+                result += '" data-id="'+testCatalog.test_catalog.id+'" ';
             }
             
-            result += ' data-id="'+testCatalog.test_catalog.id+'"><i class="tm_toggle_node fa-ul fa fa-minus-square-o"></i>'+testCatalog.test_catalog.title;
+            result += '><i class="tm_toggle_node fa-ul fa fa-minus-square-o"></i>'+testCatalog.test_catalog.title;
             
             for (var subCatalog in testCatalog.sub_catalogs) {
                 result += generateTestCatalogTree(testCatalog.sub_catalogs[subCatalog], level+1);
@@ -291,7 +296,7 @@ var currentSelectedTreeNode = null;
 	                tm_toggleTreeNode(catalogNode);
 	            });
             
-            $('.tm_testcatalog_node').on('click', function(e) {
+            $('.tm_testcatalog_node:not(.disabled)').on('click', function(e) {
                     /* Load test catalog description */
                     e.preventDefault();
 		            e.stopPropagation();
@@ -299,27 +304,30 @@ var currentSelectedTreeNode = null;
                     var treeNode = $(this);
             		selectNode(treeNode);
 
-            		var params = {
-                            test_catalog_id: treeNode.data('id')
-                        };
-                    
-                    var planid = treeNode.data('plan_id');
+            		var test_catalog_id = treeNode.data('id');
+            		if (test_catalog_id != undefined) {
+                		var params = {
+                                test_catalog_id: test_catalog_id
+                            };
+                        
+                        var planid = treeNode.data('plan_id');
 
-                    if (planid != undefined) {
-                    	params.test_plan_id = planid;
-                    }
+                        if (planid != undefined) {
+                        	params.test_plan_id = planid;
+                        }
 
-                    /*
-                    var params = {};
-                    
-                    doAjaxCall("${base_url}/wiki/TC_TT"+node.attr('data-id'), "GET", params, true, function(data) {
-                    */
-                    doAjaxCall("${base_url}/action/testmanager.actions!get_test_catalog_details", "GET", params, true, function(data) {
-                            var markup = data;
-                            $("#tm_artifact_description").html(markup);
-                            
-                            attachTestCatalogDescriptionBehavior();
-                        });
+                        /*
+                        var params = {};
+                        
+                        doAjaxCall("${base_url}/wiki/TC_TT"+node.attr('data-id'), "GET", params, true, function(data) {
+                        */
+                        doAjaxCall("${base_url}/action/testmanager.actions!get_test_catalog_details", "GET", params, true, function(data) {
+                                var markup = data;
+                                $("#tm_artifact_description").html(markup);
+                                
+                                attachTestCatalogDescriptionBehavior();
+                            });
+                	}
                 });
 
             $('.tm_testcase_node').on('click', function(e) {

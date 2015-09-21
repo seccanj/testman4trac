@@ -29,6 +29,7 @@ from trac.util.text import CRLF
 from trac.wiki.api import WikiSystem
 from trac.wiki.model import WikiPage
 from trac.wiki.web_ui import WikiModule
+
 from tracgenericclass.model import IConcreteClassProvider, AbstractVariableFieldsObject, AbstractWikiPageWrapper, need_db_create_for_realm, create_db_for_realm, need_db_upgrade_for_realm, upgrade_db_for_realm
 from tracgenericclass.util import *
 
@@ -49,31 +50,36 @@ class TestCatalogBean(object):
 
         self.unique_idx = unique_idx
         
-        self.sub_catalogs = {}
+        self.sub_catalogs = []
     
-        self.test_cases = {}
+        self.test_cases = []
         
         self.test_plans = None
         
         self.tot = 0
+        self.tot_colors = {'red': 0, 'yellow': 0, 'green': 0}
         
         self.key = None
         
     def add_sub_catalog(self, sub_catalog_bean):
-        self.sub_catalogs[sub_catalog_bean.get_key()] = sub_catalog_bean
+        self.sub_catalogs.append(sub_catalog_bean)
         
         self.tot += sub_catalog_bean.tot
         
         if self.has_status:
             self.color = self._calc_worse_color(sub_catalog_bean.color)
+            for color in self.tot_colors:
+                self.tot_colors[color] += sub_catalog_bean.tot_colors[color]
         
     def add_test_case(self, test_case_bean):
-        self.test_cases[test_case_bean.get_key()] = test_case_bean
+        self.test_cases.append(test_case_bean)
         
         self.tot += 1
         
         if self.has_status:
             self.color = self._calc_worse_color(test_case_bean.color)
+            if test_case_bean.color is not None:
+                self.tot_colors[test_case_bean.color] += 1
 
     def load_test_plans(self):
         if self.test_plans is None:
@@ -85,13 +91,13 @@ class TestCatalogBean(object):
                 i += 1
             
     def iterator(self):
-        sorted_test_catalogs = sorted(self.sub_catalogs, key=_test_sorting(self.sub_catalogs))
+        sorted_test_catalogs = sorted(self.sub_catalogs, key=_list_sorting('title'))
 
         for sub_catalog_bean in sorted_test_catalogs:
             for item in sub_catalog_bean.iterator():
                 yield item
                 
-        sorted_test_cases = sorted(self.test_cases, key=_test_sorting(self.test_cases))
+        sorted_test_cases = sorted(self.test_cases, key=_list_sorting('title'))
 
         for test_case_bean in sorted_test_cases:
             yield test_case_bean
@@ -99,13 +105,13 @@ class TestCatalogBean(object):
         yield TestListTerminatorBean()
 
     def sub_catalogs_iterator(self):
-        sorted_test_catalogs = sorted(self.sub_catalogs, key=_test_sorting(self.sub_catalogs))
+        sorted_test_catalogs = sorted(self.sub_catalogs, key=_list_sorting('title'))
 
         for sub_catalog_bean in sorted_test_catalogs:
             yield sub_catalog_bean
     
     def test_cases_iterator(self):
-        sorted_test_cases = sorted(self.test_cases, key=_test_sorting(self.test_cases))
+        sorted_test_cases = sorted(self.test_cases, key=_list_sorting('title'))
 
         for test_case_bean in sorted_test_cases:
             yield test_case_bean
@@ -124,12 +130,15 @@ class TestCatalogBean(object):
                 
                 self.key = "%05d" % (self.test_catalog['exec_order'],)
             
+            elif sortby == 'unique':
+                self.key = self.test_catalog['id']
+                
             elif self.test_catalog is not None:
                 self.key = self.test_catalog.title + str(self.unique_idx)
                 
             else:
                 self.key = 'NON_EXISTENT' + str(self.unique_idx)
-        
+
         return self.key
 
     def get_test_catalog_id(self):
@@ -205,7 +214,7 @@ class TestCatalogBean(object):
         return 'green'
         
     def as_dictionary(self):
-        result = {'has_status': self.has_status, 'color': self.color, 'tot': self.tot, 'key': self.key}
+        result = {'has_status': self.has_status, 'color': self.color, 'tot': self.tot, 'tot_colors': self.tot_colors, 'key': self.key}
         
         if self.test_catalog is not None:
             result['test_catalog'] = self.test_catalog.values
@@ -218,11 +227,11 @@ class TestCatalogBean(object):
 
         result['sub_catalogs'] = {}
         for sub_catalog in self.sub_catalogs:
-            result['sub_catalogs'][sub_catalog] = self.sub_catalogs[sub_catalog].as_dictionary()
+            result['sub_catalogs'][sub_catalog.get_key('unique')] = sub_catalog.as_dictionary()
             
         result['test_cases'] = {}
         for test_case in self.test_cases:
-            result['test_cases'][test_case] = self.test_cases[test_case].as_dictionary()
+            result['test_cases'][test_case.get_key('unique')] = test_case.as_dictionary()
             
         return result
 
@@ -232,7 +241,7 @@ class TestCaseBean(object):
     A test case bean, used for presentation purposes.
     """
 
-    def __init__(self, test_case = None, has_status = False, test_plan = None, test_case_in_plan = None, color = None, unique_idx = 0):
+    def __init__(self, test_case = None, has_status = False, test_plan = None, test_case_in_plan = None, color = None, title = None, description = None, unique_idx = 0):
         self.test_case = test_case
 
         self.has_status = has_status
@@ -242,6 +251,10 @@ class TestCaseBean(object):
         self.test_case_in_plan = test_case_in_plan
         
         self.color = color
+
+        self.title = title
+
+        self.description = description
         
         self.unique_idx = unique_idx
         
@@ -261,9 +274,12 @@ class TestCaseBean(object):
                 else:
                     self.key = 'NON_EXISTENT' + str(self.unique_idx)
             
-            elif sortby == 'name':
+            elif sortby == 'title' and self.test_case is not None:
                 self.key = self.test_case.title + str(self.unique_idx)
             
+            elif sortby == 'unique':
+                self.key = self.test_case['id']
+                
             else:
                 ts = None
                 if self.has_status and self.test_case_in_plan is not None and self.test_case_in_plan.exists:
@@ -310,19 +326,21 @@ class TestCaseBean(object):
         
         return ''
 
-    @property
-    def title(self):
-        if self.test_case is not None:
-            return self.test_case.title
+    def get_plan_and_page_version_params(self):
+        result = None
         
-        return ''
+        if self.test_plan is not None:
+            result = '?planid=%s' % (self.test_plan['id'],)
 
-    @property
-    def description(self):
-        if self.test_case is not None:
-            return self.test_case.description
-        
-        return ''
+        if self.page_version is not None:
+            if result is None:
+                result = '?'
+            else:
+                result += '&'
+                
+            result += 'version=%s' % (self.page_version,)
+            
+        return result
 
     @property
     def page_name(self):
@@ -330,6 +348,13 @@ class TestCaseBean(object):
             return self.test_case['page_name']
         
         return ''
+
+    @property
+    def page_version(self):
+        if self.test_plan is not None and self.test_plan['freeze_tc_versions'] and self.test_case_in_plan is not None: 
+            return self.test_case_in_plan['page_version']
+        
+        return None
 
     def is_expandable(self):
         return False
@@ -339,8 +364,8 @@ class TestCaseBean(object):
         
         if self.test_case is not None:
             result['test_case'] = self.test_case.values
-            result['test_case']['title'] = self.test_case.title
-            result['test_case']['description'] = self.test_case.description
+            result['test_case']['title'] = self.title
+            result['test_case']['description'] = self.description
 
         if self.test_plan is not None:
             result['test_plan_id'] = self.test_plan['id']
@@ -485,5 +510,11 @@ class BreadcrumbBean(object):
 def _test_sorting(items, sortby = 'custom'):
     def do_sort(k):
         return items[k].get_key(sortby = sortby)
+        
+    return do_sort
+
+def _list_sorting(sortby = 'custom'):
+    def do_sort(k):
+        return k.get_key(sortby = sortby)
         
     return do_sort
