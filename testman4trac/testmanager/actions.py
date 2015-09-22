@@ -815,6 +815,114 @@ class Actions(object):
         return 'success'
 
 
+    @Invocable(
+        {
+            'results': {
+                'success': {'kind': 'template', 'template_name': 'confirm_artifact_move_dialog.html'},
+                'no_need': {'kind': 'json', 'field_name': 'ajax_result'}
+            },
+            'parameters': {
+                'artifact_type': 'in_out',
+                'artifact_id': 'in_out',
+                'new_parent_id': 'in_out',
+                'default_outcome': 'out',
+                'statuses_by_name': 'out',
+                'confirm_data': 'out'
+            },
+            'required_roles': ('TEST_MODIFY', 'TEST_ADMIN')
+        }
+    )
+    def get_move_artifact_confirmation_dialog(self):
+        self.env.log.debug(">> get_move_artifact_confirmation_dialog")
+
+        if self.artifact_type is None or self.artifact_id is None or self.new_parent_id is None:
+            raise TracException("Should provide artifact type, id and the new parent id.") 
+
+        GenericClassCacheSystem.clear_cache()
+
+        self.default_outcome = TestManagerSystem(self.env).get_default_tc_status()
+        self.statuses_by_name = TestManagerSystem(self.env).get_tc_statuses_by_name()
+
+        self.confirm_data = get_artifact_move_consequences(self.env, artifact_type, artifact_id, new_parent_id)
+        self.env.log.debug("Consequences of the move are\n'%s'" % (self.confirm_data,))
+        
+        GenericClassCacheSystem.clear_cache()
+
+        #if len(self.confirm_data) == 0:
+        #    self.ajax_result = ''
+        #    
+        #    return 'no_need'
+        
+        self.env.log.debug("<< get_move_artifact_confirmation_dialog")
+        
+        return 'success'
+
+
+    @Invocable(
+        {
+            'results': {
+                'success': {'kind': 'json', 'field_name': 'ajax_result'}
+            },
+            'parameters': {
+                'artifact_type': 'in',
+                'artifact_id': 'in',
+                'new_parent_id': 'in'
+            },
+            'required_roles': ('TEST_MODIFY', 'TEST_ADMIN')
+        }
+    )
+    def move_artifact(self):
+        self.env.log.debug(">> move_artifact")
+
+        if artifact_type is None or artifact_id is None or new_parent_id is None:
+            raise TracException("Should provide artifact type, id and the new parent id.") 
+
+        GenericClassCacheSystem.clear_cache()
+
+        jsdstr = None
+        
+        try:
+            destination_catalog = TestCatalog(self.env, new_parent_id)
+            
+            consequences = get_artifact_move_consequences(self.env, artifact_type, artifact_id, new_parent_id)
+            self.env.log.debug("Consequences of the move are\n'%s'" % (consequences,))
+    
+            for tc_title, status, tp_id, tp_name, tp_author, tp_date in consequences:
+                self.env.log.debug("Deleting test case in plan with id %s and planid %s" % (artifact_id, tp_id))
+                tcip = TestCaseInPlan(self.env, artifact_id, tp_id)
+                tcip.delete_history()
+                tcip.delete()
+
+            test_artifact = None
+            
+            if (artifact_type == 'testcase'):
+                test_artifact = TestCase(self.env, artifact_id)
+                
+            elif (artifact_type == 'testcatalog'):
+                test_artifact = TestCatalog(self.env, artifact_id)
+            
+            test_artifact.author = get_reporter_id(req, 'author')
+            test_artifact.remote_addr = req.remote_addr
+
+            test_artifact.move_to(destination_catalog, delete_tcip = False)
+
+            jsdstr = '{"result": "OK"}'
+    
+        except:
+            self.env.log.error("Error moving the test artifact!")
+            self.env.log.error(formatExceptionInfo())
+    
+            jsdstr = '{"result": "ERROR", "message": "An error occurred while moving the test artifact."}'
+            
+        self.ajax_result = jsdstr
+
+        GenericClassCacheSystem.clear_cache()
+
+        self.env.log.debug("<< move_artifact")
+        
+        return 'success'
+
+
 ##########################################################################################################
 
     @Invocable(
@@ -930,6 +1038,45 @@ class Actions(object):
 ##########################################################################################################
 
 
+def get_artifact_move_consequences(env, artifact_type, artifact_id, new_parent_id):
+    
+    result = []
+    
+    if (artifact_type == 'testcase'):
+        test_artifact = TestCase(env, artifact_id)
+    
+        # Calculate path from the destination catalog to the root
+        destination_path_to_root = []
+        parent_catalog = TestCatalog(env, new_parent_id).get_enclosing_catalog();
+        while parent_catalog is not None:
+            destination_path_to_root.append(parent_catalog['id'])
+            
+            parent_catalog = parent_catalog.get_enclosing_catalog()
+        
+        # Calculate path from the moved test case to the root
+        parent_catalog = test_artifact.get_enclosing_catalog();
+        while parent_catalog is not None:
+            if parent_catalog['id'] not in destination_path_to_root:
+                # The test case is being moved to a catalog that does not 
+                # have this particular catalog in the path to its root.
+                # This means that any test plan defined for this particular
+                # catalog will not have the test case in them anymore.
+                for test_plan in parent_catalog.list_testplans():
+                    tcip = TestCaseInPlan(env, artifact_id, test_plan['id'])
+                    if tcip.exists:
+                        for ts, author, status in tcip.list_history():
+                            result.append(
+                                    [test_artifact.title, status, test_plan['id'], test_plan['name'], author, ts]
+                                )
+            
+            parent_catalog = parent_catalog.get_enclosing_catalog()
+            
+    elif (artifact_type == 'testcatalog'):
+        test_artifact = TestCatalog(self.env, artifact_id)
+        
+        # TODO Get list of data loss
+    
+    return result
 
 def _check_view_permission(req, env):
     if not req.perm.has_permission('TEST_VIEW') and not req.perm.has_permission('TEST_ADMIN'):

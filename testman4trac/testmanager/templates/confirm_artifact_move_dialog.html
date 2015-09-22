@@ -1,0 +1,53 @@
+<html>
+	<head>
+	</head>
+
+	<body>
+		<div xmlns="http://www.w3.org/1999/xhtml"
+		      xmlns:xi="http://www.w3.org/2001/XInclude"
+		      xmlns:i18n="http://genshi.edgewall.org/i18n"
+		      xmlns:py="http://genshi.edgewall.org/"
+		      i18n:domain="testmanager"
+		
+		     id="tm_confirm_artifact_move_dialog_container"
+		>
+		    <div>
+		      <h2>Confirm move operation</h2>
+		    </div>
+		
+		    <div id="tm_confirm_artifact_move_dialog_message_holder"></div>
+		
+			<p>
+			If you confirm this move operation, some information will be lost.
+			In particular, the state of the following test cases in the displayed test plans will be deleted, because they will be moved out of the test plans.
+			</p>
+		
+			<ul>
+				<li py:for="tc_title, status, tp_id, tp_name, tp_author, tp_date in confirm_data">
+					Test case "${tc_title}", ${statuses_by_name[status][1]} in test plan "${tp_name}" (created by <em>${authorinfo(tp_author)}</em> ${pretty_dateinfo(tp_date)}.)
+				</li>
+			</ul>
+		
+		    <div>
+		        <button id="tm_confirm_artifact_move_dialog_button_ok">Confirm move</button>
+		        <button id="tm_confirm_artifact_move_dialog_button_cancel">Cancel</button>
+		    </div>
+		
+		    <script type="text/javascript">
+		    tm_attachDialogEvents(
+		    	    "${base_url}", 
+		    	    "confirm_artifact_move_dialog", 
+		    	    "move_artifact", 
+		    	    [],
+		    	    {artifact_type: '${artifact_type}', artifact_id: '${artifact_id}', new_parent_id: '${new_parent_id}'}, 
+		    	    function(output){
+		    	    	tm_loadTestCatalogs();
+			    	}
+		    	);
+
+		    </script>
+		
+		</div>
+		
+	</body>
+</html>

@@ -37,10 +37,11 @@
 				${HTML(wiki_contents)}
 		
 				<py:if test="test_case_bean.has_status">
-				    <div class="tm_artifact_status_section">
-				    	<p><strong>Status: ${statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][1]}</strong></p>
-				    	<p>Click to change status.</p>
+				    <div id="tm_artifact_status_section">
+				    	<h3>Status: ${statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][1]}</h3>
 					    <div class="tm_artifact_status_colors">
+					    	<p>Click to change status.</p>
+					    	
 					    	<py:if test="(statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][0]) == 'green'">
 						    	<a href="#" class="tm-action-change_status tm_artifact_status green tm_artifact_status_selected" data-status="successful" title="Set to successful"></a>
 					    	</py:if>

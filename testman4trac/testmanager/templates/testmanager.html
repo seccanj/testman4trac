@@ -54,6 +54,7 @@
                 <ul>
                   <li class="first"><a href="#" class="tm-action-new_root_catalog">New root catalog</a></li>
                   <li><a href="#" class="tm-action-resetview">Reset view</a></li>
+                  <li id="tm-action-enable_dragndrop"><a href="#" class="tm-action-enable_dragndrop">Enable drag-n-drop</a></li>
                   <li class="last"><a href="#" class="tm-action-select_testcases">Select test cases</a></li>
                 </ul>
               </div>
@@ -107,12 +108,16 @@
     <script type="text/javascript">
 //<![CDATA[
            
-var currentSelectedTreeNode = null;
-           
+var currentSelectedTreeNode = null,
+    test_plan_colors = null,
+    tm_dragndrop_enabled = false,
+    tm_nodeBeingDragged = null;
+	/*
+	tm_rootCatalogIdOfnodeBeingDragged = null;
+	*/
+
 (function($) {
     $(function() {
-        window.test_plan_colors = null;
-        
 		window.tm_initTestManager = function() {
             var params = {
                     random: new Date().getTime()
@@ -171,10 +176,12 @@ var currentSelectedTreeNode = null;
 
                     var testCatalogMarkup = "";
                     for (var i=0; i<testCatalogs.length; i++) {
-                        testCatalogMarkup += generateTestCatalogTree(testCatalogs[i]);
+                        testCatalogMarkup += generateTestCatalogTree(testCatalogs[i], 0);
                     }
                     
                     $("#tm_tree").html(testCatalogMarkup);
+
+                    $("#tm-action-enable_dragndrop").show();
                     
                     attachTreeBehavior();
                     
@@ -182,7 +189,7 @@ var currentSelectedTreeNode = null;
                         $('.tm_'+selectTypeVar+'_node[data-id="'+selectIdVar+'"]').click();
                     }
                 });
-        }
+        };
         
         window.tm_loadTestPlan = function(planId, selectType, selectId, refresh) {
             /* Load test plan */
@@ -216,6 +223,8 @@ var currentSelectedTreeNode = null;
                     }
                     
                     $("#tm_tree").html(testCatalogMarkup);
+
+                    $("#tm-action-enable_dragndrop").hide();
                     
                     attachTreeBehavior();
                     
@@ -223,7 +232,55 @@ var currentSelectedTreeNode = null;
                         $('.tm_'+selectTypeVar+'_node[data-id="'+selectIdVar+'"]').click();
                     }
                 });
-        }
+        };
+
+		window.tm_dragNode = function(ev) {
+			if (tm_dragndrop_enabled) {
+				var artifactType = ev.target.getAttribute('data-artifacttype');
+				var id = ev.target.getAttribute('data-id');
+				
+				console.info("Dragging "+artifactType+" "+id);
+	
+				ev.dataTransfer.setData('text', artifactType+','+id);
+				ev.dataTransfer.effectAllowed = 'move';
+				ev.dataTransfer.dropEffect = 'move';
+	
+				window.tm_nodeBeingDragged = $(ev.target);
+	
+				/*
+				tm_rootCatalogIdOfnodeBeingDragged = window.tm_nodeBeingDragged.ancestor('.tm_rootcatalog').data('id');
+				*/
+			}
+		};
+
+		window.tm_dragOver = function(ev) {
+			ev.preventDefault();
+		}
+        
+		window.tm_dropNode = function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			if (tm_dragndrop_enabled) {
+				var attrs = ev.dataTransfer.getData('text').split(',');
+				
+				var artifactType = attrs[0];
+				var id = attrs[1];
+
+				var destinationId = ev.target.getAttribute('data-id');
+				
+				console.info("Dropped "+artifactType+" "+id+" on "+destinationId);
+
+				var params = {
+						artifact_type: artifactType,
+	                    artifact_id: id,
+	                    new_parent_id: destinationId,
+	                    random: new Date().getTime()
+	                };
+
+                tm_loadDialog("${base_url}", "get_move_artifact_confirmation_dialog", params, 900);
+			}
+		};
         
         function generateTestCatalogTree(testCatalog, level) {
             var result = '';
@@ -232,8 +289,13 @@ var currentSelectedTreeNode = null;
 
             var title = testCatalog.test_catalog.title;
             
-            result += '<ul class="tm_node tm_testcatalog_node expanded af-ul';
-
+            result += '<ul data-artifacttype="testcatalog" ';
+            result += ' class="tm_node tm_testcatalog_node expanded af-ul';
+            	
+            if (level == 0) {
+                result += ' tm_rootcatalog ';
+            }
+            
             if (testCatalog.has_status) {
                 result += ' tm_folderstatus_node '+testCatalog.color+' ';
                 if (level == 0) {
@@ -243,7 +305,11 @@ var currentSelectedTreeNode = null;
                 	result += ' disabled" '
                 }
             } else {
-                result += '" data-id="'+testCatalog.test_catalog.id+'" ';
+                if (level > 0) {
+                	result += '" ondragstart="tm_dragNode(event)" ondrop="tm_dropNode(event)" ondragover="tm_dragOver(event)';
+                }
+
+            	result += '" data-id="'+testCatalog.test_catalog.id+'" ';
             }
             
             result += '><i class="tm_toggle_node fa-ul fa fa-minus-square-o"></i>'+title;
@@ -264,14 +330,14 @@ var currentSelectedTreeNode = null;
         function generateTestCase(testCase) {
             var result = '';
             
-            result += '<li class="tm_node tm_testcase_node';
+            result += '<li data-artifacttype="testcase" class="tm_node tm_testcase_node';
             if (testCase.has_status) {
                 result += ' tm_status_node '+testCase.color+'" ';
                 result += ' data-plan_id="'+testCase.test_plan_id+'" ';
                 result += ' data-status="'+testCase.test_case_in_plan.status+'" ';
                 result += ' data-color="'+testCase.color+'" ';
             } else {
-                result += '" ';
+                result += '" ondragstart="tm_dragNode(event)" ';
             }
 
             result += ' data-id="'+testCase.test_case.id+'">';
@@ -431,6 +497,15 @@ var currentSelectedTreeNode = null;
                 tm_resetView();
             });
 
+            $('.tm-action-enable_dragndrop').on('click', function(e) {
+                /* Reset the tree view */
+                e.preventDefault();
+
+                $('.tm_node:not(.disabled)').attr('draggable', true);
+                
+                tm_dragndrop_enabled = true;
+            });
+            
             $('.tm-action-select_testcases').on('click', function(e) {
                 /* Reset the tree view */
                 e.preventDefault();

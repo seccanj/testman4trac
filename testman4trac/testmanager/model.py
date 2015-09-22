@@ -169,7 +169,7 @@ class TestCatalog(AbstractTestDescription):
         """
         page_name = self.values['page_name']
 
-        if page_name == 'TC':
+        if page_name == 'TC' or ('parent_id' not in self.values) or self.values['parent_id'] is None:
             return None
         else:
             return TestCatalog(self.env, self.values['parent_id'])

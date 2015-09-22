@@ -236,11 +236,16 @@ span:target {
 	padding-left: 20px;
 }
 
-.tm_artifact_status_section {
-	padding:8px;
+#tm_artifact_status_section {
+	margin-top: 40px;
+}
+
+#tm_artifact_status_section div {
+	padding: 0 0 1em 1em;
 }
 
 .tm_artifact_status_colors {
+	margin-left: 2em;
 	padding: 8px;
 }
 
@@ -255,7 +260,7 @@ span:target {
 }
 
 #tm_artifact_statushistory {
-	margin-top: 40px;
+	margin-top: 30px;
 }
 
 #tm_artifact_statushistory div {
