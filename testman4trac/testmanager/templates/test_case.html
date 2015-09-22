@@ -63,9 +63,20 @@
 					    	</py:if>
 					    </div>
 				    </div>
+				    
+				    <div id="tm_artifact_statushistory">
+				        <h3 class="foldable">History of status changes</h3>
+				        <div>
+					    	<dl>
+					    		<dt py:for="ts, author, status in test_case_bean.test_case_in_plan.list_history()">
+					    			Set to <strong>${statuses_by_name[status][1]}</strong> by <em>${authorinfo(author)}</em> ${pretty_dateinfo(ts)}.
+					    		</dt>
+					    	</dl>
+					    </div>
+				    </div>
 			    </py:if>
 
-			    <div id="tm_artifact_ondemand" style="display:none;">
+			    <div id="tm_artifact_ondemand" style="display: none;">
 			    </div>
 		
 				<div id="tm_artifact_attachments">

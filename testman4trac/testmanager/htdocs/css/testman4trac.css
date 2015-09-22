@@ -200,24 +200,6 @@ span:target {
 	color: red;
 }
 
-.tm_artifact_status_section {
-	padding:8px;
-}
-
-.tm_artifact_status_colors {
-	padding: 8px;
-}
-
-.tm_artifact_status_colors .tm-action-change_status {
-	padding: 5px;
-	border: 0px;
-}
-
-.tm_artifact_status_colors .tm-action-change_status.tm_artifact_status_selected {
-	border: 2px solid gray;
-	border-radius: 3px;
-}
-
 /*
 .tm_testcatalog_node .collapsed:before {
 	content: "+";
@@ -240,6 +222,11 @@ span:target {
 	padding-left: 30px;
 }
 
+
+/**
+ * Test artifact details
+ */
+
 #tm_artifact_description h1  {
 	padding: 20px;
 }
@@ -247,6 +234,42 @@ span:target {
 #tm_artifact_description h2,
 #tm_artifact_description h3 {
 	padding-left: 20px;
+}
+
+.tm_artifact_status_section {
+	padding:8px;
+}
+
+.tm_artifact_status_colors {
+	padding: 8px;
+}
+
+.tm_artifact_status_colors .tm-action-change_status {
+	padding: 5px;
+	border: 0px;
+}
+
+.tm_artifact_status_colors .tm-action-change_status.tm_artifact_status_selected {
+	border: 2px solid gray;
+	border-radius: 3px;
+}
+
+#tm_artifact_statushistory {
+	margin-top: 40px;
+}
+
+#tm_artifact_statushistory div {
+	padding: 0 0 1em 1em;
+}
+
+#tm_artifact_statushistory dl {
+	margin-left: 2em;
+	padding: 0;
+}
+
+#tm_artifact_statushistory dt {
+    display: list-item;
+	list-style: square;
 }
 
 #tm_testplan-totals {
@@ -260,15 +283,6 @@ span:target {
 
 #tm_artifact_description_wiki {
 	padding: 20px;
-}
-
-
-/**
- * Test artifact details
- */
-
-#tm_artifact_attachments {
-	padding-top: 40px;
 }
 
 .tm_metadata {
