@@ -158,54 +158,84 @@ class WikiTestManagerInterface(Component):
             
             insert1 = HTML('')
             if page_name.find('_TC') >= 0:
-                if filename == 'wiki_view.html':
+                if page_name.startswith('TC_TT'):
+                    # This is an old-style URL. Let's display a message and a link to the new one
+                    new_path = 'TC_TC'+page_name.rpartition('_TC')[2]
+                    new_href = None
                     if not planid or planid == '-1':
-                        insert1 = tag.div(style='clear: both;')(
-                                    tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
-                                        tag.a(href=req.href('/').rstrip('/')+
-                                              '/action/testmanager.actions!initview?'+
-                                              'url_artifact_type=testcase'+
-                                              '&url_artifact_id='+page_name.rpartition('_TC')[2]
-                                              )(_("Open in Test Manager"))
-                                        )
-                                    )
-
+                        new_href = req.href.wiki(new_path)
                     else:
-                        insert1 = tag.div(style='clear: both;')(
-                                    tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
-                                        tag.a(href=req.href('/').rstrip('/')+
-                                              '/action/testmanager.actions!initview?'+
-                                              'url_artifact_type=testcase'+
-                                              '&url_artifact_id='+page_name.rpartition('_TC')[2]+
-                                              '&url_artifact_planid='+planid
-                                              )(_("Open in Test Manager"))
+                        new_href = req.href.wiki(new_path, planid=planid)
+
+                        
+                    redirect_link = tag.div(id='tm-redirect_to_testmanager', style='clear: both; padding: 30px;')(
+                                        tag.p(style='font-weight: bold;')(
+                                              _("This page has been moved. Click here to "),
+                                              tag.a(href=new_href)(_("go to the new address.")
+                                              )
                                         )
                                     )
+                    
+                    result = stream | Transformer('//body').append(redirect_link)
+                    return result
+                
+                if filename == 'wiki_view.html':
+                    plan_parameter = None
+                    if not planid or planid == '-1':
+                        plan_parameter = ''
+                    else:
+                        plan_parameter = '&url_artifact_planid='+planid
+                        
+                    insert1 = tag.div(style='clear: both;')(
+                                tag.div(id='tm-goto_testmanager')(
+                                    tag.a(href=req.href('/').rstrip('/')+
+                                          '/action/testmanager.actions!initview?'+
+                                          'url_artifact_type=testcase'+
+                                          '&url_artifact_id='+page_name.rpartition('_TC')[2]
+                                          +plan_parameter
+                                          )(_("Open in Test Manager"))
+                                    )
+                                )
 
             elif page_name.find('_TT') >= 0:
-                if filename == 'wiki_view.html':
+                if page_name.partition('_TT')[2].find('_TT') >= 0:
+                    # This is an old-style URL. Let's display a message and a link to the new one
+                    new_path = 'TC_TT'+page_name.rpartition('_TT')[2]
+                    new_href = None
                     if not planid or planid == '-1':
-                        insert1 = tag.div(style='clear: both;')(
-                                    tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
-                                        tag.a(href=req.href('/').rstrip('/')+
-                                              '/action/testmanager.actions!initview?'+
-                                              'url_artifact_type=testcatalog'+
-                                              '&url_artifact_id='+page_name.rpartition('_TT')[2]
-                                              )(_("Open in Test Manager"))
-                                        )
-                                    )
-
+                        new_href = req.href.wiki(new_path)
                     else:
-                        insert1 = tag.div(style='clear: both;')(
-                                    tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
-                                        tag.a(href=req.href('/').rstrip('/')+
-                                              '/action/testmanager.actions!initview?'+
-                                              'url_artifact_type=testcatalog'+
-                                              '&url_artifact_id='+page_name.rpartition('_TT')[2]+
-                                              '&url_artifact_planid='+planid
-                                              )(_("Open in Test Manager"))
+                        new_href = req.href.wiki(new_path, planid=planid)
+
+                        
+                    redirect_link = tag.div(id='tm-redirect_to_testmanager', style='clear: both; padding: 30px;')(
+                                        tag.p(style='font-weight: bold;')(
+                                              _("This page has been moved. Click here to "),
+                                              tag.a(href=new_href)(_("go to the new address.")
+                                              )
                                         )
                                     )
+                    
+                    result = stream | Transformer('//body').append(redirect_link)
+                    return result
+                
+                if filename == 'wiki_view.html':
+                    plan_parameter = None
+                    if not planid or planid == '-1':
+                        plan_parameter = ''
+                    else:
+                        plan_parameter = '&url_artifact_planid='+planid
+                        
+                    insert1 = tag.div(style='clear: both;')(
+                                tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
+                                    tag.a(href=req.href('/').rstrip('/')+
+                                          '/action/testmanager.actions!initview?'+
+                                          'url_artifact_type=testcatalog'+
+                                          '&url_artifact_id='+page_name.rpartition('_TT')[2]
+                                          +plan_parameter
+                                          )(_("Open in Test Manager"))
+                                    )
+                                )
 
             result = stream | Transformer('//div[contains(@id, "pagepath")]').after(insert1)
 
