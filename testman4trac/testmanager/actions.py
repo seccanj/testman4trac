@@ -688,7 +688,7 @@ class Actions(object):
                 selected_tcs = selected_test_cases.split(',')
 
             test_catalog = TestCatalog(self.env, parent_id)
-            new_tp = TestPlan(self.env, id, parent_id, test_catalog['page_name'], title, get_reporter_id(self.req, 'author'), contains_all_int, snapshot_int, selected_tcs)
+            new_tp = TestPlan(self.env, id, parent_id, title, get_reporter_id(self.req, 'author'), contains_all_int, snapshot_int, selected_tcs)
             new_tp.remote_addr = self.req.remote_addr
 
             new_tp.insert()

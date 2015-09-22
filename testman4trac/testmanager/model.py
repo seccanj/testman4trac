@@ -726,9 +726,8 @@ class TestPlan(AbstractVariableFieldsObject):
 
             author = self.values['author']
 
-            for tc_page_name in self.selected_tcs:
-                if tc_page_name != '':
-                    tc_id = tc_page_name.rpartition('TC')[2]
+            for tc_id in self.selected_tcs:
+                if tc_id != '':
                     tcip = TestCaseInPlan(self.env, tc_id, self.values['id'])
                     if not tcip.exists:
                         tc = TestCase(self.env, tc_id)

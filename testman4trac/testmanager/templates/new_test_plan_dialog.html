@@ -63,14 +63,19 @@
 
     <script type="text/javascript">
 
+		var selected_test_cases = '';
+		$('.tm_testcatalog_node[data-id=${parent_id}] .tm_select_testcase_checkbox:checked').each(function() {
+			selected_test_cases += $(this).parent('li').data('id') + ',';
+		});
+    
 	    tm_attachDialogEvents(
 	    	    "${base_url}", 
 	    	    "new_test_plan_dialog", 
 	    	    "create_test_plan", 
 	    	    ["title"],
-	    	    {parent_id: "${parent_id}"}, 
+	    	    {parent_id: "${parent_id}", selected_test_cases: selected_test_cases}, 
 	    	    function(output){
-		    	    /* tm_loadTestCatalogs("testcatalog", output.id); */
+	    	    	$('.tm_testcatalog_node[data-id=${parent_id}]').click();
 		    	},
 		    	function(){
 			    	console.info("contains_all="+$("input[name=tm_new_test_plan_dialog_contains_all]:checked").val());

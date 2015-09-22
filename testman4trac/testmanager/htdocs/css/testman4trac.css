@@ -264,6 +264,10 @@ span:target {
     line-height: 8px;
 }
 
+.hidden {
+	display: none;
+}
+
 @media print {
     .collapsed > div, .collapsed > table, .collapsed > ul, .collapsed > dl { 
         display: block; 

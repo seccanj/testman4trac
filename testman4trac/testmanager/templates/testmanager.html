@@ -53,7 +53,8 @@
               <div id="tm_navigator_toolbar" class="tm-toolbar">
                 <ul>
                   <li class="first"><a href="#" class="tm-action-new_root_catalog">New root catalog</a></li>
-                  <li class="last"><a href="#" class="tm-action-resetview">Reset view</a></li>
+                  <li><a href="#" class="tm-action-resetview">Reset view</a></li>
+                  <li class="last"><a href="#" class="tm-action-select_testcases">Select test cases</a></li>
                 </ul>
               </div>
 
@@ -143,7 +144,7 @@ var currentSelectedTreeNode = null;
             });
 		};
         
-        window.tm_loadTestCatalogs = function(selectType, selectId) {
+        window.tm_loadTestCatalogs = function(selectType, selectId, refresh) {
             /* Load list of root test catalogs */
             
             console.info("selectType="+selectType+", selectId="+selectId);
@@ -155,6 +156,10 @@ var currentSelectedTreeNode = null;
                     mode: "${mode}",
                     fulldetails: "${fulldetails}"
                 };
+
+            if (refresh) {
+            	params.random = new Date().getTime();
+            }
                 
             doAjaxCall("${base_url}/action/testmanager.actions!loadtree", "GET", params, true, function(data) {
                     console.info("JSON: "+data);
@@ -179,7 +184,7 @@ var currentSelectedTreeNode = null;
                 });
         }
         
-        window.tm_loadTestPlan = function(planId, selectType, selectId) {
+        window.tm_loadTestPlan = function(planId, selectType, selectId, refresh) {
             /* Load test plan */
             
             var planIdVar = planId;
@@ -191,7 +196,11 @@ var currentSelectedTreeNode = null;
                     fulldetails: "${fulldetails}",
                     test_plan_id: planId
                 };
-                
+
+            if (refresh) {
+            	params.random = new Date().getTime();
+            }
+            
             doAjaxCall("${base_url}/action/testmanager.actions!get_test_plan", "GET", params, true, function(data) {
                 	console.info("JSON: "+data);
                 	
@@ -262,8 +271,9 @@ var currentSelectedTreeNode = null;
                 result += '" ';
             }
 
-            result += ' data-id="'+testCase.test_case.id+'" ';
-            result += '>'+testCase.test_case.title;
+            result += ' data-id="'+testCase.test_case.id+'">';
+            result += '<input type="checkbox" class="tm_select_testcase_checkbox hidden" />'
+            result += testCase.test_case.title;
             
             result += '</li>';
             
@@ -307,7 +317,8 @@ var currentSelectedTreeNode = null;
             		var test_catalog_id = treeNode.data('id');
             		if (test_catalog_id != undefined) {
                 		var params = {
-                                test_catalog_id: test_catalog_id
+                                test_catalog_id: test_catalog_id,
+                            	random: new Date().getTime()
                             };
                         
                         var planid = treeNode.data('plan_id');
@@ -330,16 +341,20 @@ var currentSelectedTreeNode = null;
                 	}
                 });
 
+			$('.tm_select_testcase_checkbox').on('click', function(e) {
+	            e.stopPropagation();
+			});
+                        
             $('.tm_testcase_node').on('click', function(e) {
                     /* Load test case description */
-                    e.preventDefault();
 		            e.stopPropagation();
                     
                     var treeNode = $(this);
             		selectNode(treeNode);
 
             		var params = {
-                            test_case_id: treeNode.data('id')
+                            test_case_id: treeNode.data('id'),
+                        	random: new Date().getTime()
                         };
                     
                     var planid = treeNode.data('plan_id');
@@ -412,7 +427,13 @@ var currentSelectedTreeNode = null;
 
                 tm_resetView();
             });
-                
+
+            $('.tm-action-select_testcases').on('click', function(e) {
+                /* Reset the tree view */
+                e.preventDefault();
+
+                $('.tm_select_testcase_checkbox').removeClass('hidden');
+            });
         });
     });        
 })(jQuery_testmanager);
