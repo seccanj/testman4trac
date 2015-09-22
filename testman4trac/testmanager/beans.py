@@ -224,6 +224,7 @@ class TestCatalogBean(object):
         if self.test_plan is not None:
             #result['test_plan'] = self.test_plan.values
             result['test_plan_id'] = self.test_plan['id']
+            result['test_plan_name'] = self.test_plan['name']
 
         result['sub_catalogs'] = {}
         for sub_catalog in self.sub_catalogs:

@@ -37,13 +37,31 @@
 				${HTML(wiki_contents)}
 		
 				<py:if test="test_case_bean.has_status">
-				    <div id="tm_artifact_status">
-				    	Status: ${statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][1]}
-				    </div>
-				    <div>
-				    	<a href="#" class="tm-action-change_status tm_artifact_status red" data-status="failed">&nbsp;</a>
-				    	<a href="#" class="tm-action-change_status tm_artifact_status yellow" data-status="to_be_tested">&nbsp;</a>
-				    	<a href="#" class="tm-action-change_status tm_artifact_status green" data-status="successful">&nbsp;</a>
+				    <div class="tm_artifact_status_section">
+				    	<p><strong>Status: ${statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][1]}</strong></p>
+				    	<p>Click to change status.</p>
+					    <div class="tm_artifact_status_colors">
+					    	<py:if test="(statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][0]) == 'green'">
+						    	<a href="#" class="tm-action-change_status tm_artifact_status green tm_artifact_status_selected" data-status="successful" title="Set to successful"></a>
+					    	</py:if>
+					    	<py:if test="(statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][0]) != 'green'">
+						    	<a href="#" class="tm-action-change_status tm_artifact_status green" data-status="successful" title="Set to successful"></a>
+					    	</py:if>
+					    	
+					    	<py:if test="(statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][0]) == 'yellow'">
+						    	<a href="#" class="tm-action-change_status tm_artifact_status yellow tm_artifact_status_selected" data-status="to_be_tested" title="Set to untested"></a>
+					    	</py:if>
+					    	<py:if test="(statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][0]) != 'yellow'">
+						    	<a href="#" class="tm-action-change_status tm_artifact_status yellow" data-status="to_be_tested" title="Set to untested"></a>
+					    	</py:if>
+
+					    	<py:if test="(statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][0]) == 'red'">
+						    	<a href="#" class="tm-action-change_status tm_artifact_status red tm_artifact_status_selected" data-status="failed" title="Set to failed"></a>
+					    	</py:if>
+					    	<py:if test="(statuses_by_name[test_case_bean.test_case_in_plan['status'] or default_outcome][0]) != 'red'">
+						    	<a href="#" class="tm-action-change_status tm_artifact_status red" data-status="failed" title="Set to failed"></a>
+					    	</py:if>
+					    </div>
 				    </div>
 			    </py:if>
 
@@ -97,7 +115,7 @@
 						};
 					
 					doAjaxCall("${base_url}/action/testmanager.actions!change_test_case_status", "GET", params, true, function(data) {
-						tm_loadTestPlan('${test_case_bean.get_test_plan_id()}', 'testcase', '${test_case_bean.get_test_case_id()}');
+						tm_loadTestPlan('${test_case_bean.get_test_plan_id()}', 'testcase', '${test_case_bean.get_test_case_id()}', true);
                     });
 				});
 

@@ -33,7 +33,10 @@
 					artifact: "${artifact}",
 					id: "${id}"
 				},
-	    	    function(output){tm_loadTestCatalogs("${artifact}", output.id);}
+	    	    function(output){
+		    	    tm_loadTestCatalogs("${artifact}", output.id);
+		    	    $('.tm_testcase_node[data-id='+output.id+']').click();
+		    	}
 	    	);
 	    
     </script>

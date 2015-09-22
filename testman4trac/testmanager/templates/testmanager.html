@@ -229,6 +229,8 @@ var currentSelectedTreeNode = null;
             var result = '';
             
             console.dir(testCatalog);
+
+            var title = testCatalog.test_catalog.title;
             
             result += '<ul class="tm_node tm_testcatalog_node expanded af-ul';
 
@@ -236,6 +238,7 @@ var currentSelectedTreeNode = null;
                 result += ' tm_folderstatus_node '+testCatalog.color+' ';
                 if (level == 0) {
                     result += '" data-plan_id="'+testCatalog.test_plan_id+'" data-id="'+testCatalog.test_catalog.id+'" ';
+                    title = testCatalog.test_plan_name + ' (for ' + testCatalog.test_catalog.title + ')';
                 } else {
                 	result += ' disabled" '
                 }
@@ -243,7 +246,7 @@ var currentSelectedTreeNode = null;
                 result += '" data-id="'+testCatalog.test_catalog.id+'" ';
             }
             
-            result += '><i class="tm_toggle_node fa-ul fa fa-minus-square-o"></i>'+testCatalog.test_catalog.title;
+            result += '><i class="tm_toggle_node fa-ul fa fa-minus-square-o"></i>'+title;
             
             for (var subCatalog in testCatalog.sub_catalogs) {
                 result += generateTestCatalogTree(testCatalog.sub_catalogs[subCatalog], level+1);

@@ -200,6 +200,24 @@ span:target {
 	color: red;
 }
 
+.tm_artifact_status_section {
+	padding:8px;
+}
+
+.tm_artifact_status_colors {
+	padding: 8px;
+}
+
+.tm_artifact_status_colors .tm-action-change_status {
+	padding: 5px;
+	border: 0px;
+}
+
+.tm_artifact_status_colors .tm-action-change_status.tm_artifact_status_selected {
+	border: 2px solid gray;
+	border-radius: 3px;
+}
+
 /*
 .tm_testcatalog_node .collapsed:before {
 	content: "+";
