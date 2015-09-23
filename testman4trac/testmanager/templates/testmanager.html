@@ -502,6 +502,7 @@ var currentSelectedTreeNode = null,
                 e.preventDefault();
 
                 $('.tm_node:not(.disabled)').attr('draggable', true);
+                $('.tm_node:not(.disabled)').addClass('draggable');
                 
                 tm_dragndrop_enabled = true;
             });

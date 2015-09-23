@@ -904,7 +904,7 @@ class Actions(object):
             test_artifact.author = get_reporter_id(req, 'author')
             test_artifact.remote_addr = req.remote_addr
 
-            test_artifact.move_to(destination_catalog, delete_tcip = False)
+            test_artifact.move_to(destination_catalog)
 
             jsdstr = '{"result": "OK"}'
     
@@ -1072,9 +1072,10 @@ def get_artifact_move_consequences(env, artifact_type, artifact_id, new_parent_i
             parent_catalog = parent_catalog.get_enclosing_catalog()
             
     elif (artifact_type == 'testcatalog'):
-        test_artifact = TestCatalog(self.env, artifact_id)
+        test_artifact = TestCatalog(env, artifact_id)
         
-        # TODO Get list of data loss
+        for test_case in test_artifact.list_testcases(deep = True):
+            result.extend(get_artifact_move_consequences(env, 'testcase', test_case['id'], new_parent_id))
     
     return result
 

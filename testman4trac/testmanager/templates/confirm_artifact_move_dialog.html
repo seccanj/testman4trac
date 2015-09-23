@@ -17,33 +17,45 @@
 		
 		    <div id="tm_confirm_artifact_move_dialog_message_holder"></div>
 		
-			<p>
-			If you confirm this move operation, some information will be lost.
-			In particular, the state of the following test cases in the displayed test plans will be deleted, because they will be moved out of the test plans.
-			</p>
-		
-			<ul>
-				<li py:for="tc_title, status, tp_id, tp_name, tp_author, tp_date in confirm_data">
-					Test case "${tc_title}", ${statuses_by_name[status][1]} in test plan "${tp_name}" (created by <em>${authorinfo(tp_author)}</em> ${pretty_dateinfo(tp_date)}.)
-				</li>
-			</ul>
-		
+			<py:if test="len(confirm_data) > 0">
+				<p>
+				If you confirm this move operation, <strong>some information WILL BE LOST.</strong><br />
+				In particular, the state of the following test cases in the displayed test plans will be deleted, because they will be moved out of the scope of those test plans.
+				</p>
+				<p>
+				If this information is important to you, you should first export the test plans indicated and eventually continue with this operation.
+				</p>
+			
+				<ul>
+					<li py:for="tc_title, status, tp_id, tp_name, tp_author, tp_date in confirm_data">
+						Test case "${tc_title}", ${statuses_by_name[status][1]} in test plan "${tp_name}" (created by <em>${authorinfo(tp_author)}</em> ${pretty_dateinfo(tp_date)}.)
+					</li>
+				</ul>
+			</py:if>
+			<py:if test="len(confirm_data) == 0">
+				<br />
+				<p>
+				Are you sure you want to move the selected <py:if test="artifact_type=='testcase'">test case</py:if><py:if test="artifact_type=='testcatalog'">test catalog</py:if>?
+				</p>
+				<br /><br /><br />
+			</py:if>
+			
 		    <div>
 		        <button id="tm_confirm_artifact_move_dialog_button_ok">Confirm move</button>
 		        <button id="tm_confirm_artifact_move_dialog_button_cancel">Cancel</button>
 		    </div>
-		
+			
 		    <script type="text/javascript">
-		    tm_attachDialogEvents(
-		    	    "${base_url}", 
-		    	    "confirm_artifact_move_dialog", 
-		    	    "move_artifact", 
-		    	    [],
-		    	    {artifact_type: '${artifact_type}', artifact_id: '${artifact_id}', new_parent_id: '${new_parent_id}'}, 
-		    	    function(output){
-		    	    	tm_loadTestCatalogs();
-			    	}
-		    	);
+			    tm_attachDialogEvents(
+			    	    "${base_url}", 
+			    	    "confirm_artifact_move_dialog", 
+			    	    "move_artifact", 
+			    	    [],
+			    	    {artifact_type: '${artifact_type}', artifact_id: '${artifact_id}', new_parent_id: '${new_parent_id}'}, 
+			    	    function(output){
+			    	    	tm_resetView();
+				    	}
+			    	);
 
 		    </script>
 		

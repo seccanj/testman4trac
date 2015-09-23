@@ -171,6 +171,13 @@ span:target {
     padding-right: 6px;
 }
 
+.tm_node.draggable:before {
+	font-family: FontAwesome;
+    content: "\f142 ";
+    color: #BBB;
+    padding-right: 2px;
+}
+
 .tm_folderstatus_node.yellow > i {
 	color: yellow;
 }

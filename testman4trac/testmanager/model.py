@@ -213,6 +213,10 @@ class TestCatalog(AbstractTestDescription):
 
                 yield tcip
 
+        if deep:
+            for sub_catalog in self.list_subcatalogs(db=db):
+                yield sub_catalog.list_testcases(plan_id=plan_id, deep=True, db=db)
+
         self.env.log.debug('<<< list_testcases')
                 
     def list_testplans(self, db=None):
@@ -304,6 +308,23 @@ class TestCatalog(AbstractTestDescription):
                 cursor.execute("UPDATE testcase SET exec_order = exec_order - 1 WHERE parent_id = %s AND exec_order >= %s AND exec_order <= %s", 
                     (self.values['id'], old_order + 1, new_order))
 
+    def move_to(self, tcat, db=None):
+        """ 
+        Moves the test catalog under a different catalog.
+        
+        Note: the test catalog keeps its ID, and the wiki page is moved 
+        into the new name. This way, the page change history and attachments 
+        are kept.
+        """
+
+        @self.env.with_transaction(db)
+        def do_move_to(db):
+            # Update self properties and save
+            self['parent_id'] = tcat['id']
+            
+            self.save_changes('System', "Moved to a different catalog", 
+                datetime.now(utc), db)
+
     def pre_delete(self, db):
         """ 
         Delete all contained test catalogs and test cases, recursively.
@@ -393,7 +414,7 @@ class TestCase(AbstractTestDescription):
                 self.save_changes('System', "Changed execution order", 
                     datetime.now(utc), db)
 
-    def move_to(self, tcat, new_order=-1, delete_tcip=True, db=None):
+    def move_to(self, tcat, new_order=-1, delete_tcip=False, db=None):
         """ 
         Moves the test case into a different catalog.
         
