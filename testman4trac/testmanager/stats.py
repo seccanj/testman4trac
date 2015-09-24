@@ -46,10 +46,11 @@ from trac.web import IRequestHandler
 from trac.web.chrome import Chrome, INavigationContributor, ITemplateProvider, add_script_data
 from trac.perm import IPermissionRequestor
 
+from tracgenericclass.cache import GenericClassCacheSystem
 from tracgenericclass.util import *
 
 from testmanager.api import TestManagerSystem
-from testmanager.model import TestPlan
+from testmanager.model import TestPlan, TestCatalog
 from testmanager.util import *
 
 
@@ -84,29 +85,39 @@ class TestStatsPlugin(Component):
                 tag.a('Test Stats', href=req.href.teststats()))
 
     # ==[ Helper functions ]==
-    def _get_num_testcases(self, from_date, at_date, catpath, req):
+    def _get_num_testcases(self, from_date, at_date, all_test_catalogs, req):
         '''
         Returns an integer of the number of test cases 
         counted between from_date and at_date.
         '''
 
-        if catpath == None or catpath == '':
-            path_filter = "TC_%_TC%"
+        parent_filter = None
+        if all_test_catalogs == None or len(all_test_catalogs) == 0:
+            parent_filter = ''
         else:
-            path_filter = catpath + "%_TC%" 
+            all_test_catalogs_len = len(all_test_catalogs)
+            parent_filter = " AND ("
+            for i, test_catalog in enumerate(all_test_catalogs):
+                parent_filter += " testcase.parent_id = '%s' " % (test_catalog['id'],)
+                if i < all_test_catalogs_len - 1:
+                    parent_filter += " OR "
 
+            parent_filter += ") "
+
+            
         dates_condition = ''
 
         if from_date:
-            dates_condition += " AND time > %s" % to_any_timestamp(from_date)
+            dates_condition += " AND wiki.time > %s " % (to_any_timestamp(from_date),)
 
         if at_date:
-            dates_condition += " AND time <= %s" % to_any_timestamp(at_date)
+            dates_condition += " AND wiki.time <= %s " % (to_any_timestamp(at_date),)
 
         db = self.env.get_read_db()
         cursor = db.cursor()
 
-        cursor.execute("SELECT COUNT(*) FROM wiki WHERE name LIKE '%s' AND version = 1 %s" % (path_filter, dates_condition))
+        self.env.log.debug(">>>>> Executing query: SELECT COUNT(*) FROM wiki, testcase WHERE wiki.name LIKE 'TC_TC%%' AND wiki.version = 1 AND testcase.page_name = wiki.name %s %s" % (parent_filter, dates_condition))
+        cursor.execute("SELECT COUNT(*) FROM wiki, testcase WHERE wiki.name LIKE 'TC_TC%%' AND wiki.version = 1 AND testcase.page_name = wiki.name %s %s" % (parent_filter, dates_condition))
 
         row = cursor.fetchone()
         
@@ -199,6 +210,8 @@ class TestStatsPlugin(Component):
         testmanagersystem = TestManagerSystem(self.env)
         tc_statuses = testmanagersystem.get_tc_statuses_by_color()
 
+        GenericClassCacheSystem.clear_cache()
+
         if 'testmanager' in self.config:
             self.default_days_back = self.config.getint('testmanager', 'default_days_back', TESTMANAGER_DEFAULT_DAYS_BACK)
             self.default_interval = self.config.getint('testmanager', 'default_interval', TESTMANAGER_DEFAULT_INTERVAL)
@@ -206,6 +219,9 @@ class TestStatsPlugin(Component):
         req_content = req.args.get('content')
         testplan = None
         catpath = None
+        cat_id = None
+        test_catalog = None
+        all_test_catalogs = None
         testplan_contains_all = True
         
         self.env.log.debug("Test Stats - process_request: %s" % req_content)
@@ -214,8 +230,12 @@ class TestStatsPlugin(Component):
         if grab_testplan and not grab_testplan == "__all":
             testplan = grab_testplan.partition('|')[0]
             catpath = grab_testplan.partition('|')[2]
+            cat_id = catpath.rpartition('_TT')[2]
+            test_catalog = TestCatalog(self.env, cat_id)
+            all_test_catalogs = test_catalog.list_subcatalogs(deep = True)
+            all_test_catalogs.append(test_catalog)
             
-            tp = TestPlan(self.env, testplan, catpath)
+            tp = TestPlan(self.env, testplan)
             testplan_contains_all = tp['contains_all']
 
         today = datetime.today()
@@ -304,7 +324,7 @@ class TestStatsPlugin(Component):
                 # Calc test case activity
                 
                 #   Handling custom test case outcomes here
-                num_new = self._get_num_testcases(last_date, cur_date, catpath, req)
+                num_new = self._get_num_testcases(last_date, cur_date, all_test_catalogs, req)
                 
                 num_successful = 0
                 for tc_outcome in tc_statuses['green']:
@@ -325,7 +345,7 @@ class TestStatsPlugin(Component):
                 num_all = 0
                 num_all_untested = 0
                 if testplan_contains_all:
-                    num_all = self._get_num_testcases(None, cur_date, catpath, req)
+                    num_all = self._get_num_testcases(None, cur_date, all_test_catalogs, req)
                     num_all_untested = num_all - num_all_successful - num_all_failed
                 else:
                     for tc_outcome in tc_statuses['yellow']:
@@ -359,7 +379,7 @@ class TestStatsPlugin(Component):
 
                 pie_num_to_be_tested = 0
                 if testplan_contains_all:
-                    pie_num_to_be_tested = self._get_num_testcases(beginning, today, catpath, req) - pie_num_successful - pie_num_failed
+                    pie_num_to_be_tested = self._get_num_testcases(beginning, today, all_test_catalogs, req) - pie_num_successful - pie_num_failed
                     
                 else:
                     for tc_outcome in tc_statuses['yellow']:
@@ -412,9 +432,13 @@ class TestStatsPlugin(Component):
 
                 req.send_header("Content-Length", len(jsdstr))
                 req.write(jsdstr)
+                
+                GenericClassCacheSystem.clear_cache()
+                
                 return
             
             elif req_content == "downloadcsv":
+
 
                 csv_output = cStringIO.StringIO()
 
@@ -439,6 +463,9 @@ class TestStatsPlugin(Component):
                 req.send_header("Content-Length", len(csvstr))
                 req.send_header("Content-Disposition", "attachment;filename=Test_stats.csv")
                 req.write(csvstr)
+                
+                GenericClassCacheSystem.clear_cache()
+                
                 return
 
         else:
@@ -446,8 +473,8 @@ class TestStatsPlugin(Component):
             showall = req.args.get('show') == 'all'
 
             testplan_list = []
-            for planid, catid, catpath, name, author, ts_str in testmanagersystem.list_all_testplans():
-                testplan_list.append({'planid': planid, 'catpath': catpath, 'name': name})
+            for planid, catid, name, author, ts_str in testmanagersystem.list_all_testplans():
+                testplan_list.append({'planid': planid, 'catpath': 'TC_TT'+catid, 'name': name})
 
             data = {}
             data['resolution'] = str(graph_res)
@@ -486,7 +513,9 @@ class TestStatsPlugin(Component):
                                      if is_iso8601 else [],
                     'timezone_iso8601': is_iso8601,
                 })
-                    
+                
+            GenericClassCacheSystem.clear_cache()
+
             return template_name, data, None
  
     # ITemplateProvider methods

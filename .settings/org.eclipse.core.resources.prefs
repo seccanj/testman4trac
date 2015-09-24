@@ -5,6 +5,7 @@ encoding//testman4trac/testmanager/actions.py=utf-8
 encoding//testman4trac/testmanager/api.py=utf-8
 encoding//testman4trac/testmanager/beans.py=utf-8
 encoding//testman4trac/testmanager/model.py=utf-8
+encoding//testman4trac/testmanager/stats.py=utf-8
 encoding//testman4trac/testmanager/upgrades/db_testcase_3.py=utf-8
 encoding//testman4trac/testmanager/upgrades/db_testcaseinplan_2.py=utf-8
 encoding//testman4trac/testmanager/upgrades/db_testcaseinplan_3.py=utf-8

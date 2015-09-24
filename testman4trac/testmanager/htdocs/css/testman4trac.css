@@ -132,7 +132,11 @@ span:target {
 }
  
 .tm_expandcollapseall {
-	padding: 10px 5px 0 0;
+	padding: 10px 5px 0 10px;
+}
+
+.tm_expandcollapseall a {
+	margin: 5px 5px 0 0;
 }
 
 /**

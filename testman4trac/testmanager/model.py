@@ -174,15 +174,26 @@ class TestCatalog(AbstractTestDescription):
         else:
             return TestCatalog(self.env, self.values['parent_id'])
         
-    def list_subcatalogs(self, db=None):
+    def list_subcatalogs(self, deep=False, db=None):
         """
         Returns a list of the sub catalogs of this catalog.
         """
+        result = []
+        
         tc_search = TestCatalog(self.env)
         tc_search['parent_id'] = self.values['id']
         
+        sub_catalogs = []
         for tc in tc_search.list_matching_objects(exact_match=False, db=db):
-            yield tc
+            sub_catalogs.append(tc)
+            
+        result.extend(sub_catalogs)
+            
+        if deep:
+            for tc in sub_catalogs:
+                result.extend(tc.list_subcatalogs(deep = True, db = db))
+                
+        return result
         
     def list_testcases(self, plan_id=None, deep=False, db=None):
         """
