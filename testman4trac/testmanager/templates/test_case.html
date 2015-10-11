@@ -38,9 +38,6 @@
 		    <div id="tm_artifact_description_wiki">
 				${HTML(wiki_contents)}
 		
-			<input type="hidden" value="' + obj_key + '" id="obj_key_field" />
-        	<input type="hidden" value="' + obj_props + '" id="obj_props_field" />
-        
         	<table id='tm_custom_fields_section'><tbody>
 				<tr py:for="f in custom_fields" class='customFieldContainer' data-fieldname="${f['name']}" data-fieldtype="${f['type']}">
 					<td class="tm_custom_fields_label"><label for="custom_field_${f['name']}">${f['label']}:</label></td>
@@ -178,7 +175,7 @@
 							new_status: $(this).data('status')
 						};
 					
-					doAjaxCall("${base_url}/action/testmanager.actions!change_test_case_status", "GET", params, true, function(data) {
+					doAjaxCall("${base_url}/action/testmanager.actions.Actions!change_test_case_status", "GET", params, true, function(data) {
 						tm_loadTestPlan('${test_case_bean.get_test_plan_id()}', 'testcase', '${test_case_bean.get_test_case_id()}', true);
                     });
 				});

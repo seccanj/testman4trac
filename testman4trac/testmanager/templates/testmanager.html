@@ -125,7 +125,7 @@ var currentSelectedTreeNode = null,
                     random: new Date().getTime()
                 };
                 
-            doAjaxCall("${base_url}/action/testmanager.actions!get_session", "GET", params, true, function(data) {
+            doAjaxCall("${base_url}/action/testmanager.actions.Actions!get_session", "GET", params, true, function(data) {
                     console.info("JSON: "+data);
                     
                     var sessionAttributes = $.parseJSON(data);
@@ -146,7 +146,7 @@ var currentSelectedTreeNode = null,
             		random: new Date().getTime()
                 };
                 
-            doAjaxCall("${base_url}/action/testmanager.actions!resetview", "GET", params, true, function(data) {
+            doAjaxCall("${base_url}/action/testmanager.actions.Actions!resetview", "GET", params, true, function(data) {
             	window.location = window.location.pathname + window.location.hash;
             });
 		};
@@ -168,7 +168,7 @@ var currentSelectedTreeNode = null,
             	params.random = new Date().getTime();
             }
                 
-            doAjaxCall("${base_url}/action/testmanager.actions!loadtree", "GET", params, true, function(data) {
+            doAjaxCall("${base_url}/action/testmanager.actions.Actions!loadtree", "GET", params, true, function(data) {
                     console.info("JSON: "+data);
                     
                     var testCatalogs = $.parseJSON(data);
@@ -210,7 +210,7 @@ var currentSelectedTreeNode = null,
             	params.random = new Date().getTime();
             }
             
-            doAjaxCall("${base_url}/action/testmanager.actions!get_test_plan", "GET", params, true, function(data) {
+            doAjaxCall("${base_url}/action/testmanager.actions.Actions!get_test_plan", "GET", params, true, function(data) {
                 	console.info("JSON: "+data);
                 	
                     var testCatalogs = $.parseJSON(data);
@@ -403,7 +403,7 @@ var currentSelectedTreeNode = null,
                         
                         doAjaxCall("${base_url}/wiki/TC_TT"+node.attr('data-id'), "GET", params, true, function(data) {
                         */
-                        doAjaxCall("${base_url}/action/testmanager.actions!get_test_catalog_details", "GET", params, true, function(data) {
+                        doAjaxCall("${base_url}/action/testmanager.actions.Actions!get_test_catalog_details", "GET", params, true, function(data) {
                                 var markup = data;
                                 $("#tm_artifact_description").html(markup);
                                 
@@ -433,7 +433,7 @@ var currentSelectedTreeNode = null,
                         params.test_plan_id = planid;
                     }
                     
-                    doAjaxCall("${base_url}/action/testmanager.actions!get_test_case_details", "GET", params, true, function(data) {
+                    doAjaxCall("${base_url}/action/testmanager.actions.Actions!get_test_case_details", "GET", params, true, function(data) {
 	                		var markup = data;
                             $("#tm_artifact_description").html(markup);
                             

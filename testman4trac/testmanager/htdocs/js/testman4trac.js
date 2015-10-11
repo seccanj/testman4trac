@@ -4,7 +4,7 @@
             var params = inParams != null ? inParams : {};
             var width = minWidth ? minWidth : 500;
             
-            doAjaxCall(base_url+"/action/testmanager.actions!"+actionName, "GET", inParams, true, function(data) {
+            doAjaxCall(base_url+"/action/testmanager.actions.Actions!"+actionName, "GET", inParams, true, function(data) {
                     var dialogMarkup = data;
                     
                     $("#tm_dialog_anchor").html(dialogMarkup);
@@ -45,7 +45,7 @@
             	  console.info("params: ");
             	  console.dir(params);
             	  
-	              doAjaxCall(base_url+"/action/testmanager.actions!"+actionName, "GET", params, true, function(data) {
+	              doAjaxCall(base_url+"/action/testmanager.actions.Actions!"+actionName, "GET", params, true, function(data) {
 	                    var resultJson = data;
 	                    console.info(resultJson);
 	
@@ -110,7 +110,7 @@
 						value: value
 					};
         			
-					doAjaxCall(base_url+"/action/testmanager.actions!change_custom_field", "GET", params, true, function(data) {
+					doAjaxCall(base_url+"/action/testmanager.actions.Actions!change_custom_field", "GET", params, true, function(data) {
 	                    var resultJson = data;
 	                    console.info(resultJson);
 	

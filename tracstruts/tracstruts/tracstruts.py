@@ -15,6 +15,7 @@
 import inspect
 
 import json
+import new
 import sys
 import traceback
 
@@ -54,7 +55,7 @@ class TracStruts(Component):
 
         self.log.info("Handling request path '%s'" % (req.path_info,))
         full_action_name = req.path_info.rpartition('/action/')[2]
-
+        
         if not full_action_name:
             raise TracError("Must specify the action to be performed")
 
@@ -85,13 +86,8 @@ class TracStruts(Component):
                 raise PermissionError(str(invocable.specs['required_roles']), None, env)
 
         # Create instance of the user's action class
-        # Note: this assumes the class is in this code's scope. 
-        #       Otherwise, we should use the _get_class() function found
-        #       at the bottom of this file, which also imports the 
-        #       module. In this case, the action name should be 
-        #       fully qualified, e.g. "module.submodule.ClassName"
-        #action_instance = globals()[action_class]()
-        action_instance = _get_class(action_class)
+        action_class_type = _get_class(action_class)
+        action_instance = action_class_type()
 
         # Deserialize tracstruts context from the JSON hidden field
         # 'tracstruts_context', or create it
@@ -342,14 +338,17 @@ class TracStruts(Component):
         from pkg_resources import resource_filename
         return [('tracstruts', resource_filename(__name__, 'htdocs'))]
 
-
 def _get_class(kls):
-    parts = kls.split('.')
-    module = ",".join(parts[:-1])
-    m = __import__(module)
-    for comp in parts[1:]:
-        m = getattr(m, comp)
-    return m
+    parts = kls.rpartition('.')
+    module_name = parts[0]
+    class_name = parts[2]
+    
+    print module_name
+    print class_name
+    
+    m = __import__(module_name, globals(), locals(), (class_name,), -1)
+    class_object = getattr(m, class_name)
+    return class_object
 
 _JSON_SUPPORTED_TYPES = (dict, list, tuple, str, unicode, int, long, float)
 

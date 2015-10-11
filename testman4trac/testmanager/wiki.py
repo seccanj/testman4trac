@@ -189,7 +189,7 @@ class WikiTestManagerInterface(Component):
                     insert1 = tag.div(style='clear: both;')(
                                 tag.div(id='tm-goto_testmanager')(
                                     tag.a(href=req.href('/').rstrip('/')+
-                                          '/action/testmanager.actions!initview?'+
+                                          '/action/testmanager.actions.Actions!initview?'+
                                           'url_artifact_type=testcase'+
                                           '&url_artifact_id='+page_name.rpartition('_TC')[2]
                                           +plan_parameter
@@ -229,7 +229,7 @@ class WikiTestManagerInterface(Component):
                     insert1 = tag.div(style='clear: both;')(
                                 tag.div(id='tm-goto_testmanager', class_='tm_wikilink')(
                                     tag.a(href=req.href('/').rstrip('/')+
-                                          '/action/testmanager.actions!initview?'+
+                                          '/action/testmanager.actions.Actions!initview?'+
                                           'url_artifact_type=testcatalog'+
                                           '&url_artifact_id='+page_name.rpartition('_TT')[2]
                                           +plan_parameter

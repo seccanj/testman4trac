@@ -29,7 +29,7 @@
         </p>
         
         <form id="tm_my_action_method_output_form" name="tm_my_action_method_output_form" 
-              action="${base_url}/action/tracstruts.samples!my_action_method" method="post">
+              action="${base_url}/action/tracstruts.samples.MyActionsClass!my_action_method" method="post">
               
             <input type="text" name="a2" value="AA2" />
             <input type="text" name="a6" value="AA6" />
@@ -57,7 +57,7 @@
               /* params["__STRACS_CONTEXT"] = stracsContext; */
               
               $.post( 
-                "${base_url}/action/tracstruts.samples!my_action_ajax_method", 
+                "${base_url}/action/tracstruts.samples.MyActionsClass!my_action_ajax_method", 
                 params,
                 function( data ) {
                     $('#tm_my_action_method_ajax_response').html(JSON.stringify(data));

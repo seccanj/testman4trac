@@ -16,7 +16,7 @@ from api import Invocable
 
 
 # Example of class type of action
-class my_action_class(object):
+class MyActionsClass(object):
 
     @Invocable(
         {
@@ -27,7 +27,7 @@ class my_action_class(object):
         """
         This method provides the first screen of the application.
         To summon it, point the browser to:
-        http://<your environment>/action/tracstruts.samples!my_action_init_view
+        http://<your environment>/action/tracstruts.samples.MyActionsClass!my_action_init_view
         
         It renders through the specified template "my_action_method_input_template.html"
         """

@@ -16,7 +16,7 @@ from StringIO import StringIO
 import json
 
 from genshi.filters.transform import Transformer
-from genshi.core import Markup, unescape
+from genshi.core import Markup
 
 from testmanager.admin import get_all_table_columns_for_object
 from testmanager.api import TestManagerSystem
@@ -216,7 +216,13 @@ class Actions(object):
                 'test_catalog_bean': 'out',
                 'wiki_contents': 'out',
                 'attachments': 'out',
-                'can_modify': 'out'
+                'can_modify': 'out',
+                'Markup': 'out',
+                'custom_fields': 'out',
+                'custom_field_values': 'out',
+                'custom_field_values_markup': 'out',
+                'obj': 'out',
+                'obj_key': 'out'
             },
             'required_roles': ('TEST_VIEW', 'TEST_ADMIN')
         }
@@ -237,6 +243,8 @@ class Actions(object):
             raise TracException("Should provide a test catalog ID.") 
 
         include_status = test_plan_id is not None
+        
+        self.Markup = Markup
 
         test_plan = _get_test_plan(test_plan_id, self.env)
         test_catalog = _get_test_catalog(test_catalog_id, self.env)
@@ -249,6 +257,14 @@ class Actions(object):
         context = web_context(self.req, page.resource)
         self.attachments = AttachmentModule(self.env).attachment_data(context)
         self.can_modify = _can_modify(self.req)
+
+        self.obj = test_catalog
+        self.obj_key = test_catalog.gey_key_string()
+
+        if include_status:
+            self.prepare_custom_fields('testplan')
+        else:
+            self.prepare_custom_fields('testcatalog')
 
         session_attributes = {
                 'artifact_type': 'testcatalog',
@@ -282,9 +298,7 @@ class Actions(object):
                 'can_modify': 'out',
                 'default_outcome': 'out',
                 'statuses_by_name': 'out',
-                'html_escape': 'out',
                 'Markup': 'out',
-                'unescape': 'out',
                 'custom_fields': 'out',
                 'custom_field_values': 'out',
                 'custom_field_values_markup': 'out',
@@ -313,9 +327,7 @@ class Actions(object):
         
         self.default_outcome = TestManagerSystem(self.env).get_default_tc_status()
         self.statuses_by_name = TestManagerSystem(self.env).get_tc_statuses_by_name()
-        self.html_escape = html_escape
         self.Markup = Markup
-        self.unescape = unescape
 
         test_plan = _get_test_plan(test_plan_id, self.env)
         test_case = _get_test_case(test_case_id, self.env)
@@ -332,33 +344,10 @@ class Actions(object):
         self.obj = test_case
         self.obj_key = test_case.gey_key_string()
 
-        tmmodelprovider = GenericClassModelProvider(self.env)
-        self.custom_fields = tmmodelprovider.get_custom_fields_for_realm('testcase')
-        
-        self.custom_field_values = {}
-        self.custom_field_values_markup = {}
-
-        #obj_props = None
-        #if props is not None:
-        #    self.obj_props = self.obj.get_values_as_string(props)
-
-        for f in self.custom_fields:
-            field_name = f['name']
-            field_value = self.obj[field_name]
-            field_type = f['type']
-            
-            if field_value is not None:
-                if field_type == 'textarea':
-                    if ('format' in f) and f['format'] == 'wiki':
-                        self.custom_field_values_markup[field_name] = _get_wiki_page_contents(self.req, self.env, test_case['page_name'], field_value)
-                    else:
-                        field_value = html_escape(field_value)
-                        
-                    #field_value = field_value.replace('\n\r', '<br />').replace('\n', '<br />')
-                else:
-                    field_value = html_escape(field_value)
-                    
-            self.custom_field_values[field_name] = field_value
+        if include_status:
+            self.prepare_custom_fields('testcaseinplan')
+        else:
+            self.prepare_custom_fields('testcase')
 
         session_attributes = {
                 'artifact_type': 'testcase',
@@ -1005,6 +994,36 @@ class Actions(object):
         
         return 'success'
 
+    def prova(self):
+        print "Ciao"
+
+    def prepare_custom_fields(self, artifact_type):
+        self.env.log.debug(">> prepare_custom_fields")
+        
+        tmmodelprovider = GenericClassModelProvider(self.env)
+        self.custom_fields = tmmodelprovider.get_custom_fields_for_realm(artifact_type)
+        
+        self.custom_field_values = {}
+        self.custom_field_values_markup = {}
+    
+        for f in self.custom_fields:
+            field_name = f['name']
+            field_value = self.obj[field_name]
+            field_type = f['type']
+            
+            if field_value is not None:
+                if field_type == 'textarea':
+                    if ('format' in f) and f['format'] == 'wiki':
+                        self.custom_field_values_markup[field_name] = _get_wiki_page_contents(self.req, self.env, 'TC', field_value)
+                    else:
+                        field_value = html_escape(field_value)
+
+                else:
+                    field_value = html_escape(field_value)
+                    
+            self.custom_field_values[field_name] = field_value
+
+        self.env.log.debug("<< prepare_custom_fields")
 
 ##########################################################################################################
 

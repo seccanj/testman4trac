@@ -74,4 +74,4 @@ class TestManager(Component):
     def get_navigation_items(self, req):
         if 'TEST_VIEW' in req.perm or 'TEST_ADMIN' in req.perm:
             yield ('mainnav', 'testmanager',
-                tag.a(_("Test Manager"), href=Href(req.base_path)() + "/action/testmanager.actions!initview", accesskey='M'))
+                tag.a(_("Test Manager"), href=Href(req.base_path)() + "/action/testmanager.actions.Actions!initview", accesskey='M'))
