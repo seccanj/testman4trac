@@ -76,6 +76,67 @@
             });
         };
         
+        window.tm_attachCustomFieldsEvents = function(baseUrlParam, artifactParam, idParam) {
+        	var base_url = baseUrlParam
+        	var artifact = artifactParam;
+        	var id = idParam;
+        	
+        	$('#tm_custom_fields_section').on('click', '.tm_button', function(event) {
+        		var node = $(this);
+    			var fieldName = node.closest('tr').data('fieldname');
+    			var fieldType = node.closest('tr').data('fieldtype');
+
+    			if (node.hasClass('tm_custom_field_edit_button')) {
+    				$('#custom_field_value_'+fieldName).hide();
+    				$('#container_custom_field_'+fieldName).show();
+        			node.parent().children().show();
+        			node.hide();
+        		} else if (node.hasClass('tm_custom_field_save_button')) {
+        			var value = null;
+  
+					if (fieldType == 'radio') {
+						value = $("input:radio[name=custom_field_"+fieldName+"]:checked").val();
+					} else if (fieldType == 'checkbox'){
+						value = $('#custom_field_'+fieldName).prop("checked") ? '1' : '0';
+					} else {
+						value = $('#custom_field_'+fieldName).val();
+					}
+        			
+					var params = {
+						artifact: artifact,
+						id: id,
+						field_name: fieldName,
+						field_type: fieldType,
+						value: value
+					};
+        			
+					doAjaxCall(base_url+"/action/testmanager.actions!change_custom_field", "GET", params, true, function(data) {
+	                    var resultJson = data;
+	                    console.info(resultJson);
+	
+	                    var output = $.parseJSON(resultJson);
+	                    
+	                    if (output.result === "OK") {
+	        				$('#custom_field_value_'+fieldName).html(output.value ? output.value : value).show();
+	        				$('#container_custom_field_'+fieldName).hide();
+	            			node.parent().children().hide();
+	            			node.parent().children('.tm_custom_field_edit_button').show();
+
+	                    } else {
+	                    	$("#tm_artifact_message_holder").addClass("ui-state-error");
+	                    	$("#tm_artifact_message_holder").html(output.message);
+	                    }
+	                });
+        			
+        		} else if (node.hasClass('tm_custom_field_cancel_button')) {
+    				$('#container_custom_field_'+fieldName).hide();
+        			node.parent().children().hide();
+        			node.parent().children('.tm_custom_field_edit_button').show();
+        		}
+        	});
+        	
+        }
+        
         window.tm_selectArtifactInTree = function(selectType, selectId) {
 	        if (selectType && selectId) {
 	            $('.tm_'+selectType+'_node[data-id="'+selectId+'"]').click();

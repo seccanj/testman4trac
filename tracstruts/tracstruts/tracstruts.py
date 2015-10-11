@@ -315,7 +315,7 @@ class TracStruts(Component):
         """
         self.env.log.debug("Adding tracstruts_context as a Javascript global variable.")
 
-        js_variable = u"var tracstrutsContext=JSON.parse('"+tracstruts_context_string+"');"
+        js_variable = u"var tracstrutsContext=JSON.parse('"+tracstruts_context_string.replace("'", "\\'")+"');"
     
         elem = tag.script(js_variable, type='text/javascript')
 

@@ -16,6 +16,8 @@ from StringIO import StringIO
 import json
 
 from genshi.filters.transform import Transformer
+from genshi.core import Markup, unescape
+
 from testmanager.admin import get_all_table_columns_for_object
 from testmanager.api import TestManagerSystem
 from testmanager.beans import *
@@ -245,7 +247,7 @@ class Actions(object):
         
         page = WikiPage(self.env, test_catalog['page_name'], version=None)
         context = web_context(self.req, page.resource)
-        self.attachments = AttachmentModule(self.env).attachment_data(context);
+        self.attachments = AttachmentModule(self.env).attachment_data(context)
         self.can_modify = _can_modify(self.req)
 
         session_attributes = {
@@ -279,7 +281,15 @@ class Actions(object):
                 'attachments': 'out',
                 'can_modify': 'out',
                 'default_outcome': 'out',
-                'statuses_by_name': 'out'
+                'statuses_by_name': 'out',
+                'html_escape': 'out',
+                'Markup': 'out',
+                'unescape': 'out',
+                'custom_fields': 'out',
+                'custom_field_values': 'out',
+                'custom_field_values_markup': 'out',
+                'obj': 'out',
+                'obj_key': 'out'
             },
             'required_roles': ('TEST_VIEW', 'TEST_ADMIN')
         }
@@ -303,6 +313,9 @@ class Actions(object):
         
         self.default_outcome = TestManagerSystem(self.env).get_default_tc_status()
         self.statuses_by_name = TestManagerSystem(self.env).get_tc_statuses_by_name()
+        self.html_escape = html_escape
+        self.Markup = Markup
+        self.unescape = unescape
 
         test_plan = _get_test_plan(test_plan_id, self.env)
         test_case = _get_test_case(test_case_id, self.env)
@@ -313,8 +326,39 @@ class Actions(object):
         
         page = WikiPage(self.env, name = test_case['page_name'])
         context = web_context(self.req, page.resource)
-        self.attachments = AttachmentModule(self.env).attachment_data(context);
+        self.attachments = AttachmentModule(self.env).attachment_data(context)
         self.can_modify = _can_modify(self.req)
+
+        self.obj = test_case
+        self.obj_key = test_case.gey_key_string()
+
+        tmmodelprovider = GenericClassModelProvider(self.env)
+        self.custom_fields = tmmodelprovider.get_custom_fields_for_realm('testcase')
+        
+        self.custom_field_values = {}
+        self.custom_field_values_markup = {}
+
+        #obj_props = None
+        #if props is not None:
+        #    self.obj_props = self.obj.get_values_as_string(props)
+
+        for f in self.custom_fields:
+            field_name = f['name']
+            field_value = self.obj[field_name]
+            field_type = f['type']
+            
+            if field_value is not None:
+                if field_type == 'textarea':
+                    if ('format' in f) and f['format'] == 'wiki':
+                        self.custom_field_values_markup[field_name] = _get_wiki_page_contents(self.req, self.env, test_case['page_name'], field_value)
+                    else:
+                        field_value = html_escape(field_value)
+                        
+                    #field_value = field_value.replace('\n\r', '<br />').replace('\n', '<br />')
+                else:
+                    field_value = html_escape(field_value)
+                    
+            self.custom_field_values[field_name] = field_value
 
         session_attributes = {
                 'artifact_type': 'testcase',
@@ -771,6 +815,45 @@ class Actions(object):
             'results': {
                 'success': {'kind': 'json', 'field_name': 'ajax_result'}
             },
+            'parameters': {
+                'artifact': 'in_out',
+                'id': 'in_out',
+                'field_name': 'in',
+                'field_type': 'in',
+                'value': 'in'
+            },
+            'required_roles': ('TEST_MODIFY', 'TEST_ADMIN')
+        }
+    )
+    def change_custom_field(self):
+        self.env.log.debug(">> change_custom_field")
+
+        self.env.log.debug("artifact: '%s', id: '%s'" % (self.artifact, self.id))
+
+        test_artifact = _get_test_artifact(self.artifact, self.id, self.env)
+        test_artifact[self.field_name] = self.value
+        
+        result_value = None
+        if self.field_type == 'textarea':
+            result_value = _get_wiki_page_contents(self.req, self.env, 'TC', self.value)
+        elif self.field_type == 'checkbox':
+            if self.value == '0':
+                result_value = '<i class="fa fa-square-o"></i>'
+            else:
+                result_value = '<i class="fa fa-check-square-o"></i>'
+        
+        self.ajax_result = _save_modified_artifact(self.req, test_artifact, message="Field "+self.field_name+" changed", result_value=result_value)
+
+        self.env.log.debug("<< change_custom_field")
+        
+        return 'success'
+
+
+    @Invocable(
+        {
+            'results': {
+                'success': {'kind': 'json', 'field_name': 'ajax_result'}
+            },
             'required_roles': ('TEST_EXECUTE', 'TEST_ADMIN')
         }
     )
@@ -1182,8 +1265,9 @@ def _get_test_artifact(artifact_type, id, env):
 
     return result
 
-def _save_modified_artifact(req, test_artifact, message="Property changed"):
-    jsdstr = None
+def _save_modified_artifact(req, test_artifact, message="Property changed", result_value=None):
+
+    jsdstr = {}
     
     try:
         author = get_reporter_id(req, 'author')
@@ -1192,15 +1276,23 @@ def _save_modified_artifact(req, test_artifact, message="Property changed"):
 
         test_artifact.save_changes(author, message)
 
-        jsdstr = '{"result": "OK", "id": ' + str(test_artifact['id']) + '}'
+        jsdstr['result'] = "OK"
+        jsdstr['id'] = str(test_artifact['id'])
+        
+        if result_value is not None:
+            jsdstr['value'] = result_value
 
     except:
         self.env.log.error("Error saving changed object!")
         self.env.log.error(formatExceptionInfo())
 
-        jsdstr = '{"result": "ERROR", "message": "An error occurred while saving the changes."}'
+        jsdstr['result'] = "ERROR"
+        jsdstr['message'] = "An error occurred while saving the changes."
+
+    io = StringIO()
+    json.dump(jsdstr, io)
         
-    return jsdstr
+    return io.getvalue()
 
 def _retrieve_session(env, req):
     attributes = {}

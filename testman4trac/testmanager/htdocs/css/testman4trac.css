@@ -312,6 +312,19 @@ span:target {
     line-height: 8px;
 }
 
+.tm_custom_fields_label {
+	vertical-align: top;
+}
+
+.custom_field_button_container {
+	margin-left: 12px;
+	float: right;
+}
+
+.tm_button {
+	cursor: pointer;
+}
+
 .hidden {
 	display: none;
 }
