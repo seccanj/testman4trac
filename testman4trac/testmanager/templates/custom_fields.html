@@ -1,0 +1,63 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      xmlns:py="http://genshi.edgewall.org/"
+      i18n:domain="testmanager">
+
+	<table id='tm_custom_fields_section'><tbody>
+		<tr py:for="f in custom_fields" class='customFieldContainer' data-fieldname="${f['name']}" data-fieldtype="${f['type']}">
+			<td class="tm_custom_fields_label"><label for="custom_field_${f['name']}">${f['label']}:</label></td>
+			<td>
+				<py:choose test="f['type']">
+					<span py:when="'textarea'" id="custom_field_value_${f['name']}">${Markup(custom_field_values_markup[f['name']] or custom_field_values[f['name']].replace('\n\r', '&lt;br /&gt;').replace('\n', '&lt;br /&gt;'))}</span>
+					<span py:when="'checkbox'" id="custom_field_value_${f['name']}"><i class="fa fa-square-o" py:if="custom_field_values[f['name']] == '0'"></i><i class="fa fa-check-square-o"  py:if="custom_field_values[f['name']] == '1'"></i></span>
+					<py:otherwise>
+						<span id="custom_field_value_${f['name']}">${custom_field_values[f['name']]}</span>
+					</py:otherwise>
+				</py:choose>
+				<span id="container_custom_field_${f['name']}" style="display: none;">
+					<py:if test="f['type'] == 'text'">
+						<input type="text" id="custom_field_${f['name']}" name="custom_field_${f['name']}" value="${custom_field_values[f['name']]}" />
+					</py:if>
+					<py:if test="f['type'] == 'textarea'">
+						<textarea id="custom_field_${f['name']}" name="custom_field_${f['name']}"
+						          rows="${str(f['rows'])}" cols="${str(f['cols'])}"
+						>${custom_field_values[f['name']]}</textarea>
+					</py:if>
+					<py:if test="f['type'] == 'radio'">
+						<span py:for="option in f['options']"><input type="radio" name="custom_field_${f['name']}" value="${option}" checked="${option == custom_field_values[f['name']] or None}" /> ${option}</span>
+					</py:if>
+					<py:if test="f['type'] == 'select'">
+						<select id="custom_field_${f['name']}" name="custom_field_${f['name']}">
+							<option py:for="option in f['options']" selected="${option == custom_field_values[f['name']] or None}" value="${option}">${option}</option>
+						</select>
+					</py:if>
+					<py:if test="f['type'] == 'checkbox'">
+						<input type="checkbox" id="custom_field_${f['name']}" name="custom_field_${f['name']}" checked="${custom_field_values[f['name']] == '1' or None}" value="1" />
+					</py:if>
+				</span>
+	
+				<span class="custom_field_button_container">
+					<span class="tm_button tm_custom_field_edit_button"><i class="fa fa-pencil" title="Edit"></i> Edit</span>
+					<span class="tm_button tm_custom_field_save_button" style="display: none;"><i class="fa fa-save" title="Save"></i> Save</span>
+					<span class="tm_button tm_custom_field_cancel_button" style="display: none;"><i class="fa fa-remove" title="Cancel"></i> Cancel</span>
+				</span>
+			</td>
+		</tr>
+	</tbody></table>
+
+	<script type="text/javascript">
+	//<![CDATA[
+	(function($) {
+	    $(function() {
+	
+			tm_attachCustomFieldsEvents("${base_url}", "${artifact_type}", "${artifact_id}", "${plan_id}");
+			
+	    });
+	})(jQuery_testmanager);
+	
+	//]]>
+	</script>
+
+</div>
+

@@ -46,6 +46,8 @@
 		    <div id="tm_artifact_description_wiki">
 				${HTML(wiki_contents)}
 		
+				<xi:include href="custom_fields.html" py:with="artifact_type = 'testplan'; artifact_id = test_catalog_bean.test_plan['id']; plan_id = -1"/>
+		
 			    <div id="tm_artifact_ondemand" style="display:none;">
 			    </div>
 		

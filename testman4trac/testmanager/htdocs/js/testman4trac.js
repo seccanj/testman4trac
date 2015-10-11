@@ -76,10 +76,11 @@
             });
         };
         
-        window.tm_attachCustomFieldsEvents = function(baseUrlParam, artifactParam, idParam) {
+        window.tm_attachCustomFieldsEvents = function(baseUrlParam, artifactParam, idParam, planidParam) {
         	var base_url = baseUrlParam
         	var artifact = artifactParam;
         	var id = idParam;
+        	var planid = planidParam;
         	
         	$('#tm_custom_fields_section').on('click', '.tm_button', function(event) {
         		var node = $(this);
@@ -105,6 +106,7 @@
 					var params = {
 						artifact: artifact,
 						id: id,
+						planid: planid,
 						field_name: fieldName,
 						field_type: fieldType,
 						value: value

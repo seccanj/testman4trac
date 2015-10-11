@@ -312,6 +312,10 @@ span:target {
     line-height: 8px;
 }
 
+/**
+ * Custom fields 
+ */
+
 .tm_custom_fields_label {
 	vertical-align: top;
 }
@@ -324,6 +328,16 @@ span:target {
 .tm_button {
 	cursor: pointer;
 }
+
+/**
+ * Message holder
+ */
+
+.tm_artifact_message_holder {
+	padding: 20px;
+}
+
+/* Other */
 
 .hidden {
 	display: none;

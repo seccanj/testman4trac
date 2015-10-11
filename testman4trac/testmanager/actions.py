@@ -258,12 +258,13 @@ class Actions(object):
         self.attachments = AttachmentModule(self.env).attachment_data(context)
         self.can_modify = _can_modify(self.req)
 
-        self.obj = test_catalog
-        self.obj_key = test_catalog.gey_key_string()
-
         if include_status:
+            self.obj = test_plan
+            self.obj_key = test_plan.gey_key_string()
             self.prepare_custom_fields('testplan')
         else:
+            self.obj = test_catalog
+            self.obj_key = test_catalog.gey_key_string()
             self.prepare_custom_fields('testcatalog')
 
         session_attributes = {
@@ -331,6 +332,7 @@ class Actions(object):
 
         test_plan = _get_test_plan(test_plan_id, self.env)
         test_case = _get_test_case(test_case_id, self.env)
+        test_case_in_plan = _get_test_case_in_plan(test_case_id, test_plan_id, self.env)
 
         self.test_case_bean = TestManagerSystem(self.env).get_test_case_data_model(test_case = test_case, include_status = include_status, test_plan = test_plan)
 
@@ -341,12 +343,13 @@ class Actions(object):
         self.attachments = AttachmentModule(self.env).attachment_data(context)
         self.can_modify = _can_modify(self.req)
 
-        self.obj = test_case
-        self.obj_key = test_case.gey_key_string()
-
         if include_status:
+            self.obj = test_case_in_plan
+            self.obj_key = test_case_in_plan.gey_key_string()
             self.prepare_custom_fields('testcaseinplan')
         else:
+            self.obj = test_case
+            self.obj_key = test_case.gey_key_string()
             self.prepare_custom_fields('testcase')
 
         session_attributes = {
@@ -453,10 +456,10 @@ class Actions(object):
     def get_new_test_catalog_dialog(self):
         self.env.log.debug(">> get_new_test_catalog_dialog")
 
-        self.env.log.debug("parent_id: '%s'" % (parent_id))
+        self.env.log.debug("parent_id: '%s'" % (self.parent_id))
 
-        if parent_id != '-1':
-            self.parent_test_catalog = _get_test_catalog(parent_id, self.env)
+        if self.parent_id != '-1':
+            self.parent_test_catalog = _get_test_catalog(self.parent_id, self.env)
 
         self.env.log.debug("<< get_new_test_catalog_dialog")
         
@@ -478,9 +481,9 @@ class Actions(object):
     def get_new_test_case_dialog(self):
         self.env.log.debug(">> get_new_test_case_dialog")
 
-        self.env.log.debug("parent_id: '%s'" % (parent_id))
+        self.env.log.debug("parent_id: '%s'" % (self.parent_id))
 
-        self.parent_test_catalog = _get_test_catalog(parent_id, self.env)
+        self.parent_test_catalog = _get_test_catalog(self.parent_id, self.env)
 
         self.env.log.debug("<< get_new_test_case_dialog")
         
@@ -502,9 +505,9 @@ class Actions(object):
     def get_new_test_plan_dialog(self):
         self.env.log.debug(">> get_new_test_plan_dialog")
 
-        self.env.log.debug("parent_id: '%s'" % (parent_id))
+        self.env.log.debug("parent_id: '%s'" % (self.parent_id))
 
-        self.parent_test_catalog = _get_test_catalog(parent_id, self.env)
+        self.parent_test_catalog = _get_test_catalog(self.parent_id, self.env)
 
         self.env.log.debug("<< get_new_test_plan_dialog")
         
@@ -764,7 +767,7 @@ class Actions(object):
         test_artifact = _get_test_artifact(self.artifact, self.id, self.env)
         test_artifact.title = self.title
         
-        self.ajax_result = _save_modified_artifact(self.req, test_artifact, message="Title changed")
+        self.ajax_result = _save_modified_artifact(self.req, self.env, test_artifact, message="Title changed")
 
         self.env.log.debug("<< change_title")
         
@@ -792,7 +795,7 @@ class Actions(object):
         test_artifact = _get_test_artifact(self.artifact, self.id, self.env)
         test_artifact.description = self.description
         
-        self.ajax_result = _save_modified_artifact(self.req, test_artifact, message="Description changed")
+        self.ajax_result = _save_modified_artifact(self.req, self.env, test_artifact, message="Description changed")
 
         self.env.log.debug("<< change_description")
         
@@ -807,6 +810,7 @@ class Actions(object):
             'parameters': {
                 'artifact': 'in_out',
                 'id': 'in_out',
+                'planid': 'in_out',
                 'field_name': 'in',
                 'field_type': 'in',
                 'value': 'in'
@@ -819,7 +823,19 @@ class Actions(object):
 
         self.env.log.debug("artifact: '%s', id: '%s'" % (self.artifact, self.id))
 
-        test_artifact = _get_test_artifact(self.artifact, self.id, self.env)
+        test_artifact = _get_test_artifact(self.artifact, self.id, self.env, self.planid)
+        
+        if not test_artifact.exists:
+            if self.artifact == 'testcaseinplan':
+                default_status = TestManagerSystem(self.env).get_default_tc_status()
+                test_artifact.set_status(default_status, get_reporter_id(self.req, 'author'))
+                test_artifact.insert()
+                
+                test_artifact = _get_test_artifact(self.artifact, self.id, self.env, self.planid)
+            else:
+                self.ajax_result = '{"result": "ERROR", "message": "Cannot change a custom field of an inexistent object."}'
+                return 'success'
+        
         test_artifact[self.field_name] = self.value
         
         result_value = None
@@ -831,7 +847,7 @@ class Actions(object):
             else:
                 result_value = '<i class="fa fa-check-square-o"></i>'
         
-        self.ajax_result = _save_modified_artifact(self.req, test_artifact, message="Field "+self.field_name+" changed", result_value=result_value)
+        self.ajax_result = _save_modified_artifact(self.req, self.env, test_artifact, message="Field "+self.field_name+" changed", result_value=result_value)
 
         self.env.log.debug("<< change_custom_field")
         
@@ -857,11 +873,11 @@ class Actions(object):
         jsdstr = None
         
         try:
-            author = get_reporter_id(req, 'author')
+            author = get_reporter_id(self.req, 'author')
             
             test_case_in_plan = TestCaseInPlan(self.env, test_case_id, test_plan_id)
             test_case_in_plan.author = author
-            test_case_in_plan.remote_addr = req.remote_addr
+            test_case_in_plan.remote_addr = self.req.remote_addr
 
             test_case_in_plan.set_status(new_status, author)
             
@@ -915,7 +931,7 @@ class Actions(object):
         self.default_outcome = TestManagerSystem(self.env).get_default_tc_status()
         self.statuses_by_name = TestManagerSystem(self.env).get_tc_statuses_by_name()
 
-        self.confirm_data = get_artifact_move_consequences(self.env, artifact_type, artifact_id, new_parent_id)
+        self.confirm_data = get_artifact_move_consequences(self.env, self.artifact_type, self.artifact_id, self.new_parent_id)
         self.env.log.debug("Consequences of the move are\n'%s'" % (self.confirm_data,))
         
         GenericClassCacheSystem.clear_cache()
@@ -946,7 +962,7 @@ class Actions(object):
     def move_artifact(self):
         self.env.log.debug(">> move_artifact")
 
-        if artifact_type is None or artifact_id is None or new_parent_id is None:
+        if self.artifact_type is None or self.artifact_id is None or self.new_parent_id is None:
             raise TracException("Should provide artifact type, id and the new parent id.") 
 
         GenericClassCacheSystem.clear_cache()
@@ -954,27 +970,27 @@ class Actions(object):
         jsdstr = None
         
         try:
-            destination_catalog = TestCatalog(self.env, new_parent_id)
+            destination_catalog = TestCatalog(self.env, self.new_parent_id)
             
-            consequences = get_artifact_move_consequences(self.env, artifact_type, artifact_id, new_parent_id)
+            consequences = get_artifact_move_consequences(self.env, self.artifact_type, self.artifact_id, self.new_parent_id)
             self.env.log.debug("Consequences of the move are\n'%s'" % (consequences,))
     
             for tc_title, status, tp_id, tp_name, tp_author, tp_date in consequences:
-                self.env.log.debug("Deleting test case in plan with id %s and planid %s" % (artifact_id, tp_id))
-                tcip = TestCaseInPlan(self.env, artifact_id, tp_id)
+                self.env.log.debug("Deleting test case in plan with id %s and planid %s" % (self.artifact_id, tp_id))
+                tcip = TestCaseInPlan(self.env, self.artifact_id, tp_id)
                 tcip.delete_history()
                 tcip.delete()
 
             test_artifact = None
             
-            if (artifact_type == 'testcase'):
-                test_artifact = TestCase(self.env, artifact_id)
+            if (self.artifact_type == 'testcase'):
+                test_artifact = TestCase(self.env, self.artifact_id)
                 
-            elif (artifact_type == 'testcatalog'):
-                test_artifact = TestCatalog(self.env, artifact_id)
+            elif (self.artifact_type == 'testcatalog'):
+                test_artifact = TestCatalog(self.env, self.artifact_id)
             
-            test_artifact.author = get_reporter_id(req, 'author')
-            test_artifact.remote_addr = req.remote_addr
+            test_artifact.author = get_reporter_id(self.req, 'author')
+            test_artifact.remote_addr = self.req.remote_addr
 
             test_artifact.move_to(destination_catalog)
 
@@ -994,9 +1010,6 @@ class Actions(object):
         
         return 'success'
 
-    def prova(self):
-        print "Ciao"
-
     def prepare_custom_fields(self, artifact_type):
         self.env.log.debug(">> prepare_custom_fields")
         
@@ -1011,14 +1024,18 @@ class Actions(object):
             field_value = self.obj[field_name]
             field_type = f['type']
             
-            if field_value is not None:
-                if field_type == 'textarea':
+            if field_type == 'textarea':
+                if field_value is not None:
                     if ('format' in f) and f['format'] == 'wiki':
                         self.custom_field_values_markup[field_name] = _get_wiki_page_contents(self.req, self.env, 'TC', field_value)
                     else:
                         field_value = html_escape(field_value)
-
                 else:
+                    self.custom_field_values_markup[field_name] = ''
+                    field_value = ''
+
+            else:
+                if field_value is not None:
                     field_value = html_escape(field_value)
                     
             self.custom_field_values[field_name] = field_value
@@ -1265,7 +1282,14 @@ def _get_test_case(test_case_id, env):
 
     return test_case
     
-def _get_test_artifact(artifact_type, id, env):
+def _get_test_case_in_plan(test_case_id, planid, env):
+    test_case_in_plan = None
+    if test_case_id is not None and planid is not None:
+        test_case_in_plan = TestCaseInPlan(env, test_case_id, planid)
+
+    return test_case_in_plan
+    
+def _get_test_artifact(artifact_type, id, env, planid = '-1'):
     if artifact_type is None:
         raise TracError("Artifact parameter must not be None")
 
@@ -1279,12 +1303,15 @@ def _get_test_artifact(artifact_type, id, env):
     elif artifact_type == 'testplan':
         result = _get_test_plan(id, env)
     
+    elif artifact_type == 'testcaseinplan':
+        result = _get_test_case_in_plan(id, planid, env)
+    
     else:
         raise TracError("Unrecognized artifact type '%s'" % (artifact_type,))
 
     return result
 
-def _save_modified_artifact(req, test_artifact, message="Property changed", result_value=None):
+def _save_modified_artifact(req, env, test_artifact, message="Property changed", result_value=None):
 
     jsdstr = {}
     
@@ -1302,8 +1329,8 @@ def _save_modified_artifact(req, test_artifact, message="Property changed", resu
             jsdstr['value'] = result_value
 
     except:
-        self.env.log.error("Error saving changed object!")
-        self.env.log.error(formatExceptionInfo())
+        env.log.error("Error saving changed object!")
+        env.log.error(formatExceptionInfo())
 
         jsdstr['result'] = "ERROR"
         jsdstr['message'] = "An error occurred while saving the changes."
