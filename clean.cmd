@@ -1,7 +1,7 @@
 rmdir /s /q bin
 rmdir /s /q docs
 
-cd ..\tracgenericclass
+cd tracgenericclass
 rmdir /s /q build 
 rmdir /s /q dist 
 rmdir /s /q TracGenericClass.egg-info
@@ -33,5 +33,4 @@ del /F /Q testmanager\htdocs\js\it.js
 del /F /Q testmanager\htdocs\js\ko.js
 del /F /Q testmanager\htdocs\js\ru.js
 
-cd ..\testman4trac-parent
-
+cd ..

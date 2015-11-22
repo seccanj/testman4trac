@@ -2,28 +2,24 @@ Check the tutorial on YouTube: http://www.youtube.com/watch?v=BIi3QMT0rT4
 
 Test Manager plugin for Trac
 
-  Copyright 2010-2015 Roberto Longobardi
-  
-  The Test Manager plugin for Trac is free software: you can 
-  redistribute it and/or modify it under the terms of the GNU General 
-  Public License as published by the Free Software Foundation, either 
-  version 3 of the License, or (at your option) any later version.
-  
-  The Test Manager plugin for Trac is distributed in the hope that it 
-  will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-  See the GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License
-  along with he Test Manager plugin for Trac. See LICENSE.txt.
-  If not, see <http://www.gnu.org/licenses/>.
+Copyright (C) 2010-2015 Roberto Longobardi
+ 
+This file is part of the Test Manager plugin for Trac.
+ 
+This software is licensed as described in the file COPYING, which
+you should have received as part of this distribution. The terms
+are also available at: 
+
+https://trac-hacks.org/wiki/TestManagerForTracPluginLicense
+
+Author: Roberto Longobardi <otrebor.dev@gmail.com>
 
 
-  Project web page on TracHacks: http://trac-hacks.org/wiki/TestManagerForTracPlugin
+Project web page on TracHacks: http://trac-hacks.org/wiki/TestManagerForTracPlugin
   
-  Project web page on SourceForge.net: http://sourceforge.net/projects/testman4trac/
+Project web page on SourceForge.net: http://sourceforge.net/projects/testman4trac/
   
-  Project web page on Pypi: http://pypi.python.org/pypi/TestManager
+Project web page on Pypi: http://pypi.python.org/pypi/TestManager
 
 =======================================================================
 
@@ -192,6 +188,13 @@ Change History:
 (Refer to the tickets on trac-hacks or SourceForge for complete 
 descriptions.)
 
+
+Release 1.9.0 (2015-11-22):
+
+  o Task #12395	(Trac-Hacks):         BSD license possible?
+                                      Changed to GPL v. 2 to BSD licensing.
+  
+  o Fixed Ticket #12572 (Trac-Hacks): XMLRPC listTestcases does not respect order of test cases
 
 Release 1.8.2 (2014-12-14):
 

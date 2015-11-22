@@ -1,7 +1,7 @@
 mkdir bin
 mkdir docs
 
-cd ..\tracgenericclass
+cd tracgenericclass
 python setup.py bdist_egg
 xcopy /y dist\*.egg ..\bin
 
@@ -45,7 +45,7 @@ python setup.py compile_catalog_js -f -l ru
 python setup.py bdist_egg
 xcopy /y dist\*.egg ..\bin
 
-cd ..\testman4trac-parent
+cd ..
 
 xcopy /y *.txt docs
 

@@ -4,21 +4,13 @@
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
-# The Test Manager plugin for Trac is free software: you can 
-# redistribute it and/or modify it under the terms of the GNU 
-# General Public License as published by the Free Software Foundation, 
-# either version 3 of the License, or (at your option) any later 
-# version.
-# 
-# The Test Manager plugin for Trac is distributed in the hope that it 
-# will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with the Test Manager plugin for Trac. See the file LICENSE.txt. 
-# If not, see <http://www.gnu.org/licenses/>.
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at: 
+#   https://trac-hacks.org/wiki/TestManagerForTracPluginLicense
 #
+# Author: Roberto Longobardi <otrebor.dev@gmail.com>
+# 
 
 from trac.util import get_reporter_id
 
@@ -425,20 +417,24 @@ try:
                 if not tcat.exists:
                     self.env.log.error("Input test catalog with ID %s not found." % catalog_id)
                 else:
+                    tc_list = {}
                     if plan_id is None or plan_id == '':
                         for tc in tcat.list_testcases():
                             # Returned object is a TestCase
                             customfields = []
                             self._append_custom_fields(tc, customfields)
 
-                            yield (tc['id'], tc['page_name'], tc.title, tc.description, customfields)
+                            tc_list[tc['exec_order']] = (tc['id'], tc['page_name'], tc.title, tc.description, customfields)
                     else:
                         for tcip in tcat.list_testcases(plan_id):
                             # Returned object is a TestCaseInPlan
                             customfields = []
                             self._append_custom_fields(tcip, customfields)
 
-                            yield (tcip['id'], tcip['page_name'], tcip['status'], customfields)
+                            tc_list[tcip['exec_order']] = (tcip['id'], tcip['page_name'], tcip['status'], customfields)
+
+                    for key in sorted(tc_list.keys()):
+                        yield tc_list[key]
                 
             except:
                 self.env.log.error("Error listing the test cases in the catalog with ID %s!" % catalog_id)

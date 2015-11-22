@@ -12,7 +12,7 @@ show_help ()
 	echo Usage:
 	echo     . ./build.sh [-f] [-i your/trac/env/path]
 	echo
-	echo     -f :    fast: do not generate message catalogs
+	echo     -f :    fast: do not generate localized message catalogs
 	echo     -i :    install the built plugins into your trac environment
 	echo
 	
@@ -74,17 +74,17 @@ shift $((OPTIND-1)) # Shift off the options and optional --.
 mkdir bin
 mkdir docs
 
-cd ../tracgenericclass
+cd tracgenericclass
 python setup.py bdist_egg
-cp -f dist/*.egg ../testman4trac-parent/bin
+cp -f dist/*.egg ../bin
 
 cd ../tracgenericworkflow
 python setup.py bdist_egg
-cp -f dist/*.egg ../testman4trac-parent/bin
+cp -f dist/*.egg ../bin
 
 cd ../sqlexecutor
 python setup.py bdist_egg
-cp -f dist/*.egg ../testman4trac-parent/bin
+cp -f dist/*.egg ../bin
 
 cd ../testman4trac
 
@@ -94,9 +94,9 @@ then
 fi
 
 python setup.py bdist_egg
-cp -f dist/*.egg ../testman4trac-parent/bin
+cp -f dist/*.egg ../bin
 
-cd ../testman4trac-parent
+cd ..
 
 cp -f *.txt docs
 

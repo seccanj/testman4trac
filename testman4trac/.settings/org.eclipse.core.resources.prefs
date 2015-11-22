@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//testmanager/__init__.py=utf-8
 encoding//testmanager/admin.py=utf-8
 encoding//testmanager/api.py=utf-8
 encoding//testmanager/model.py=utf-8
