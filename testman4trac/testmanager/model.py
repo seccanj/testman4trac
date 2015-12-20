@@ -219,8 +219,10 @@ class TestCatalog(AbstractTestDescription):
                 yield tc
             else:
                 tcip = TestCaseInPlan(self.env, tc['id'], plan_id)
-                if not tcip.exists:
+                if not tcip.exists or 'status' not in tcip.fields:
                     tcip['status'] = default_status
+    
+                tcip['exec_order'] = tc['exec_order']
 
                 yield tcip
 

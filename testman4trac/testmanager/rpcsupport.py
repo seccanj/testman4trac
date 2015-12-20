@@ -401,14 +401,24 @@ try:
                 if not tcat.exists:
                     self.env.log.error("Input test catalog with ID %s not found." % catalog_id)
                 else:
+                    tc_list = {}
                     if plan_id is None or plan_id == '':
                         for tc in tcat.list_testcases():
                             # Returned object is a TestCase
-                            yield (tc['id'], tc['page_name'], tc['parent_id'], tc.title, tc.description)
+                            customfields = []
+                            self._append_custom_fields(tc, customfields)
+ 
+                            tc_list[tc['exec_order']] = (tc['id'], tc['page_name'], tc.title, tc.description, customfields)
                     else:
                         for tcip in tcat.list_testcases(plan_id):
                             # Returned object is a TestCaseInPlan
-                            yield (tcip['id'], tcip['page_name'], tcip['status'])
+                            customfields = []
+                            self._append_custom_fields(tcip, customfields)
+
+                            tc_list[tcip['exec_order']] = (tcip['id'], tcip['page_name'], tcip['status'], customfields)
+
+                    for key in sorted(tc_list.keys()):
+                        yield tc_list[key]
                 
             except:
                 self.env.log.error("Error listing the test cases in the catalog with ID %s!" % catalog_id)
