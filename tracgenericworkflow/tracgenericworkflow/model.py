@@ -36,16 +36,16 @@ class ResourceWorkflowState(AbstractVariableFieldsObject):
     # Fields that must not be modified directly by the user
     protected_fields = ('id', 'res_realm', 'state')
 
-    def __new__(cls, env, id=None, res_realm=None, state='new', db=None):
+    def __new__(cls, env, id_=None, res_realm=None, state='new', db=None):
         key = None
-        if id is not None and res_realm is not None:
-            key = {'id': id, 'res_realm': res_realm}
+        if id_ is not None and res_realm is not None:
+            key = {'id': id_, 'res_realm': res_realm}
         
         result = AbstractVariableFieldsObject.__new__(cls, env, 'resourceworkflowstate', key, db)
             
         return result
 
-    def __init__(self, env, id=None, res_realm=None, state='new', db=None):
+    def __init__(self, env, id_=None, res_realm=None, state='new', db=None):
         """
         The resource workflow state is related to a resource, the 'id' 
         and 'res_realm' arguments.
@@ -56,7 +56,7 @@ class ResourceWorkflowState(AbstractVariableFieldsObject):
 
         self.values = {}
 
-        self.values['id'] = id
+        self.values['id'] = id_
         self.values['res_realm'] = res_realm
         self.values['state'] = state
 

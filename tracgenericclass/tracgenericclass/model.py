@@ -41,14 +41,14 @@ class IConcreteClassProvider(Interface):
     concrete classes based on this generic class framework.
     """
 
-    def get_realms():
+    def get_realms(self):
         """
         Return class realms provided by the component.
 
         :rtype: `basestring` generator
         """
 
-    def get_data_models():
+    def get_data_models(self):
         """
         Return database tables metadata to allow the framework to create the
         db schema for the classes provided by the component.
@@ -68,7 +68,7 @@ class IConcreteClassProvider(Interface):
                        }
         """
 
-    def get_fields():
+    def get_fields(self):
         """
         Return the standard fields for classes in all the realms 
         provided by the component.
@@ -84,7 +84,7 @@ class IConcreteClassProvider(Interface):
                        }
         """
         
-    def get_metadata():
+    def get_metadata(self):
         """
         Return a set of metadata about the classes in all the realms 
         provided by the component.
@@ -110,7 +110,7 @@ class IConcreteClassProvider(Interface):
                        }
         """
         
-    def create_instance(realm, props=None):
+    def create_instance(self, realm, props=None):
         """
         Return an instance of the specified realm, with the specified properties,
         or an empty object if props is None.
@@ -119,7 +119,7 @@ class IConcreteClassProvider(Interface):
         """
 
 
-    def check_permission(req, realm, key_str=None, operation='set', name=None, value=None):
+    def check_permission(self, req, realm, key_str=None, operation='set', name=None, value=None):
         """
         Checks whether the logged in User has permission to perform
         the specified operation on a resource of the specified realm and 

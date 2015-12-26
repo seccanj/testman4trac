@@ -199,7 +199,7 @@ class TestCatalogBean(object):
         return ''
 
     def is_expandable(self):
-        return tot > 0
+        return self.tot > 0
 
     def has_test_plans(self):
         return self.test_plans is not None and len(self.test_plans) > 0

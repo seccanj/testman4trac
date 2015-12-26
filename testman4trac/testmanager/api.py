@@ -1120,13 +1120,43 @@ class TestManagerSystem(Component):
             self.env.log.error(formatExceptionInfo())
             return None
 
+    def get_default_tc_template_id(self):
+        """ get default TestCase template id """
+        try:
+            return self.get_config_property('TEST_CASE_DEFAULT_TEMPLATE')
+
+        except:
+            self.env.log.error("Error getting default test case template id")
+            self.env.log.error(formatExceptionInfo())
+            return None
+
+    def get_default_tc_template(self):
+        """ get default TestCase template """
+        try:
+            # first get template id from testconfig
+            t_id = self.get_config_property('TEST_CASE_DEFAULT_TEMPLATE')
+            if not t_id:
+                return ''
+
+            # now get template
+            result = self.get_template_by_id(t_id)
+            if not result:
+                return ''
+                
+            return result['content']
+
+        except:
+            self.env.log.error("Error getting default test case template")
+            self.env.log.error(formatExceptionInfo())
+            return None
+
     def get_tc_template_id_for_catalog(self, t_cat_id):
         """ get test case template for catalog with specified id """
         try:
             return self.get_config_property('TC_TEMPLATE_FOR_TCAT_' + t_cat_id)
 
         except:
-            self.env.log.error("Error getting default test catalog template id")
+            self.env.log.error("Error getting default test case template id")
             self.env.log.error(formatExceptionInfo())
             return None
 
@@ -1139,8 +1169,12 @@ class TestManagerSystem(Component):
 
             # now get Template ID
             t_id = self.get_tc_template_id_for_catalog(t_cat_id)
-            if not t_id:
-                return ''
+            
+            if not t_id or t_id == '' or t_id == '0':
+                t_id = self.get_default_tc_template_id()
+
+                if not t_id or t_id == '':
+                    return ''
 
             # and finally get the template
             result = self.get_template_by_id(t_id)
@@ -1294,15 +1328,13 @@ class TestManagerSystem(Component):
         
         db = self.env.get_read_db()
         cursor = db.cursor()
-        cursor.execute("SELECT * from testcatalog")
+        cursor.execute("SELECT id, page_name from testcatalog")
         items = []
-        for row in cursor:
-            c_id = row[0]
-            c_name = row[1]
+        for c_id, c_name in cursor:
             wikipage = WikiPage(self.env, c_name)
             c_title = get_page_title(wikipage.text)
-            c_template = self.get_tc_template_id_for_catalog(c_id)
-            cat = {'id': c_id, 'name': c_name, 'title': c_title, 'template': c_template}
+            c_template_id = self.get_tc_template_id_for_catalog(c_id)
+            cat = {'id': c_id, 'name': c_name, 'title': c_title, 'template': c_template_id}
             items.append(cat)
             
         return sorted(items, key=itemgetter('title'))
@@ -1407,7 +1439,7 @@ class TestManagerSystem(Component):
         tcat_beans = []
         
         for tcat_id in self.list_subcatalogs('-1'):
-            tcat_beans.append(self.get_test_catalog_data_model(test_catalog = TestCatalog(self.env, tcat_id[0]), sortby = sortby))
+            tcat_beans.append(self.get_test_catalog_data_model(test_catalog = TestCatalog(self.env, tcat_id), sortby = sortby))
             
         return tcat_beans
 
@@ -1778,8 +1810,8 @@ class TestManagerSystem(Component):
         sql_testcatalogs = "SELECT tt.id, tt.page_name, w1.text FROM testcatalog tt, wiki w1, (SELECT name, max(version) as ver FROM wiki, testcatalog WHERE name = page_name GROUP BY name) w2 WHERE tt.parent_id = '%s' and w1.version = w2.ver AND w1.name = w2.name and w1.name = tt.page_name" % (parent_id,)
         
         cursor.execute(sql_testcatalogs)
-        for id, name, text in cursor:
-            yield id, name, text
+        for id_, name, text in cursor:
+            yield id_, name, text
         
         return
         
@@ -1792,9 +1824,10 @@ class TestManagerSystem(Component):
         cursor.execute(sql_testcatalogs, (catalog_id,))
 
         result = []
-        for id in cursor:
-            self.env.log.debug("    =======    Found sub catalog of catalog with id '%s': id='%s'" % (catalog_id, id))
-            result.append(id[0])
+        for row in cursor:
+            id_ = row[0]
+            self.env.log.debug("    =======    Found sub catalog of catalog with id '%s': id='%s'" % (catalog_id, id_))
+            result.append(id_)
         
         return result
 
@@ -1806,8 +1839,8 @@ class TestManagerSystem(Component):
         sql_testcases = "SELECT tt.id, tt.page_name, w1.text FROM testcase tt, wiki w1, (SELECT name, max(version) as ver FROM wiki, testcase WHERE name = page_name GROUP BY name) w2 WHERE tt.parent_id = '%s' and w1.version = w2.ver AND w1.name = w2.name and w1.name = tt.page_name" % (parent_id,)
         
         cursor.execute(sql_testcases)
-        for id, name, text in cursor:
-            yield id, name, text
+        for id_, name, text in cursor:
+            yield id_, name, text
         
         return
         

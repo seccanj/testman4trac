@@ -47,7 +47,7 @@ class WorkflowStandardOperations(Component):
     def get_operation_control(self, req, action, operation, res_wf_state, resource):
         self.log.debug(">>> WorkflowStandardOperations - get_operation_control: %s" % operation)
 
-        id = 'action_%s_operation_%s' % (action, operation)
+        id_ = 'action_%s_operation_%s' % (action, operation)
 
         # A custom field named "owner" is required in the ResourceWorkflowState 
         # class for this operation to be available
@@ -67,7 +67,7 @@ class WorkflowStandardOperations(Component):
 
             self.log.debug("Current owner is %s." % current_owner)
 
-            selected_owner = req.args.get(id, req.authname)
+            selected_owner = req.args.get(id_, req.authname)
 
             control = None
             hint = ''
@@ -86,13 +86,13 @@ class WorkflowStandardOperations(Component):
                     owners.sort()
 
             if owners == None:
-                owner = req.args.get(id, req.authname)
+                owner = req.args.get(id_, req.authname)
                 control = tag('Assign to ',
-                                    tag.input(type='text', id=id,
-                                                    name=id, value=owner))
+                                    tag.input(type='text', id=id_,
+                                                    name=id_, value=owner))
                 hint = "The owner will be changed from %s" % current_owner
             elif len(owners) == 1:
-                owner = tag.input(type='hidden', id=id, name=id,
+                owner = tag.input(type='hidden', id=id_, name=id_,
                                   value=owners[0])
                 formatted_owner = format_user(owners[0])
                 control = tag('Assign to ',
@@ -104,7 +104,7 @@ class WorkflowStandardOperations(Component):
                     [tag.option(format_user(x), value=x,
                                 selected=(x == selected_owner or None))
                      for x in owners],
-                    id=id, name=id))
+                    id=id_, name=id_))
                 hint = "The owner will be changed from %s" % current_owner
 
             return control, hint

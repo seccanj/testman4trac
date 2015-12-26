@@ -12,21 +12,16 @@
 # Author: Roberto Longobardi <otrebor.dev@gmail.com>
 # 
 
-import re
-import time
-
-from datetime import datetime
-from trac.core import *
-from trac.resource import Resource, render_resource_link, get_resource_url
+from genshi.builder import tag
+from trac.core import Interface, Component, implements, ExtensionPoint, \
+    TracError
+from trac.resource import Resource, get_resource_url
 from trac.util import get_reporter_id
-from trac.util.translation import _, N_, gettext
+from trac.util.translation import _
 from trac.web.api import IRequestHandler
 from trac.web.chrome import ITemplateProvider
 
-from genshi.builder import tag
-
-from tracgenericclass.util import *
-
+from tracgenericclass.util import formatExceptionInfo
 from tracgenericworkflow.model import ResourceWorkflowState
 
 
@@ -36,7 +31,7 @@ class IWorkflowTransitionListener(Interface):
     when objects transition between states.
     """
 
-    def object_transition(res_wf_state, resource, action, old_state, new_state):
+    def object_transition(self, res_wf_state, resource, action, old_state, new_state):
         """
         Called when an object has transitioned to a new state.
 
@@ -54,7 +49,7 @@ class IWorkflowTransitionAuthorization(Interface):
     based on the object and the current and new states.
     """
 
-    def is_authorized(res_wf_state, resource, action, old_state, new_state):
+    def is_authorized(self, res_wf_state, resource, action, old_state, new_state):
         """
         Called before allowing the transition.
         Return True to allow for the transition, False to deny it.
@@ -72,14 +67,14 @@ class IWorkflowOperationProvider(Interface):
     custom workflow operations.
     """
 
-    def get_implemented_operations():
+    def get_implemented_operations(self):
         """
         Return custom actions provided by the component.
 
         :rtype: `basestring` generator
         """
 
-    def get_operation_control(req, action, operation, res_wf_state, resource):
+    def get_operation_control(self, req, action, operation, res_wf_state, resource):
         """
         Asks the provider to provide UI control to let the User 
         perform the specified operation on the given resource.
@@ -97,7 +92,7 @@ class IWorkflowOperationProvider(Interface):
                  with the operation hint.
         """
         
-    def perform_operation(req, action, operation, old_state, new_state, res_wf_state, resource):
+    def perform_operation(self, req, action, operation, old_state, new_state, res_wf_state, resource):
         """
         Perform the specified operation on the given resource, which 
         has transitioned from the given old to the given new state.
@@ -412,7 +407,7 @@ class ResourceWorkflowSystem(Component):
                             try:
                                 rws.save_changes(author, "State changed")
                             except:
-                                self.log.debug("Error saving the resource %s with id %s" % (realm, id))
+                                self.log.debug("Error saving the resource %s with id %s" % (res_realm, id))
                         else:
                             TracError("Resource with id %s has already changed state in the meanwhile. Current state is %s." % (id, rws['state']))
                 else:

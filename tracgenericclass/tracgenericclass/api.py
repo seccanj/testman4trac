@@ -38,17 +38,17 @@ class IGenericObjectChangeListener(Interface):
     when objects are created, modified, or deleted.
     """
 
-    def object_created(g_object):
+    def object_created(self, g_object):
         """Called when an object is created."""
 
-    def object_changed(g_object, comment, author, old_values):
+    def object_changed(self, g_object, comment, author, old_values):
         """Called when an object is modified.
         
         `old_values` is a dictionary containing the previous values of the
         fields that have changed.
         """
 
-    def object_deleted(g_object):
+    def object_deleted(self, g_object):
         """Called when an object is deleted."""
 
 
