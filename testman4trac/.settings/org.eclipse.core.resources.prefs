@@ -1,6 +1,8 @@
 eclipse.preferences.version=1
+encoding//testmanager/actions.py=utf-8
 encoding//testmanager/admin.py=utf-8
 encoding//testmanager/api.py=utf-8
+encoding//testmanager/beans.py=utf-8
 encoding//testmanager/model.py=utf-8
 encoding//testmanager/rpcsupport.py=utf-8
 encoding//testmanager/stats.py=utf-8
