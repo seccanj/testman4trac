@@ -47,7 +47,7 @@ try:
             yield ('TEST_VIEW', ((list, str),), self.getTestCatalog)
             yield ('TEST_VIEW', ((list, str),(list, str, str)), self.getTestCase)
             yield ('TEST_VIEW', ((list, str, str),), self.getTestPlan)
-            yield ('TEST_VIEW', ((list),), self.listRootCatalogs)
+            yield ('TEST_VIEW', ((list,),), self.listRootCatalogs)
             yield ('TEST_VIEW', ((list, str),), self.listSubCatalogs)
             yield ('TEST_VIEW', ((list, str),), self.listTestPlans)
 

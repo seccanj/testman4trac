@@ -79,11 +79,11 @@ function createTestPlanConfirm(catName) {
 
     /*
 	The following should work... but doesn't in case one has first selected some test cases from the tree.
-    var testplanContainsAll = $("input[@name='testplan_contains_all']:checked").val();
-    var testplanSnapshot = $("input[@name=testplan_snapshot]:checked").val();
+    var testplanContainsAll = $("input[name='testplan_contains_all']:checked").val();
+    var testplanSnapshot = $("input[name=testplan_snapshot]:checked").val();
 	*/
 
-    var nodes = $("input[@name='testplan_contains_all']:checked");
+    var nodes = $("input[name='testplan_contains_all']:checked");
     for (var i=0; i<nodes.length; i++) {
         var node = nodes[i];
         if (node.name == 'testplan_contains_all') {
@@ -91,7 +91,7 @@ function createTestPlanConfirm(catName) {
         }
     }
 
-    nodes = $("input[@name='testplan_snapshot']:checked");
+    nodes = $("input[name='testplan_snapshot']:checked");
     for (var i=0; i<nodes.length; i++) {
         var node = nodes[i];
         if (node.name == 'testplan_snapshot') {

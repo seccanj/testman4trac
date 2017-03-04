@@ -1393,7 +1393,7 @@ def upgrade_db_for_realm(env, package_name, realm, realm_schema, db=None):
     def do_upgrade_db_for_realm(db):
         cursor = db.cursor()
 
-        db_backend, _ = DatabaseManager(env).get_connector()        
+        db_backend = DatabaseManager(env).get_connector()[0]  
 
         env.log.info("Upgrading DB for class '%s'.", realm)
         
