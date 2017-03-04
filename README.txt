@@ -189,6 +189,18 @@ Change History:
 descriptions.)
 
 
+Release 1.9.1 (2017-03-04): 
+
+  o Fixed Ticket #12301 (Trac-Hacks): Exception: testmanager.listRootCatalogs: object of type 'type' has no len()
+
+  o Fixed Ticket #12663 (Trac-Hacks): [PATCH]: Exception during database upgrade
+
+  o Fixed Ticket #12736 (Trac-Hacks): javascript error in testman4trac/testmanager/htdocs/js/testmanager.js
+
+  o Fixed Ticket #12912 (Trac-Hacks): upgrade installation from Trac 0.12 to 1.0 not OK
+
+  o Fixed Ticket #13094 (Trac-Hacks): can not create a test plan after clicking Generate a test plan
+
 Release 1.9.0 (2015-11-22):
 
   o Task #12395	(Trac-Hacks):         BSD license possible?

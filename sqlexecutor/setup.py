@@ -29,5 +29,5 @@ setup(
     keywords='trac plugin generic class framework persistence sql execution run test case management project quality assurance statistics stats charts charting graph',
     entry_points = {'trac.plugins': ['sqlexecutor = sqlexecutor']},
     dependency_links=['http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass'],
-    install_requires=['TracGenericClass >= 1.1.1']
+    install_requires=['TracGenericClass >= 1.1.7']
     )

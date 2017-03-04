@@ -29,5 +29,5 @@ setup(
     keywords='trac plugin test case management workflow engine resource project quality assurance statistics stats charts charting graph',
     entry_points = {'trac.plugins': ['tracgenericworkflow = tracgenericworkflow']},
     dependency_links=['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass'],
-    install_requires=['Genshi >= 0.6', 'TracGenericClass >= 1.1.5']
+    install_requires=['Genshi >= 0.6', 'TracGenericClass >= 1.1.7']
     )
