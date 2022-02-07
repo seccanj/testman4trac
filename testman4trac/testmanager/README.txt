@@ -31,15 +31,16 @@ Refer to INSTALL.txt or UPGRADE.txt for installation or upgrade
 instructions.
 
 =======================================================================
+
 A Trac plugin to create Test Cases, organize them in catalogs, generate 
 test plans and track their execution status and outcome.
 
-Since the release of Trac 1.0, I had to split the plugins code into two 
-versions:
- - a version that works well with Trac 0.11 (no more supported)
- - a version that works well with Trac 0.12 and Trac 1.0
+The latest release is compatible with Trac 1.4.
 
-All the code works with Python 2.6 and 2.7.
+Compatibility with Trac 1.5 and later is NOT available yet.
+
+All the code works now with Python 2.7.
+
 All database backends are supported.
 
 ***********************************************************************
