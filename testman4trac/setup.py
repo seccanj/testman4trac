@@ -36,7 +36,7 @@ except ImportError:
 
 setup(
     name='TestManager',
-    version='1.9.1',
+    version='1.10.0',
     packages=['testmanager','testmanager.upgrades'],
     package_data={
         'testmanager' : [

@@ -16,7 +16,7 @@ from setuptools import setup
 
 setup(
     name='SQLExecutor',
-    version='1.0.7',
+    version='1.1.0',
     packages=['sqlexecutor'],
     package_data={'sqlexecutor' : ['*.txt', 'templates/*.html', 'htdocs/*.*', 'htdocs/js/*.js', 'htdocs/css/*.css', 'htdocs/images/*.*']},
     author = 'Roberto Longobardi',

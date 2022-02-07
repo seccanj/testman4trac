@@ -16,10 +16,12 @@ Author: Roberto Longobardi <otrebor.dev@gmail.com>
 
 
 Project web page on TracHacks: http://trac-hacks.org/wiki/TestManagerForTracPlugin
-  
-Project web page on SourceForge.net: http://sourceforge.net/projects/testman4trac/
+
+Project web page on SourceForge.net (don't use it for the git repo): http://sourceforge.net/projects/testman4trac/
   
 Project web page on Pypi: http://pypi.python.org/pypi/TestManager
+
+Project source repository on GitHub: https://github.com/seccanj/testman4trac
 
 =======================================================================
 

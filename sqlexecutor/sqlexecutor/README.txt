@@ -16,12 +16,13 @@ Author: Roberto Longobardi <otrebor.dev@gmail.com>
 
 
 Project web page on TracHacks: http://trac-hacks.org/wiki/TestManagerForTracPlugin
-  
-Project web page on SourceForge.net: http://sourceforge.net/projects/testman4trac/
+
+Project web page on SourceForge.net (don't use it for the git repo): http://sourceforge.net/projects/testman4trac/
   
 Project web page on Pypi: http://pypi.python.org/pypi/TestManager
 
-  
+Project source repository on GitHub: https://github.com/seccanj/testman4trac
+
 A Trac plugin to create Test Cases, organize them in catalogs, generate test plans and track their execution status and outcome.
 
 This module provides a simple way of running any SQL in the context of the Trac environment. 
@@ -33,6 +34,9 @@ Caution: This plugin is not intended for a production environment.
 Change History:
 
 (Refer to the tickets on trac-hacks for complete descriptions.)
+
+Release 1.2.0 (2022-02-07): 
+  o Removed use of deprecated APIs and replaced with updated ones. Plugin now compatible with Trac 1.4.
 
 Release 1.0.0 (2010-10-01):
   o First release publicly available apart from the core Test Manager plugin
