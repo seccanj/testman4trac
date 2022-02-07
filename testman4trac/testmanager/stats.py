@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2015 Roberto Longobardi
+# Copyright (C) 2010-2022 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
@@ -12,7 +12,13 @@
 # Author: Roberto Longobardi <otrebor.dev@gmail.com>
 # 
 
-import cStringIO
+try:
+    from cStringIO import StringIO
+except:
+    try:
+        from StringIO import StringIO
+    except ImportError:
+        from io import StringIO
 from datetime import timedelta
 import json
 
@@ -56,7 +62,14 @@ TESTMANAGER_DEFAULT_INTERVAL = 7
 # ************************
 
 class TestStatsPlugin(Component):
+
     implements(INavigationContributor, IRequestHandler, ITemplateProvider, IPermissionRequestor)
+
+    def __init__(self, *args, **kwargs):
+        Component.__init__(self, *args, **kwargs)
+
+        self.env.log.debug("TestStatsPlugin init")
+
 
     default_days_back = TESTMANAGER_DEFAULT_DAYS_BACK
     default_interval = TESTMANAGER_DEFAULT_INTERVAL
@@ -94,14 +107,14 @@ class TestStatsPlugin(Component):
         if at_date:
             dates_condition += " AND time <= %s" % to_any_timestamp(at_date)
 
-        db = self.env.get_read_db()
-        cursor = db.cursor()
+        with env.db_query as db:
+            cursor = db.cursor()
 
-        cursor.execute("SELECT COUNT(*) FROM wiki WHERE name LIKE '%s' AND version = 1 %s" % (path_filter, dates_condition))
+            cursor.execute("SELECT COUNT(*) FROM wiki WHERE name LIKE '%s' AND version = 1 %s" % (path_filter, dates_condition))
 
-        row = cursor.fetchone()
-        
-        count = row[0]
+            row = cursor.fetchone()
+            
+            count = row[0]
 
         return count
 
@@ -112,20 +125,20 @@ class TestStatsPlugin(Component):
         specified status between from_date and at_date.
         '''
         
-        db = self.env.get_read_db()
-        cursor = db.cursor()
+        with env.db_query as db:
+            cursor = db.cursor()
 
-        if testplan == None or testplan == '':
-            sql = "SELECT COUNT(*) FROM testcasehistory th1, (SELECT id, planid, max(time) as maxtime FROM testcasehistory WHERE time > %s AND time <= %s GROUP BY planid, id) th2 WHERE th1.time = th2.maxtime AND th1.id = th2.id AND th1.planid = th2.planid AND th1.status = '%s'" % (to_any_timestamp(from_date), to_any_timestamp(at_date), status)
-        else:
-            #sql = "SELECT COUNT(*) FROM testcasehistory th1, (SELECT id, planid, max(time) as maxtime FROM testcasehistory WHERE planid = '%s' AND time > %s AND time <= %s GROUP BY planid, id) th2 WHERE th1.time = th2.maxtime AND th1.id = th2.id AND th1.planid = th2.planid AND th1.status = '%s'" % (testplan, to_any_timestamp(from_date), to_any_timestamp(at_date), status)
-            sql = "SELECT COUNT(*) FROM testcasehistory th1, (SELECT id, planid, max(time) as maxtime FROM testcasehistory WHERE planid = '%s' AND time > %s AND time <= %s GROUP BY planid, id) th2 WHERE th1.time = th2.maxtime AND th1.id = th2.id AND th1.planid = th2.planid AND th1.status = '%s'" % (testplan, to_any_timestamp(from_date), to_any_timestamp(at_date), status)
+            if testplan == None or testplan == '':
+                sql = "SELECT COUNT(*) FROM testcasehistory th1, (SELECT id, planid, max(time) as maxtime FROM testcasehistory WHERE time > %s AND time <= %s GROUP BY planid, id) th2 WHERE th1.time = th2.maxtime AND th1.id = th2.id AND th1.planid = th2.planid AND th1.status = '%s'" % (to_any_timestamp(from_date), to_any_timestamp(at_date), status)
+            else:
+                #sql = "SELECT COUNT(*) FROM testcasehistory th1, (SELECT id, planid, max(time) as maxtime FROM testcasehistory WHERE planid = '%s' AND time > %s AND time <= %s GROUP BY planid, id) th2 WHERE th1.time = th2.maxtime AND th1.id = th2.id AND th1.planid = th2.planid AND th1.status = '%s'" % (testplan, to_any_timestamp(from_date), to_any_timestamp(at_date), status)
+                sql = "SELECT COUNT(*) FROM testcasehistory th1, (SELECT id, planid, max(time) as maxtime FROM testcasehistory WHERE planid = '%s' AND time > %s AND time <= %s GROUP BY planid, id) th2 WHERE th1.time = th2.maxtime AND th1.id = th2.id AND th1.planid = th2.planid AND th1.status = '%s'" % (testplan, to_any_timestamp(from_date), to_any_timestamp(at_date), status)
 
-        cursor.execute(sql)
+            cursor.execute(sql)
 
-        row = cursor.fetchone()
-        
-        count = row[0]
+            row = cursor.fetchone()
+            
+            count = row[0]
 
         return count
 
@@ -142,17 +155,17 @@ class TestStatsPlugin(Component):
             testplan_filter = "INNER JOIN ticket_custom AS tcus ON t.id = tcus.ticket AND tcus.name = 'planid' AND tcus.value = '%s'" % testplan
 
 
-        db = self.env.get_read_db()
-        cursor = db.cursor()
+        with env.db_query as db:
+            cursor = db.cursor()
 
-        #self.env.log.debug("select COUNT(*) FROM ticket AS t %s WHERE time > %s and time <= %s" % 
-        #    (testplan_filter, to_any_timestamp(from_date), to_any_timestamp(at_date)))
-        
-        cursor.execute("select COUNT(*) FROM ticket AS t %s WHERE time > %s and time <= %s" 
-            % (testplan_filter, to_any_timestamp(from_date), to_any_timestamp(at_date)))
+            #self.env.log.debug("select COUNT(*) FROM ticket AS t %s WHERE time > %s and time <= %s" % 
+            #    (testplan_filter, to_any_timestamp(from_date), to_any_timestamp(at_date)))
+            
+            cursor.execute("select COUNT(*) FROM ticket AS t %s WHERE time > %s and time <= %s" 
+                % (testplan_filter, to_any_timestamp(from_date), to_any_timestamp(at_date)))
 
-        row = cursor.fetchone()
-        count = row[0]
+            row = cursor.fetchone()
+            count = row[0]
 
         return count
         
@@ -167,17 +180,17 @@ class TestStatsPlugin(Component):
         else:
             testplan_filter = "INNER JOIN ticket_custom AS tcus ON tch.ticket = tcus.ticket AND tcus.name = 'planid' AND tcus.value = '%s'" % testplan
 
-        db = self.env.get_read_db()
-        cursor = db.cursor()
+        with env.db_query as db:
+            cursor = db.cursor()
 
-        #self.env.log.debug("select COUNT(*) FROM ticket_change AS tch %s WHERE tch.field = 'status' AND tch.newvalue = '%s' AND tch.time > %s AND tch.time <= %s"
-        #    % (testplan_filter, status, to_any_timestamp(from_date), to_any_timestamp(at_date)))
+            #self.env.log.debug("select COUNT(*) FROM ticket_change AS tch %s WHERE tch.field = 'status' AND tch.newvalue = '%s' AND tch.time > %s AND tch.time <= %s"
+            #    % (testplan_filter, status, to_any_timestamp(from_date), to_any_timestamp(at_date)))
 
-        cursor.execute("select COUNT(*) FROM ticket_change AS tch %s WHERE tch.field = 'status' AND tch.newvalue = '%s' AND tch.time > %s AND tch.time <= %s"
-            % (testplan_filter, status, to_any_timestamp(from_date), to_any_timestamp(at_date)))
+            cursor.execute("select COUNT(*) FROM ticket_change AS tch %s WHERE tch.field = 'status' AND tch.newvalue = '%s' AND tch.time > %s AND tch.time <= %s"
+                % (testplan_filter, status, to_any_timestamp(from_date), to_any_timestamp(at_date)))
 
-        row = cursor.fetchone()
-        count = row[0]
+            row = cursor.fetchone()
+            count = row[0]
 
         return count
         
@@ -407,7 +420,7 @@ class TestStatsPlugin(Component):
             
             elif req_content == "downloadcsv":
 
-                csv_output = cStringIO.StringIO()
+                csv_output = StringIO()
 
                 csv_output.write(_("Date from;Date to;New Test Cases;Successful;Failed;Total Test Cases;Total Successful;Total Untested;Total Failed\r\n"))
                 for i in range(data_length):
@@ -478,7 +491,7 @@ class TestStatsPlugin(Component):
                     'timezone_iso8601': is_iso8601,
                 })
                     
-            return template_name, data, None
+            return template_name, data
  
     # ITemplateProvider methods
     def get_templates_dirs(self):
@@ -487,7 +500,7 @@ class TestStatsPlugin(Component):
         Genshi templates.
         """
         from pkg_resources import resource_filename
-        return [resource_filename(__name__, 'templates')]
+        return [resource_filename('testmanager', 'templates')]
 
     def get_htdocs_dirs(self):
         """Return the absolute path of a directory containing additional

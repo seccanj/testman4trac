@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2015 Roberto Longobardi
+# Copyright (C) 2010-2022 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
@@ -49,6 +49,12 @@ class GenericClassSystem(Component):
     """
 
     implements(IRequestHandler, ITemplateProvider, ISearchSource)
+
+    def __init__(self, *args, **kwargs):
+        Component.__init__(self, *args, **kwargs)
+
+        self.env.log.debug("GenericClassSystem init")
+
 
     change_listeners = ExtensionPoint(IGenericObjectChangeListener)
 
@@ -131,7 +137,7 @@ class GenericClassSystem(Component):
             req.write(result)
             return 
 
-        return 'empty.html', {}, None
+        return 'empty.html', {}
 
 
     # ITemplateProvider methods
@@ -141,7 +147,7 @@ class GenericClassSystem(Component):
         Genshi templates.
         """
         from pkg_resources import resource_filename
-        return [resource_filename(__name__, 'templates')]
+        return [resource_filename('tracgenericclass', 'templates')]
 
     def get_htdocs_dirs(self):
         """
@@ -149,7 +155,7 @@ class GenericClassSystem(Component):
         static resources (such as images, style sheets, etc).
         """
         from pkg_resources import resource_filename
-        return [('tracgenericclass', resource_filename(__name__, 'htdocs'))]
+        return [('tracgenericclass', resource_filename('tracgenericclass', 'htdocs'))]
 
         
     # ISearchSource methods

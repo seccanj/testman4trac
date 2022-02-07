@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2015 Roberto Longobardi
+# Copyright (C) 2010-2022 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
@@ -447,5 +447,5 @@ try:
                     customfields.append(customtuple)
 
 except ImportError:
-    print "\n\nError importing optional Trac XML-RPC Plugin. No XML-RPC remote interface will be available."
-    print "If you require XML-RPC access to the Test Manager, download and install it from http://trac-hacks.org/wiki/XmlRpcPlugin.\n\n"
+    print("\n\nError importing optional Trac XML-RPC Plugin. No XML-RPC remote interface will be available.")
+    print("If you require XML-RPC access to the Test Manager, download and install it from http://trac-hacks.org/wiki/XmlRpcPlugin.\n\n")

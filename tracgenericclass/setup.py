@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2015 Roberto Longobardi
+# Copyright (C) 2010-2022 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
@@ -27,5 +27,10 @@ setup(
     description='Test management plugin for Trac - Trac Generic Class component',
     long_description='A Trac plugin to create Test Cases, organize them in catalogs and track their execution status and outcome. This module provides a framework to help creating classes on Trac that: are persisted on the DB, support change history, Support extensibility through custom properties that the User can specify declaratively in the trac.ini file. Also provides an intermediate class to build objects that wrap Wiki pages, plus additional properties.',
     keywords='trac plugin generic class framework persistence test case management project quality assurance statistics stats charts charting graph',
-    entry_points = {'trac.plugins': ['tracgenericclass = tracgenericclass']}
+    entry_points = {'trac.plugins': [
+        'tracgenericclass.api = tracgenericclass.api', 
+        'tracgenericclass.model = tracgenericclass.model', 
+        'tracgenericclass.util = tracgenericclass.util'
+    ]},
+    install_requires=['Trac']
     )

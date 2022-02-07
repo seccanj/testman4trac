@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2015 Roberto Longobardi
+# Copyright (C) 2010-2022 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
@@ -21,7 +21,6 @@ import traceback
 from datetime import datetime
 
 from trac.core import *
-from trac.db import with_transaction
 
     
 def formatExceptionInfo(maxTBlevel=5):
@@ -96,18 +95,6 @@ def check_utimestamp():
 
     checked_utimestamp = True
 
-def check_compatibility(env):
-    global checked_compatibility
-    global has_read_db
-
-    try:
-        if env.get_read_db():
-            has_read_db = True
-    except:
-        # Trac 0.11
-        has_read_db = False
-
-    checked_compatibility = True
 
 def to_list(params=[]):
     result = []
@@ -201,29 +188,26 @@ def db_insert_or_ignore(env, tablename, propname, value, db=None):
     if db_get_config_property(env, tablename, propname, db) is None:
         db_set_config_property(env, tablename, propname, value, db)
 
-def db_get_config_property(env, tablename, propname, db=None):
-    if not db:
-        db = env.get_read_db()
+def db_get_config_property(env, tablename, propname, dbb=None):
+    with env.db_query as db:
+        cursor = db.cursor()
         
-    cursor = db.cursor()
-    
-    sql = "SELECT value FROM %s WHERE propname=%%s" % tablename
-    row = None
-    
-    try:
-        cursor.execute(sql, (propname,))
-        row = cursor.fetchone()
-    except:
-        pass
+        sql = "SELECT value FROM %s WHERE propname=%%s" % tablename
+        row = None
+        
+        try:
+            cursor.execute(sql, (propname,))
+            row = cursor.fetchone()
+        except:
+            pass
 
     if not row or len(row) == 0:
         return None
         
     return row[0]
         
-def db_set_config_property(env, tablename, propname, value, db=None):
-    @env.with_transaction(db)
-    def do_db_set_config_property(db):
+def db_set_config_property(env, tablename, propname, value, dbb=None):
+    with env.db_transaction as db:
         cursor = db.cursor()
 
         sql = "SELECT COUNT(*) FROM %s WHERE propname = %%s" % tablename

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2015 Roberto Longobardi
+# Copyright (C) 2010-2022 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
@@ -12,18 +12,22 @@
 # Author: Roberto Longobardi <otrebor.dev@gmail.com>
 # 
 
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 import re
 
 from genshi import HTML
 from genshi.builder import tag
 from genshi.filters.transform import Transformer
 from trac.core import Component, implements, TracError
-from trac.mimeview.api import Context
+#from trac.mimeview.api import Context
 from trac.resource import Resource
-from trac.util import format_datetime
+from trac.util.datefmt import utc, format_datetime
 from trac.web.api import ITemplateStreamFilter
-from trac.web.chrome import add_stylesheet
+from trac.web.chrome import add_stylesheet, web_context
 from trac.wiki.api import IWikiChangeListener
 from trac.wiki.formatter import Formatter
 from trac.wiki.model import WikiPage
@@ -70,6 +74,8 @@ class WikiTestManagerInterface(Component):
         """
         
         Component.__init__(self, *args, **kwargs)
+
+        self.env.log.debug("WikiTestManagerInterface init")
 
         self._parse_config_options()
 
@@ -138,8 +144,11 @@ class WikiTestManagerInterface(Component):
         delete_version = req.args.get('delete_version', '')
         version = req.args.get('version', '')
 
+        context = web_context(req)
+
         formatter = Formatter(
-            self.env, Context.from_request(req, Resource('testmanager'))
+            #self.env, Context.from_request(req, Resource('testmanager'))
+            context
             )
         
         if page_name.startswith('TC'):
@@ -847,6 +856,7 @@ class WikiTestManagerInterface(Component):
         return HTML(text)
     
     def _get_import_dialog_markup(self, req, cat_name):
+        # TODO: Add CRSF token like in sqlexecutor result.html template ${jmacros.form_token_input()}
         result = u"""
             <div id="dialog_import" style="padding:20px; display:none;" title=\"""" + _("Import Test Cases") + """\">
                 <form id="import_file" class="addnew" method="post" enctype="multipart/form-data" action="%s/testimport">
@@ -906,6 +916,7 @@ class WikiTestManagerInterface(Component):
         return result
     
     def _get_export_dialog_markup(self, req, cat_name, planid, object_type):
+        # TODO: Add CRSF token like in sqlexecutor result.html template ${jmacros.form_token_input()}
         result = u"""
             <div id="dialog_export" style="padding:20px; display:none;" title=\"""" + _("Export Test Cases") + """\">
                 <form id="export_file" class="addnew" method="post" action="%s/testexport">
@@ -1031,6 +1042,7 @@ class WikiTestManagerInterface(Component):
         return result
 
     def _get_organize_catalogs_dialog_markup(self, req, cat_name):
+        # TODO: Add CRSF token like in sqlexecutor result.html template ${jmacros.form_token_input()}
         result = u"""
             <div id="dialog_organize" style="padding:20px; display:none;" title=\"""" + _("Organize Test Catalogs") + """">
                 <form id="organize_form_id" name="organize_form_id" class="addnew" method="post" action=\"""" + fix_base_location(req) + """/testorganize">
@@ -1107,7 +1119,7 @@ class WikiTestManagerInterface(Component):
                     common_code.append(tag.script(src='../chrome/testmanager/js/%s.js' % base_locale[0], type='text/javascript'))
         except:
             # Trac 0.11
-			pass
+            pass
 
         return common_code
 

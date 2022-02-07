@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2015 Roberto Longobardi
+# Copyright (C) 2010-2022 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
@@ -65,7 +65,16 @@ setup(
     description='Test management plugin for Trac',
     long_description='A Trac plugin to create Test Cases, organize them in catalogs and track their execution status and outcome.',
     keywords='trac plugin test case management project quality assurance statistics stats charts charting graph',
-    entry_points = {'trac.plugins': ['testmanager = testmanager']},
+    entry_points = {'trac.plugins': [
+            'testmanager.admin = testmanager.admin', 
+            'testmanager.api = testmanager.api', 
+            'testmanager.model = testmanager.model', 
+            'testmanager.rpcsupport = testmanager.rpcsupport', 
+            'testmanager.stats = testmanager.stats', 
+            'testmanager.web_ui = testmanager.web_ui', 
+            'testmanager.wiki = testmanager.wiki', 
+            'testmanager.workflow = testmanager.workflow'
+        ]},
     dependency_links=['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass', 'http://trac-hacks.org/wiki/TracGenericWorkflowPlugin'],
     install_requires=['Genshi >= 0.6', 'TracGenericClass >= 1.1.7', 'TracGenericWorkflow >= 1.0.5'],
     **extra
