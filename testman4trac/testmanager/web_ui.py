@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2022 Roberto Longobardi
+# Copyright (C) 2010-2015 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
@@ -14,7 +14,6 @@
 
 from genshi.builder import tag
 from trac.core import Component, implements
-from trac.perm import IPermissionRequestor
 from trac.web.chrome import ITemplateProvider, INavigationContributor
 
 
@@ -29,11 +28,6 @@ class TestManagerTemplateProvider(Component):
 
     implements(ITemplateProvider)
 
-    def __init__(self, *args, **kwargs):
-        Component.__init__(self, *args, **kwargs)
-
-        self.env.log.debug("TestManagerTemplateProvider init")
-
     # ITemplateProvider methods
     def get_templates_dirs(self):
         """
@@ -41,40 +35,29 @@ class TestManagerTemplateProvider(Component):
         Genshi templates.
         """
         from pkg_resources import resource_filename
-        return [resource_filename('testmanager', 'templates')]
+        return [resource_filename(__name__, 'templates')]
 
     def get_htdocs_dirs(self):
         """Return the absolute path of a directory containing additional
         static resources (such as images, style sheets, etc).
         """
         from pkg_resources import resource_filename
-        return [('testmanager', resource_filename('testmanager', 'htdocs'))]
+        return [('testmanager', resource_filename(__name__, 'htdocs'))]
 
 
 class TestManager(Component):
-    """Implements the /testmanager handler, the Test Manager tab and defines permissions."""
+    """Implements the /testmanager handler and the Test Manager tab."""
 
-    implements(INavigationContributor, IPermissionRequestor)
-
-    def __init__(self, *args, **kwargs):
-        Component.__init__(self, *args, **kwargs)
-
-        self.env.log.debug("TestManager init")
-
-    # IPermissionRequestor methods
-    def get_permission_actions(self):
-        self.env.log.debug("Defining new TestManager permissions")
-        return ['TEST_VIEW', 'TEST_MODIFY', 'TEST_EXECUTE', 'TEST_DELETE', 'TEST_PLAN_ADMIN']
+    implements(INavigationContributor)
 
     # INavigationContributor methods
     def get_active_navigation_item(self, req):
-        #if 'TEST_VIEW' in req.perm:
-        return 'testmanager'
+        if 'TEST_VIEW' in req.perm:
+            return 'testmanager'
 
     def get_navigation_items(self, req):
-
         if 'TEST_VIEW' in req.perm:
             yield ('mainnav', 'testmanager',
-                tag.a(_("Test Manager"), href=req.href.wiki('TC'), accesskey='M'))
-        else:
-            self.env.log.debug("No permission for TestManager")
+                tag.a(_("Test Manager"), href=req.href.wiki()+'/TC', accesskey='M'))
+
+

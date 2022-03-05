@@ -9,8 +9,8 @@ echo $PY_VERSION
 . ./clean.sh
 
 . ./build.sh
-zip -r testman4trac.$VER-Py_$PY_VERSION-Trac_1.4.zip bin docs
-tar cvzf testmanager.$VER-Py_$PY_VERSION-Trac_1.4.tar.gz bin docs
+zip -r testman4trac.$VER-Py_$PY_VERSION-Trac_0.12-1.0.zip bin docs
+tar cvzf testmanager.$VER-Py_$PY_VERSION-Trac_0.12-1.0.tar.gz bin docs
 
 . ./clean.sh
 

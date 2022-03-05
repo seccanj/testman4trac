@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2022 Roberto Longobardi
+# Copyright (C) 2010-2015 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
@@ -132,21 +132,21 @@ class GenericWorkflowModelProvider(Component):
     def environment_created(self):
         self.upgrade_environment()
 
-    def environment_needs_upgrade(self, dbb = None):
-        with self.env.db_transaction as db:
-            for realm in self.SCHEMA:
-                realm_metadata = self.SCHEMA[realm]
+    def environment_needs_upgrade(self, db=None):
+        for realm in self.SCHEMA:
+            realm_metadata = self.SCHEMA[realm]
 
-                if need_db_create_for_realm(self.env, realm, realm_metadata, db) or \
-                    need_db_upgrade_for_realm(self.env, realm, realm_metadata, db):
-                    
-                    return True
+            if need_db_create_for_realm(self.env, realm, realm_metadata, db) or \
+                need_db_upgrade_for_realm(self.env, realm, realm_metadata, db):
+                
+                return True
                 
         return False
 
-    def upgrade_environment(self):
+    def upgrade_environment(self, db=None):
         # Create or update db
-        with self.env.db_transaction as db:
+        @self.env.with_transaction(db)
+        def do_upgrade_environment(db):
             for realm in self.SCHEMA:
                 realm_metadata = self.SCHEMA[realm]
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2022 Roberto Longobardi
+# Copyright (C) 2010-2015 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
@@ -12,3 +12,12 @@
 # Author: Roberto Longobardi <otrebor.dev@gmail.com>
 # 
 
+import api
+import web_ui
+import wiki
+import model
+import util
+import stats
+import workflow
+import rpcsupport
+import admin

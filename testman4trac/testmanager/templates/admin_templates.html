@@ -10,8 +10,6 @@
 
 <xi:include href="admin.html" />
 
-# import 'macros.html' as jmacros with context
-
 <head>
   <title>Test Manager Templates</title>
 </head>
@@ -26,9 +24,6 @@
       <legend>Test Catalog Templates</legend>
       <div id="tcat_table" py:if="not len(tcat_templates)">No Templates created yet.</div>
       <form id="tcat_table" method="post" py:if="len(tcat_templates)">
-
-        ${jmacros.form_token_input()}
-
         <table class="listing">
           <thead>
             <tr>
@@ -49,9 +44,6 @@
       </form>
       <br />
       <form id="tcat_add" method="post">
-
-        ${jmacros.form_token_input()}
-
         <input type="text" name="tcat_add_name" value="$tcat_add_name" size="40" />
         <input type="submit" name="tcat_add" value="${_('Add Test Catalog Template')}" />
       </form>
@@ -63,9 +55,6 @@
         No Templates created yet.
       </div>
       <form id="tc_table" method="post" py:if="len(tc_templates)">
-
-        ${jmacros.form_token_input()}
-
         <table class="listing">
           <thead>
             <tr>
@@ -86,9 +75,6 @@
       </form>
       <br />
       <form id="tc_add" method="post">
-
-        ${jmacros.form_token_input()}
-
         <input type="text" name="tc_add_name" value="$tc_add_name" size="40" />
         <input type="submit" name="tc_add" value="${_('Add Test Case Template')}" />
       </form>
@@ -97,66 +83,57 @@
     <fieldset>
       <legend>Default template for Test Catalog</legend>
       <form method="post">
-
-        ${jmacros.form_token_input()}
-
-        <div class="field">
+		<div class="field">
           <select size="1" name="tcat_default">
-            <option value="0">None</option>
-            <option py:for="tcat in tcat_templates" value="$tcat.id" selected="${tcat.id == tcat_selected or None}">$tcat.name</option>
-          </select>
-    		</div>
-        <div class="buttons">
-          <input type="submit" name="tcat_default_save" value="${_('Save Default Test Catalog Template')}" />
-        </div>
+			<option value="0">None</option>
+			<option py:for="tcat in tcat_templates" value="$tcat.id" selected="${tcat.id == tcat_selected or None}">$tcat.name</option>
+		  </select>
+		</div>
+		<div class="buttons">
+		  <input type="submit" name="tcat_default_save" value="${_('Save Default Test Catalog Template')}" />
+		</div>
       </form>
     </fieldset>
     <br />
     <fieldset>
       <legend>Default template for Test Case</legend>
       <form method="post">
-
-        ${jmacros.form_token_input()}
-
-        <div class="field">
+		<div class="field">
           <select size="1" name="tc_default">
-            <option value="0">None</option>
-            <option py:for="tc_template in tc_templates" value="$tc_template.id" selected="${tc_template.id == tc_selected or None}">$tc_template.name</option>
-          </select>
-        </div>
-        <div class="buttons">
-          <input type="submit" name="tc_default_save" value="${_('Save Default Test Case Template')}" />
-        </div>
+			<option value="0">None</option>
+			<option py:for="tc_template in tc_templates" value="$tc_template.id" selected="${tc_template.id == tc_selected or None}">$tc_template.name</option>
+		  </select>
+		</div>
+		<div class="buttons">
+		  <input type="submit" name="tc_default_save" value="${_('Save Default Test Case Template')}" />
+		</div>
       </form>
     </fieldset>
     <br />
     <fieldset>
       <legend>Default Test Case template for specific Test Catalogs (overrides default above)</legend>
       <form method="post">
-
-        ${jmacros.form_token_input()}
-
         <table class="listing">
-          <thead>
-            <tr>
-              <th>Test Catalog ID</th><th>Test Catalog</th><th>Test Case Template</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr py:for="tcat in tcat_list">
-              <td class="name">$tcat.id</td>
-              <td class="name">$tcat.title</td>
-              <td>
-              <div class="field">
-                <select size="1" name="TC_TEMPLATE_FOR_TCAT_$tcat.id">
-                <option value="0">Default</option>
-                <option py:for="tc in tc_templates" value="$tc.id" selected="${tc.id == tcat.template or None}">$tc.name</option>
-                </select>
-              </div>
-              </td>
-            </tr>
-          </tbody>
-    		</table>
+		  <thead>
+			<tr>
+			  <th>Test Catalog ID</th><th>Test Catalog</th><th>Test Case Template</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr py:for="tcat in tcat_list">
+			  <td class="name">$tcat.id</td>
+			  <td class="name">$tcat.title</td>
+			  <td>
+				<div class="field">
+				  <select size="1" name="TC_TEMPLATE_FOR_TCAT_$tcat.id">
+					<option value="0">Default</option>
+					<option py:for="tc in tc_templates" value="$tc.id" selected="${tc.id == tcat.template or None}">$tc.name</option>
+				  </select>
+				</div>
+			  </td>
+			</tr>
+		  </tbody>
+		</table>
         <div class="buttons">
           <input type="submit" name="tc_templates_save" value="${_('Save Template Configuration')}" />
         </div>
@@ -170,19 +147,16 @@
   <div id="edit_template" py:if="edit_template">
     <h2>Edit Template</h2>
     <form id="t_edit" method="post">
-
-      ${jmacros.form_token_input()}
-
       <table>
         <tr>
-    		  <td>Name</td>
-          <!-- td><input type="text" name="t_edit_name" value="$t_edit_name" size="60" /></td -->
-          <td>$t_edit_name</td>
-	    	</tr>
-        <tr>
-          <td>Description</td>
-          <td><input type="text" name="t_edit_description" value="$t_edit_description" size="60" /></td>
-        </tr>
+		  <td>Name</td>
+		  <!-- td><input type="text" name="t_edit_name" value="$t_edit_name" size="60" /></td -->
+		  <td>$t_edit_name</td>
+		</tr>
+		<tr>
+		  <td>Description</td>
+		  <td><input type="text" name="t_edit_description" value="$t_edit_description" size="60" /></td>
+		</tr>
       </table>
       <fieldset>
         <legend>Content</legend>

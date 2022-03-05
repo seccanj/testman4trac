@@ -2,7 +2,7 @@ Check the tutorial on YouTube: http://www.youtube.com/watch?v=BIi3QMT0rT4
 
 Test Manager plugin for Trac
 
-Copyright (C) 2010-2022 Roberto Longobardi
+Copyright (C) 2010-2015 Roberto Longobardi
  
 This file is part of the Test Manager plugin for Trac.
  
@@ -16,12 +16,10 @@ Author: Roberto Longobardi <otrebor.dev@gmail.com>
 
 
 Project web page on TracHacks: http://trac-hacks.org/wiki/TestManagerForTracPlugin
-
-Project web page on SourceForge.net (don't use it for the git repo): http://sourceforge.net/projects/testman4trac/
+  
+Project web page on SourceForge.net: http://sourceforge.net/projects/testman4trac/
   
 Project web page on Pypi: http://pypi.python.org/pypi/TestManager
-
-Project source repository on GitHub: https://github.com/seccanj/testman4trac
 
 =======================================================================
 
@@ -31,16 +29,15 @@ Refer to INSTALL.txt or UPGRADE.txt for installation or upgrade
 instructions.
 
 =======================================================================
-
 A Trac plugin to create Test Cases, organize them in catalogs, generate 
 test plans and track their execution status and outcome.
 
-The latest release is compatible with Trac 1.4.
+Since the release of Trac 1.0, I had to split the plugins code into two 
+versions:
+ - a version that works well with Trac 0.11 (no more supported)
+ - a version that works well with Trac 0.12 and Trac 1.0
 
-Compatibility with Trac 1.5 and later is NOT available yet.
-
-All the code works now with Python 2.7.
-
+All the code works with Python 2.6 and 2.7.
 All database backends are supported.
 
 ***********************************************************************
@@ -191,13 +188,6 @@ Change History:
 (Refer to the tickets on trac-hacks or SourceForge for complete 
 descriptions.)
 
-Release 1.10.1 (2022-03-05): 
-
-  o Fixed Ticket #14116 (Trac-Hacks): Wrong Status of test cases in testplan is displayed
-
-Release 1.10.0 (2022-02-07): 
-
-  o Removed use of deprecated APIs and replaced with updated ones. Plugin now compatible with Trac 1.4.
 
 Release 1.9.1 (2017-03-04): 
 

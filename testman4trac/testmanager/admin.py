@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2022 Roberto Longobardi
+# Copyright (C) 2010-2015 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
@@ -14,8 +14,8 @@
 
 from trac.admin.web_ui import IAdminPanelProvider
 from trac.core import Component, implements
-#from trac.mimeview.api import RenderingContext
-from trac.web.chrome import add_notice, add_warning, add_stylesheet, web_context
+from trac.mimeview.api import Context
+from trac.web.chrome import add_notice, add_warning, add_stylesheet
 from trac.wiki.formatter import format_to_html
 
 from testmanager.api import TestManagerSystem
@@ -36,12 +36,6 @@ class TestManagerAdmin(Component):
     """
 
     implements(IAdminPanelProvider)
-
-    def __init__(self, *args, **kwargs):
-        Component.__init__(self, *args, **kwargs)
-
-        self.env.log.debug("TestManagerAdmin init")
-
 
     # IAdminPanelProvider methods:
     #
@@ -113,8 +107,7 @@ class TestManagerAdmin(Component):
 
         testmanagersystem = TestManagerSystem(self.env)
 
-        #context = Context.from_request(req)
-        context = web_context(req)
+        context = Context.from_request(req)
 
         data = {}
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2022 Roberto Longobardi
+# Copyright (C) 2010-2015 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
@@ -425,7 +425,7 @@ class ResourceWorkflowSystem(Component):
             href = get_resource_url(self.env, res, req.href)
             req.redirect(href)
         
-        return 'empty.html', {}
+        return 'empty.html', {}, None
 
 
     # ITemplateProvider methods
@@ -435,14 +435,14 @@ class ResourceWorkflowSystem(Component):
         Genshi templates.
         """
         from pkg_resources import resource_filename
-        return [resource_filename('tracgenericworkflow', 'templates')]
+        return [resource_filename(__name__, 'templates')]
 
     def get_htdocs_dirs(self):
         """Return the absolute path of a directory containing additional
         static resources (such as images, style sheets, etc).
         """
         from pkg_resources import resource_filename
-        return [('tracgenericworkflow', resource_filename('tracgenericworkflow', 'htdocs'))]
+        return [('tracgenericworkflow', resource_filename(__name__, 'htdocs'))]
 
 
         

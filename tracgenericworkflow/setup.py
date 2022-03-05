@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2022 Roberto Longobardi
+# Copyright (C) 2010-2015 Roberto Longobardi
 # 
 # This file is part of the Test Manager plugin for Trac.
 # 
@@ -16,7 +16,7 @@ from setuptools import setup
 
 setup(
     name='TracGenericWorkflow',
-    version='1.1.0',
+    version='1.0.5',
     packages=['tracgenericworkflow','tracgenericworkflow.upgrades'],
     package_data={'tracgenericworkflow' : ['*.txt', 'templates/*.html', 'htdocs/*.*', 'htdocs/js/*.js', 'htdocs/css/*.css', 'htdocs/images/*.*']},
     author = 'Roberto Longobardi',
@@ -27,11 +27,7 @@ setup(
     description='Test management plugin for Trac - Generic Workflow Engine component',
     long_description='A Trac plugin to create Test Cases, organize them in catalogs and track their execution status and outcome. This module provides a generic workflow engine working on any Trac Resource.',
     keywords='trac plugin test case management workflow engine resource project quality assurance statistics stats charts charting graph',
-    entry_points = {'trac.plugins': [
-        'tracgenericworkflow.api = tracgenericworkflow.api', 
-        'tracgenericworkflow.model = tracgenericworkflow.model', 
-        'tracgenericworkflow.operations = tracgenericworkflow.operations'
-    ]},
+    entry_points = {'trac.plugins': ['tracgenericworkflow = tracgenericworkflow']},
     dependency_links=['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass'],
     install_requires=['Genshi >= 0.6', 'TracGenericClass >= 1.1.7']
     )
