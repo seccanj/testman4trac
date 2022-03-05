@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Test Manager for Trac plugin\n"
 "Report-Msgid-Bugs-To: otrebor.dev@gmail.com\n"
-"POT-Creation-Date: 2017-03-04 19:18+0100\n"
+"POT-Creation-Date: 2022-03-05 19:56+0100\n"
 "PO-Revision-Date: 2013-08-19 11:59+0000\n"
 "Last-Translator: Roberto Longobardi <seccanj@gmail.com>\n"
 "Language: de\n"
@@ -19,7 +19,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.3.4\n"
+"Generated-By: Babel 2.7.0\n"
 
 #: testmanager/admin.py:44 testmanager/templates/testmanagerstats.html:88
 #: testmanager/templates/testmanagerstats_compatible.html:77
@@ -115,27 +115,27 @@ msgstr "Template gespeichert"
 msgid "Name"
 msgstr "Name"
 
-#: testmanager/admin.py:337 testmanager/api.py:1475 testmanager/model.py:901
+#: testmanager/admin.py:337 testmanager/api.py:1478 testmanager/model.py:901
 #: testmanager/model.py:905 testmanager/model.py:910 testmanager/model.py:917
 msgid "ID"
 msgstr "ID"
 
 #: testmanager/admin.py:346 testmanager/api.py:231 testmanager/api.py:244
-#: testmanager/api.py:1509 testmanager/model.py:914 testmanager/wiki.py:1881
+#: testmanager/api.py:1512 testmanager/model.py:914 testmanager/wiki.py:1881
 msgid "Status"
 msgstr "Status"
 
-#: testmanager/admin.py:347 testmanager/api.py:231 testmanager/api.py:1509
+#: testmanager/admin.py:347 testmanager/api.py:231 testmanager/api.py:1512
 #: testmanager/model.py:921 testmanager/wiki.py:418 testmanager/wiki.py:823
 #: testmanager/wiki.py:983 testmanager/wiki.py:1281 testmanager/wiki.py:1881
 msgid "Author"
 msgstr "Autor"
 
-#: testmanager/admin.py:348 testmanager/api.py:1509
+#: testmanager/admin.py:348 testmanager/api.py:1512
 msgid "Last Change"
 msgstr "Letzte Änderung"
 
-#: testmanager/admin.py:356 testmanager/api.py:1487
+#: testmanager/admin.py:356 testmanager/api.py:1490
 #: testmanager/templates/admin_templates.html:30
 #: testmanager/templates/admin_templates.html:61
 #: testmanager/templates/admin_templates.html:157
@@ -246,36 +246,36 @@ msgstr ""
 msgid "Error copying the test case with id %s and title '%s'."
 msgstr ""
 
-#: testmanager/api.py:1475
+#: testmanager/api.py:1478
 msgid "Type"
 msgstr "Type"
 
-#: testmanager/api.py:1475
+#: testmanager/api.py:1478
 msgid "Parent ID"
 msgstr "Parent ID"
 
-#: testmanager/api.py:1478
+#: testmanager/api.py:1481
 msgid "Test Plan Title"
 msgstr "Testplan Titel"
 
-#: testmanager/api.py:1480
+#: testmanager/api.py:1483
 msgid "Title"
 msgstr "Titel"
 
-#: testmanager/api.py:1483 testmanager/model.py:923 testmanager/wiki.py:420
+#: testmanager/api.py:1486 testmanager/model.py:923 testmanager/wiki.py:420
 #: testmanager/wiki.py:1290
 msgid "Contains all Test Cases"
 msgstr "Enthält alle Testfälle"
 
-#: testmanager/api.py:1483
+#: testmanager/api.py:1486
 msgid "Snapshot"
 msgstr "Snapshot"
 
-#: testmanager/api.py:1548 testmanager/api.py:1549
+#: testmanager/api.py:1551 testmanager/api.py:1552
 msgid "No"
 msgstr "Ja"
 
-#: testmanager/api.py:1548 testmanager/api.py:1549
+#: testmanager/api.py:1551 testmanager/api.py:1552
 msgid "Yes"
 msgstr "Nein"
 

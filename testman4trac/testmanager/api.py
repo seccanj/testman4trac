@@ -1386,6 +1386,9 @@ class TestManagerSystem(Component):
                         if tcip.exists:
                             version = tcip['page_version']
 
+                            status = ''
+                            author = ''
+
                             for ts, author, status in tcip.list_history():
                                 break
                             
