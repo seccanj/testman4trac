@@ -191,6 +191,9 @@ Change History:
 (Refer to the tickets on trac-hacks or SourceForge for complete 
 descriptions.)
 
+Release 1.10.1 (2022-03-05): 
+
+  o Fixed Ticket #14116 (Trac-Hacks): Wrong Status of test cases in testplan is displayed
 
 Release 1.10.0 (2022-02-07): 
 
