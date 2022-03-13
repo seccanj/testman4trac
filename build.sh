@@ -9,14 +9,14 @@ project_path=""
 
 show_help ()
 {
-	echo Usage:
-	echo     . ./build.sh [-f] [-i your/trac/env/path]
-	echo
-	echo     -f :    fast: do not generate localized message catalogs
-	echo     -i :    install the built plugins into your trac environment
-	echo
-	
-	return 0
+    echo Usage:
+    echo     . ./build.sh [-f] [-i your/trac/env/path]
+    echo
+    echo     -f :    fast: do not generate localized message catalogs
+    echo     -i :    install the built plugins into your trac environment
+    echo
+    
+    return 0
 }
 
 make_catalogs ()

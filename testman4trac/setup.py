@@ -35,10 +35,10 @@ except ImportError:
     pass
 
 setup(
-    name='TestManager',
-    version='1.9.2',
-    packages=['testmanager','testmanager.upgrades'],
-    package_data={
+    name = 'TestManager',
+    version = '1.9.2',
+    packages = ['testmanager','testmanager.upgrades'],
+    package_data = {
         'testmanager' : [
             'COPYING', 
             '*.txt', 
@@ -58,15 +58,15 @@ setup(
         ]
     },
     author = 'Roberto Longobardi',
-    author_email='otrebor.dev@gmail.com',
-    license='Modified BSD, same as Trac. See the file COPYING contained in the package.',
-    url='http://trac-hacks.org/wiki/TestManagerForTracPlugin',
-    download_url='https://sourceforge.net/projects/testman4trac/files/',
-    description='Test management plugin for Trac',
-    long_description='A Trac plugin to create Test Cases, organize them in catalogs and track their execution status and outcome.',
-    keywords='trac plugin test case management project quality assurance statistics stats charts charting graph',
+    author_email = 'otrebor.dev@gmail.com',
+    license = 'Modified BSD, same as Trac. See the file COPYING contained in the package.',
+    url = 'http://trac-hacks.org/wiki/TestManagerForTracPlugin',
+    download_url = 'https://sourceforge.net/projects/testman4trac/files/',
+    description = 'Test management plugin for Trac',
+    long_description = 'A Trac plugin to create Test Cases, organize them in catalogs and track their execution status and outcome.',
+    keywords = 'trac plugin test case management project quality assurance statistics stats charts charting graph',
     entry_points = {'trac.plugins': ['testmanager = testmanager']},
-    dependency_links=['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass', 'http://trac-hacks.org/wiki/TracGenericWorkflowPlugin'],
-    install_requires=['Genshi >= 0.6', 'TracGenericClass >= 1.1.7', 'TracGenericWorkflow >= 1.0.5'],
+    dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass', 'http://trac-hacks.org/wiki/TracGenericWorkflowPlugin'],
+    install_requires = ['Genshi >= 0.6', 'TracGenericClass >= 1.1.7', 'TracGenericWorkflow >= 1.0.5'],
     **extra
-    )
+)
