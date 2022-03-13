@@ -15,23 +15,23 @@
 from setuptools import setup
 
 setup(
-    name='TracGenericWorkflow',
-    version='1.1.0',
-    packages=['tracgenericworkflow','tracgenericworkflow.upgrades'],
-    package_data={'tracgenericworkflow' : ['*.txt', 'templates/*.html', 'htdocs/*.*', 'htdocs/js/*.js', 'htdocs/css/*.css', 'htdocs/images/*.*']},
+    name = 'TracGenericWorkflow',
+    version = '1.1.0',
+    packages = ['tracgenericworkflow','tracgenericworkflow.upgrades'],
+    package_data = {'tracgenericworkflow' : ['*.txt', 'templates/*.html', 'htdocs/*.*', 'htdocs/js/*.js', 'htdocs/css/*.css', 'htdocs/images/*.*']},
     author = 'Roberto Longobardi',
-    author_email='otrebor.dev@gmail.com',
-    license='Modified BSD, same as Trac. See the file COPYING contained in the package.',
-    url='http://trac-hacks.org/wiki/TestManagerForTracPlugin',
-    download_url='https://sourceforge.net/projects/testman4trac/files/',
-    description='Test management plugin for Trac - Generic Workflow Engine component',
-    long_description='A Trac plugin to create Test Cases, organize them in catalogs and track their execution status and outcome. This module provides a generic workflow engine working on any Trac Resource.',
-    keywords='trac plugin test case management workflow engine resource project quality assurance statistics stats charts charting graph',
+    author_email = 'otrebor.dev@gmail.com',
+    license = 'Modified BSD, same as Trac. See the file COPYING contained in the package.',
+    url = 'http://trac-hacks.org/wiki/TestManagerForTracPlugin',
+    download_url = 'https://sourceforge.net/projects/testman4trac/files/',
+    description = 'Test management plugin for Trac - Generic Workflow Engine component',
+    long_description = 'A Trac plugin to create Test Cases, organize them in catalogs and track their execution status and outcome. This module provides a generic workflow engine working on any Trac Resource.',
+    keywords = 'trac plugin test case management workflow engine resource project quality assurance statistics stats charts charting graph',
     entry_points = {'trac.plugins': [
         'tracgenericworkflow.api = tracgenericworkflow.api', 
         'tracgenericworkflow.model = tracgenericworkflow.model', 
         'tracgenericworkflow.operations = tracgenericworkflow.operations'
     ]},
-    dependency_links=['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass'],
-    install_requires=['Genshi >= 0.6', 'TracGenericClass >= 1.1.7']
-    )
+    dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass'],
+    install_requires = ['Genshi >= 0.6', 'TracGenericClass >= 1.1.7']
+)

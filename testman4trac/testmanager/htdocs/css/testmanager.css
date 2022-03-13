@@ -20,7 +20,7 @@ li {
 }
 
 .statusIconElement:hover {
-	border: 1px solid black;
+    border: 1px solid black;
 }
 
 .aggregatedStatusIconElement {
@@ -30,30 +30,30 @@ li {
 }
 
 .ui-popup {
-	position: absolute;
-	z-index: 5000;
+    position: absolute;
+    z-index: 5000;
 }
 
 .ui-menu {
-	width: 160px;
+    width: 160px;
 }
 
 .statusmenuMenu li {
-	display: inline-block;
-	width: auto;
+    display: inline-block;
+    width: auto;
 }
 
 .statusmenuMenu a {
-	display: inline-block;
-	width: auto;
+    display: inline-block;
+    width: auto;
 }
 
 .statusChangeMenu span > img {
-	margin-right: 6px;
+    margin-right: 6px;
 }
 
 .ui-menu .ui-menu-item a {
-	font-size: 0.8em;
+    font-size: 0.8em;
 }
 
 .rightIcon {
@@ -79,77 +79,77 @@ li {
 /* New status change context menu */
 
 .statusContextMenuDiv {
-	cursor: pointer;
-	z-index: 9000;
-	position: absolute;
+    cursor: pointer;
+    z-index: 9000;
+    position: absolute;
     background: transparent url('../images/status-menu-bg.png') no-repeat 29px 7px;
-	/* background-attachment: fixed; */
+    /* background-attachment: fixed; */
 }
 
 ul.statusContextMenuUl {
 }
 
 ul.statusContextMenuUl > li {
-	float:left;
-	position:relative;
-	padding: 7px;
-	/* background-color: white; */
+    float:left;
+    position:relative;
+    padding: 7px;
+    /* background-color: white; */
 }
 
 ul.statusContextMenuUl > li > img {
-	padding: 1px;
-	/* background-color: white; */
+    padding: 1px;
+    /* background-color: white; */
 }
 
 .statusContextSubMenuDiv {
-	cursor: pointer;
-	z-index: 9999;
-	position: absolute;
+    cursor: pointer;
+    z-index: 9999;
+    position: absolute;
 }
 
 ul.statusContextSubMenuUl {
-	margin: 0px;
-	font-size: x-small;
+    margin: 0px;
+    font-size: x-small;
 }
 
 ul.statusContextSubMenuUl > li {
-	clear:both;
-	color: black;
-	background-color: #eeeeee;
-	font-size: small;
-	padding-left: 8px;
-	padding-right: 8px;
+    clear:both;
+    color: black;
+    background-color: #eeeeee;
+    font-size: small;
+    padding-left: 8px;
+    padding-right: 8px;
     margin-left: 0px;
 }
 
 ul.statusContextSubMenuUl > li:hover {
-	clear:both;
-	color: white;
-	background-color: purple;
+    clear:both;
+    color: white;
+    background-color: purple;
 }
 
 ul.statusContextMenuUl > li > ul {
-	display: none;
+    display: none;
 }
 
 ul.statusContextMenuUl > li > ul > li {
-	clear:both;
-	display: none;
-	color: black;
-	background-color: white;
+    clear:both;
+    display: none;
+    color: black;
+    background-color: white;
 }
 
 ul.statusContextMenuUl > li > ul > li:hover {
-	clear:both;
-	display: none;
-	color: white;
-	background-color: purple;
+    clear:both;
+    display: none;
+    color: white;
+    background-color: purple;
 }
 
 .testArtifactPropertiesDiv {
-	margin-left: 30px;
-	background-color: #FFFBEA;
-	line-height: 140%;
+    margin-left: 30px;
+    background-color: #FFFBEA;
+    line-height: 140%;
 }
 
 .testCatalogIcon {
@@ -175,6 +175,7 @@ ul.statusContextMenuUl > li > ul > li:hover {
         display: block; 
     }
 }
+
 .ninja {
     color: black;
     visibility: hidden;

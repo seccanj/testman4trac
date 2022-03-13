@@ -5,21 +5,22 @@
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:py="http://genshi.edgewall.org/"
-      i18n:domain="testmanager"
-	  >
+      i18n:domain="testmanager">
+
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
+  
   <head>
 
-	<style type="text/css">
-	</style>
-	
+    <style type="text/css">
+    </style>
+    
   </head>
   <body>
-	<h1>Test Case import results</h1>
-	<br />
-	Got to the <a href="wiki/${cat_name}">enclosing Test Catalog</a>.
-	<br />
+    <h1>Test Case import results</h1>
+    <br />
+    Got to the <a href="wiki/${cat_name}">enclosing Test Catalog</a>.
+    <br />
     <h2>Errors</h2>
     <table class="listing" style="width: 75%">
         <thead>
@@ -40,8 +41,8 @@
         </tbody>
     </table>
 
-	<br /><br />
-	
+    <br /><br />
+    
     <h2>Test Cases imported successfully</h2>
     <table class="listing" style="width: 75%">
         <thead>
@@ -57,7 +58,7 @@
             </py:for>
         </tbody>
     </table>
-	
-	<br /><br /><br /><br />
+    
+    <br /><br /><br /><br />
   </body>
 </html>
