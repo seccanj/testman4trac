@@ -17,8 +17,10 @@ from setuptools import setup
 extra = {} 
 
 try:
-    from trac.util.dist import get_l10n_js_cmdclass 
-    cmdclass = get_l10n_js_cmdclass() 
+    import babel
+
+    from trac.dist import get_l10n_js_cmdclass
+    cmdclass = get_l10n_js_cmdclass()
     if cmdclass: # OK, Babel is there
         extra['cmdclass'] = cmdclass 
         extractors = [ 
@@ -31,12 +33,15 @@ try:
         extra['message_extractors'] = { 
             'testmanager': extractors, 
         }
-except ImportError: 
+
+except ImportError as error:
+    print(error)
+    print("Babel not found!")
     pass
 
 setup(
     name = 'TestManager',
-    version = '1.10.1',
+    version = '1.10.2',
     packages = ['testmanager','testmanager.upgrades'],
     package_data = {
         'testmanager' : [

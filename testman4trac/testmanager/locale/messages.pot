@@ -7,19 +7,19 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: TestManager 1.10.1\n"
+"Project-Id-Version: TestManager 1.10.2\n"
 "Report-Msgid-Bugs-To: otrebor.dev@gmail.com\n"
-"POT-Creation-Date: 2022-03-05 19:19+0100\n"
+"POT-Creation-Date: 2022-03-14 00:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: testmanager/admin.py:50 testmanager/templates/testmanagerstats.html:94
-#: testmanager/templates/testmanagerstats_compatible.html:83
+#: testmanager/templates/testmanagerstats_compatible.html:82
 msgid "Settings"
 msgstr ""
 
@@ -102,7 +102,7 @@ msgid "Template saved"
 msgstr ""
 
 #: testmanager/admin.py:336 testmanager/model.py:903
-#: testmanager/templates/admin_settings.html:45
+#: testmanager/templates/admin_settings.html:44
 #: testmanager/templates/admin_templates.html:35
 #: testmanager/templates/admin_templates.html:72
 #: testmanager/templates/admin_templates.html:178 testmanager/wiki.py:994
@@ -788,7 +788,7 @@ msgid ""
 "different catalogs."
 msgstr ""
 
-#: testmanager/templates/testimportresults.html:29 testmanager/wiki.py:1068
+#: testmanager/templates/testimportresults.html:30 testmanager/wiki.py:1068
 msgid "Error"
 msgstr ""
 
@@ -885,100 +885,100 @@ msgstr ""
 msgid "Status change history"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:12
-#: testmanager/templates/admin_templates.html:12
+#: testmanager/templates/admin_settings.html:10
+#: testmanager/templates/admin_templates.html:10
 #: testmanager/templates/testmanagerstats.html:11
 #: testmanager/templates/testmanagerstats_compatible.html:13
 msgid "# import 'macros.html' as jmacros with context"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:16
+#: testmanager/templates/admin_settings.html:15
 msgid "Test Manager Settings"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:19
+#: testmanager/templates/admin_settings.html:18
 msgid "Settings for Test Manager"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:24
+#: testmanager/templates/admin_settings.html:23
 msgid "Test Statistics default settings"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:27
+#: testmanager/templates/admin_settings.html:26
 msgid "Number of days shown by default:"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:31
+#: testmanager/templates/admin_settings.html:30
 msgid "Number of days between each data point:"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:38
+#: testmanager/templates/admin_settings.html:37
 msgid "Test Manager visualization settings"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:41
+#: testmanager/templates/admin_settings.html:40
 msgid "Sort a test plan's test cases by:"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:44
+#: testmanager/templates/admin_settings.html:43
 msgid "User-specified (use \"Organize Test Catalogs\" to set)"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:46
+#: testmanager/templates/admin_settings.html:45
 msgid "Modification time"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:51
+#: testmanager/templates/admin_settings.html:50
 msgid "Open Test Cases in a new window:"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:55
+#: testmanager/templates/admin_settings.html:54
 msgid "Default Test Catalog view type:"
+msgstr ""
+
+#: testmanager/templates/admin_settings.html:57
+#: testmanager/templates/admin_settings.html:66
+msgid "Tree"
 msgstr ""
 
 #: testmanager/templates/admin_settings.html:58
 #: testmanager/templates/admin_settings.html:67
-msgid "Tree"
-msgstr ""
-
-#: testmanager/templates/admin_settings.html:59
-#: testmanager/templates/admin_settings.html:68
 msgid "Table"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:64
+#: testmanager/templates/admin_settings.html:63
 msgid "Default Test Plan view type:"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:76
+#: testmanager/templates/admin_settings.html:75
 msgid "Visible Test Catalog columns in table view"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:78
-#: testmanager/templates/admin_settings.html:99
+#: testmanager/templates/admin_settings.html:77
+#: testmanager/templates/admin_settings.html:98
 msgid "Totals Row"
+msgstr ""
+
+#: testmanager/templates/admin_settings.html:85
+#: testmanager/templates/admin_settings.html:106
+msgid "Sum"
 msgstr ""
 
 #: testmanager/templates/admin_settings.html:86
 #: testmanager/templates/admin_settings.html:107
-msgid "Sum"
+msgid "Average"
 msgstr ""
 
 #: testmanager/templates/admin_settings.html:87
 #: testmanager/templates/admin_settings.html:108
-msgid "Average"
-msgstr ""
-
-#: testmanager/templates/admin_settings.html:88
-#: testmanager/templates/admin_settings.html:109
 msgid "Count"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:97
+#: testmanager/templates/admin_settings.html:96
 msgid "Visible Test Plan columns in table view"
 msgstr ""
 
-#: testmanager/templates/admin_templates.html:16
+#: testmanager/templates/admin_templates.html:15
 msgid "Test Manager Templates"
 msgstr ""
 
@@ -1071,72 +1071,72 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: testmanager/templates/testimportresults.html:19
+#: testmanager/templates/testimportresults.html:20
 msgid "Test Case import results"
 msgstr ""
 
-#: testmanager/templates/testimportresults.html:20
+#: testmanager/templates/testimportresults.html:21
 msgid "Got to the"
 msgstr ""
 
-#: testmanager/templates/testimportresults.html:21
+#: testmanager/templates/testimportresults.html:22
 msgid "enclosing Test Catalog"
 msgstr ""
 
-#: testmanager/templates/testimportresults.html:23
+#: testmanager/templates/testimportresults.html:24
 msgid "Errors"
 msgstr ""
 
-#: testmanager/templates/testimportresults.html:27
+#: testmanager/templates/testimportresults.html:28
 msgid "Row number"
 msgstr ""
 
-#: testmanager/templates/testimportresults.html:28
-#: testmanager/templates/testimportresults.html:49
+#: testmanager/templates/testimportresults.html:29
+#: testmanager/templates/testimportresults.html:50
 msgid "Test Title"
 msgstr ""
 
-#: testmanager/templates/testimportresults.html:45
+#: testmanager/templates/testimportresults.html:46
 msgid "Test Cases imported successfully"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:61
-#: testmanager/templates/testmanagerstats_compatible.html:50
+#: testmanager/templates/testmanagerstats_compatible.html:49
 msgid "Test Management Statistics"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:71
-#: testmanager/templates/testmanagerstats_compatible.html:60
+#: testmanager/templates/testmanagerstats_compatible.html:59
 msgid "Test activity trend"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:72
-#: testmanager/templates/testmanagerstats_compatible.html:61
+#: testmanager/templates/testmanagerstats_compatible.html:60
 msgid "Current test status"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:73
-#: testmanager/templates/testmanagerstats_compatible.html:62
+#: testmanager/templates/testmanagerstats_compatible.html:61
 msgid "Tickets trend"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:82
-#: testmanager/templates/testmanagerstats_compatible.html:71
+#: testmanager/templates/testmanagerstats_compatible.html:70
 msgid "No data available"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:83
-#: testmanager/templates/testmanagerstats_compatible.html:72
+#: testmanager/templates/testmanagerstats_compatible.html:71
 msgid "Not applicable to \"All Test Plans\"."
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:83
-#: testmanager/templates/testmanagerstats_compatible.html:72
+#: testmanager/templates/testmanagerstats_compatible.html:71
 msgid "Select a Test Plan to see this chart."
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:96
-#: testmanager/templates/testmanagerstats_compatible.html:85
+#: testmanager/templates/testmanagerstats_compatible.html:84
 msgid "Start Date:"
 msgstr ""
 
@@ -1148,77 +1148,77 @@ msgid "Format: %(datehint)s"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:101
-#: testmanager/templates/testmanagerstats_compatible.html:87
+#: testmanager/templates/testmanagerstats_compatible.html:86
 msgid "End Date:"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:106
-#: testmanager/templates/testmanagerstats_compatible.html:89
+#: testmanager/templates/testmanagerstats_compatible.html:88
 msgid "Resolution:"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:108
-#: testmanager/templates/testmanagerstats_compatible.html:91
+#: testmanager/templates/testmanagerstats_compatible.html:90
 msgid "1 Day"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:109
-#: testmanager/templates/testmanagerstats_compatible.html:92
+#: testmanager/templates/testmanagerstats_compatible.html:91
 msgid "1 Week"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:110
-#: testmanager/templates/testmanagerstats_compatible.html:93
+#: testmanager/templates/testmanagerstats_compatible.html:92
 msgid "2 Weeks"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:111
-#: testmanager/templates/testmanagerstats_compatible.html:94
+#: testmanager/templates/testmanagerstats_compatible.html:93
 msgid "1 Month"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:112
-#: testmanager/templates/testmanagerstats_compatible.html:95
+#: testmanager/templates/testmanagerstats_compatible.html:94
 msgid "2 Months"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:113
-#: testmanager/templates/testmanagerstats_compatible.html:96
+#: testmanager/templates/testmanagerstats_compatible.html:95
 msgid "3 Months"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:114
-#: testmanager/templates/testmanagerstats_compatible.html:97
+#: testmanager/templates/testmanagerstats_compatible.html:96
 msgid "6 Months"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:115
-#: testmanager/templates/testmanagerstats_compatible.html:98
+#: testmanager/templates/testmanagerstats_compatible.html:97
 msgid "1 Year"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:121
-#: testmanager/templates/testmanagerstats_compatible.html:101
+#: testmanager/templates/testmanagerstats_compatible.html:100
 msgid "Test Plan:"
 msgstr ""
 
 #: testmanager/templates/testmanagerstats.html:123
-#: testmanager/templates/testmanagerstats_compatible.html:103
+#: testmanager/templates/testmanagerstats_compatible.html:102
 msgid "All Test Plans"
 msgstr ""
 
-#: testmanager/templates/testmanagerstats.html:131
-#: testmanager/templates/testmanagerstats_compatible.html:111
+#: testmanager/templates/testmanagerstats.html:132
+#: testmanager/templates/testmanagerstats_compatible.html:110
 msgid "URL to bookmark:"
 msgstr ""
 
-#: testmanager/templates/testmanagerstats.html:145
-#: testmanager/templates/testmanagerstats_compatible.html:125
+#: testmanager/templates/testmanagerstats.html:146
+#: testmanager/templates/testmanagerstats_compatible.html:124
 msgid "Export this data to Excel"
 msgstr ""
 
-#: testmanager/templates/testmanagerstats.html:145
-#: testmanager/templates/testmanagerstats_compatible.html:125
+#: testmanager/templates/testmanagerstats.html:146
+#: testmanager/templates/testmanagerstats_compatible.html:124
 msgid "(CSV format)"
 msgstr ""
 

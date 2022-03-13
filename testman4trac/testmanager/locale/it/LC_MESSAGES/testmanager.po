@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Test Manager for Trac plugin\n"
 "Report-Msgid-Bugs-To: http://trac-hacks.org/wiki/TestManagerForTracPlugin"
 "\n"
-"POT-Creation-Date: 2022-03-05 19:19+0100\n"
+"POT-Creation-Date: 2022-03-14 00:15+0100\n"
 "PO-Revision-Date: 2012-01-03 23:06+0000\n"
 "Last-Translator: Roberto Longobardi <otrebor.dev@gmail.com>\n"
 "Language: it\n"
@@ -20,10 +20,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: testmanager/admin.py:50 testmanager/templates/testmanagerstats.html:94
-#: testmanager/templates/testmanagerstats_compatible.html:83
+#: testmanager/templates/testmanagerstats_compatible.html:82
 msgid "Settings"
 msgstr "Impostazioni"
 
@@ -92,9 +92,8 @@ msgid "Failed to update default Test Catalog template"
 msgstr "Errore nell'aggiornare il template di default per Cataloghi di Test"
 
 #: testmanager/admin.py:237
-#, fuzzy
 msgid "Default Test Case template updated"
-msgstr "I template di default per i Casi di Test sono stati aggiornati"
+msgstr "Il template di default per i Casi di Test è stato aggiornato"
 
 #: testmanager/admin.py:252
 msgid "Failed to update Test Case templates"
@@ -109,7 +108,7 @@ msgid "Template saved"
 msgstr "Template salvato"
 
 #: testmanager/admin.py:336 testmanager/model.py:903
-#: testmanager/templates/admin_settings.html:45
+#: testmanager/templates/admin_settings.html:44
 #: testmanager/templates/admin_templates.html:35
 #: testmanager/templates/admin_templates.html:72
 #: testmanager/templates/admin_templates.html:178 testmanager/wiki.py:994
@@ -844,7 +843,7 @@ msgstr ""
 "Trascinare i casi di test per riordinarli, o per spostarli in un altro "
 "catalogo."
 
-#: testmanager/templates/testimportresults.html:29 testmanager/wiki.py:1068
+#: testmanager/templates/testimportresults.html:30 testmanager/wiki.py:1068
 msgid "Error"
 msgstr "Errore"
 
@@ -939,181 +938,167 @@ msgstr "Modifica lo Stato:"
 msgid "Status change history"
 msgstr "Storia dei cambiamenti di stato"
 
-#: testmanager/templates/admin_settings.html:12
-#: testmanager/templates/admin_templates.html:12
+#: testmanager/templates/admin_settings.html:10
+#: testmanager/templates/admin_templates.html:10
 #: testmanager/templates/testmanagerstats.html:11
 #: testmanager/templates/testmanagerstats_compatible.html:13
 msgid "# import 'macros.html' as jmacros with context"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:16
-#, fuzzy
+#: testmanager/templates/admin_settings.html:15
 msgid "Test Manager Settings"
-msgstr "Test Manager"
+msgstr "Impostazioni Test Manager"
 
-#: testmanager/templates/admin_settings.html:19
+#: testmanager/templates/admin_settings.html:18
 msgid "Settings for Test Manager"
-msgstr ""
+msgstr "Impostazioni del Test Manager"
 
-#: testmanager/templates/admin_settings.html:24
+#: testmanager/templates/admin_settings.html:23
 msgid "Test Statistics default settings"
-msgstr ""
+msgstr "Impostazioni di default per le Statistiche di Test"
 
-#: testmanager/templates/admin_settings.html:27
+#: testmanager/templates/admin_settings.html:26
 msgid "Number of days shown by default:"
-msgstr ""
+msgstr "Numero di giorni mostrati per default:"
 
-#: testmanager/templates/admin_settings.html:31
+#: testmanager/templates/admin_settings.html:30
 msgid "Number of days between each data point:"
-msgstr ""
+msgstr "Numero di giorni tra ogni campione:"
 
-#: testmanager/templates/admin_settings.html:38
+#: testmanager/templates/admin_settings.html:37
 msgid "Test Manager visualization settings"
-msgstr ""
+msgstr "Impostazioni di visualizzazione del Test Manager"
 
-#: testmanager/templates/admin_settings.html:41
+#: testmanager/templates/admin_settings.html:40
 msgid "Sort a test plan's test cases by:"
-msgstr ""
+msgstr "Ordina i casi di test nel piano per:"
 
-#: testmanager/templates/admin_settings.html:44
+#: testmanager/templates/admin_settings.html:43
 msgid "User-specified (use \"Organize Test Catalogs\" to set)"
-msgstr ""
+msgstr "Specificato dall'utente (mediante \"Organizza i Cataloghi di Test\")"
 
-#: testmanager/templates/admin_settings.html:46
+#: testmanager/templates/admin_settings.html:45
 msgid "Modification time"
-msgstr ""
+msgstr "Data di modifica"
 
-#: testmanager/templates/admin_settings.html:51
+#: testmanager/templates/admin_settings.html:50
 msgid "Open Test Cases in a new window:"
-msgstr ""
+msgstr "Apri i Casi di Test in una nuova finestra"
 
-#: testmanager/templates/admin_settings.html:55
+#: testmanager/templates/admin_settings.html:54
 msgid "Default Test Catalog view type:"
-msgstr ""
+msgstr "Vista di default per i Cataloghi di Test"
+
+#: testmanager/templates/admin_settings.html:57
+#: testmanager/templates/admin_settings.html:66
+msgid "Tree"
+msgstr "Albero"
 
 #: testmanager/templates/admin_settings.html:58
 #: testmanager/templates/admin_settings.html:67
-msgid "Tree"
-msgstr ""
-
-#: testmanager/templates/admin_settings.html:59
-#: testmanager/templates/admin_settings.html:68
-#, fuzzy
 msgid "Table"
-msgstr "Titolo"
+msgstr "Tabella"
 
-#: testmanager/templates/admin_settings.html:64
+#: testmanager/templates/admin_settings.html:63
 msgid "Default Test Plan view type:"
-msgstr ""
+msgstr "Vista di default per i Piani di Test"
 
-#: testmanager/templates/admin_settings.html:76
+#: testmanager/templates/admin_settings.html:75
 msgid "Visible Test Catalog columns in table view"
-msgstr ""
+msgstr "Colonne visibili nella vista tabellare dei Cataloghi di Test"
 
-#: testmanager/templates/admin_settings.html:78
-#: testmanager/templates/admin_settings.html:99
+#: testmanager/templates/admin_settings.html:77
+#: testmanager/templates/admin_settings.html:98
 msgid "Totals Row"
-msgstr ""
+msgstr "Riga dei Totali"
+
+#: testmanager/templates/admin_settings.html:85
+#: testmanager/templates/admin_settings.html:106
+msgid "Sum"
+msgstr "Somma"
 
 #: testmanager/templates/admin_settings.html:86
 #: testmanager/templates/admin_settings.html:107
-msgid "Sum"
-msgstr ""
+msgid "Average"
+msgstr "Media"
 
 #: testmanager/templates/admin_settings.html:87
 #: testmanager/templates/admin_settings.html:108
-#, fuzzy
-msgid "Average"
-msgstr "(Media)"
-
-#: testmanager/templates/admin_settings.html:88
-#: testmanager/templates/admin_settings.html:109
-#, fuzzy
 msgid "Count"
-msgstr "(Conteggio)"
+msgstr "Conteggio"
 
-#: testmanager/templates/admin_settings.html:97
+#: testmanager/templates/admin_settings.html:96
 msgid "Visible Test Plan columns in table view"
-msgstr ""
+msgstr "Colonne visibili nella vista tabellare dei Piani di Test"
 
-#: testmanager/templates/admin_templates.html:16
-#, fuzzy, python-format
+#: testmanager/templates/admin_templates.html:15
 msgid "Test Manager Templates"
-msgstr "Il template per Cataloghi di Test '%s' è stato cancellato"
+msgstr "Template del Test Manager"
 
 #: testmanager/templates/admin_templates.html:23
 msgid "Test Manager Templates Configuration"
-msgstr ""
+msgstr "Configurazione dei Template del Test Manager"
 
 #: testmanager/templates/admin_templates.html:26
-#, fuzzy, python-format
 msgid "Test Catalog Templates"
-msgstr "Il template per Cataloghi di Test '%s' è stato cancellato"
+msgstr "Template per Cataloghi di Test"
 
 #: testmanager/templates/admin_templates.html:27
 #: testmanager/templates/admin_templates.html:62
 msgid "No Templates created yet."
-msgstr ""
+msgstr "Nessun Template ancora creato."
 
 #: testmanager/templates/admin_templates.html:47
 #: testmanager/templates/admin_templates.html:84
 msgid "Delete Selected"
-msgstr ""
+msgstr "Cancella Selezionato"
 
 #: testmanager/templates/admin_templates.html:56
-#, fuzzy
 msgid "Add Test Catalog Template"
-msgstr "Il template di default per Cataloghi di Test è stato aggiornato"
+msgstr "Aggiungi un Template per Cataloghi di Test"
 
 #: testmanager/templates/admin_templates.html:61
-#, fuzzy, python-format
 msgid "Test Case Templates"
-msgstr "Il template per Casi di Test '%s' è stato cancellato"
+msgstr "Template per Casi di Test"
 
 #: testmanager/templates/admin_templates.html:93
-#, fuzzy
 msgid "Add Test Case Template"
-msgstr "Errore nell'aggiornare i template per Casi di Test"
+msgstr "Aggiungi un Template per Casi di Test"
 
 #: testmanager/templates/admin_templates.html:98
-#, fuzzy
 msgid "Default template for Test Catalog"
-msgstr "Elimina il Catalogo di Test"
+msgstr "Template di default per Cataloghi di Test"
 
 #: testmanager/templates/admin_templates.html:105
 #: testmanager/templates/admin_templates.html:123
 msgid "None"
-msgstr ""
+msgstr "Nessuno"
 
 #: testmanager/templates/admin_templates.html:110
-#, fuzzy
 msgid "Save Default Test Catalog Template"
-msgstr "Errore nell'aggiornare il template di default per Cataloghi di Test"
+msgstr "Salva template di default per Cataloghi di Test"
 
 #: testmanager/templates/admin_templates.html:116
 msgid "Default template for Test Case"
-msgstr ""
+msgstr "Template di default per Casi di Test"
 
 #: testmanager/templates/admin_templates.html:128
-#, fuzzy
 msgid "Save Default Test Case Template"
-msgstr "I template di default per i Casi di Test sono stati aggiornati"
+msgstr "Salva il template di default per Casi di Test"
 
 #: testmanager/templates/admin_templates.html:134
 msgid ""
 "Default Test Case template for specific Test Catalogs (overrides default "
 "above)"
-msgstr ""
+msgstr "Template di default per specifici Cataloghi di Test (ignora il default)"
 
 #: testmanager/templates/admin_templates.html:142
-#, fuzzy
 msgid "Test Catalog ID"
-msgstr "Catalogo di Test"
+msgstr "ID Caso di Test"
 
 #: testmanager/templates/admin_templates.html:142
-#, fuzzy
 msgid "Test Case Template"
-msgstr "I template di default per i Casi di Test sono stati aggiornati"
+msgstr "Template per i Casi di Test"
 
 #: testmanager/templates/admin_templates.html:152
 msgid "Default"
@@ -1121,401 +1106,172 @@ msgstr ""
 
 #: testmanager/templates/admin_templates.html:161
 msgid "Save Template Configuration"
-msgstr ""
+msgstr "Salva configurazione dei Template"
 
 #: testmanager/templates/admin_templates.html:171
-#, fuzzy
 msgid "Edit Template"
-msgstr "Modelli"
+msgstr "Modifica Template"
 
 #: testmanager/templates/admin_templates.html:188
 msgid "Content"
-msgstr ""
+msgstr "Testo"
 
 #: testmanager/templates/admin_templates.html:198
-#, fuzzy
 msgid "Submit Changes"
-msgstr "Ultima Modifica"
+msgstr "Salva Modifiche"
 
 #: testmanager/templates/admin_templates.html:204
 msgid "Preview"
-msgstr ""
-
-#: testmanager/templates/testimportresults.html:19
-msgid "Test Case import results"
-msgstr ""
+msgstr "Anteprima"
 
 #: testmanager/templates/testimportresults.html:20
-msgid "Got to the"
-msgstr ""
+msgid "Test Case import results"
+msgstr "Risultati dell'importazione"
 
 #: testmanager/templates/testimportresults.html:21
-#, fuzzy
+msgid "Got to the"
+msgstr "Vai al"
+
+#: testmanager/templates/testimportresults.html:22
 msgid "enclosing Test Catalog"
-msgstr "Elimina il Catalogo di Test"
+msgstr "Catalogo di Test che lo contiene"
 
-#: testmanager/templates/testimportresults.html:23
-#, fuzzy
+#: testmanager/templates/testimportresults.html:24
 msgid "Errors"
-msgstr "Errore"
-
-#: testmanager/templates/testimportresults.html:27
-msgid "Row number"
-msgstr ""
+msgstr "Errori"
 
 #: testmanager/templates/testimportresults.html:28
-#: testmanager/templates/testimportresults.html:49
-#, fuzzy
-msgid "Test Title"
-msgstr "Titolo del Piano di Test"
+msgid "Row number"
+msgstr "Numero riga"
 
-#: testmanager/templates/testimportresults.html:45
-#, fuzzy
+#: testmanager/templates/testimportresults.html:29
+#: testmanager/templates/testimportresults.html:50
+msgid "Test Title"
+msgstr "Titolo del Test"
+
+#: testmanager/templates/testimportresults.html:46
 msgid "Test Cases imported successfully"
-msgstr "Il caso di test è stato aggiornato all'ultima versione."
+msgstr "I Casi di Test sono stati importati con successo"
 
 #: testmanager/templates/testmanagerstats.html:61
-#: testmanager/templates/testmanagerstats_compatible.html:50
+#: testmanager/templates/testmanagerstats_compatible.html:49
 msgid "Test Management Statistics"
-msgstr ""
+msgstr "Statistiche sulla gestione dei Test"
 
 #: testmanager/templates/testmanagerstats.html:71
-#: testmanager/templates/testmanagerstats_compatible.html:60
+#: testmanager/templates/testmanagerstats_compatible.html:59
 msgid "Test activity trend"
-msgstr ""
+msgstr "Trend dell'attività di test"
 
 #: testmanager/templates/testmanagerstats.html:72
-#: testmanager/templates/testmanagerstats_compatible.html:61
+#: testmanager/templates/testmanagerstats_compatible.html:60
 msgid "Current test status"
-msgstr ""
+msgstr "Stato attuale del test"
 
 #: testmanager/templates/testmanagerstats.html:73
-#: testmanager/templates/testmanagerstats_compatible.html:62
+#: testmanager/templates/testmanagerstats_compatible.html:61
 msgid "Tickets trend"
-msgstr ""
+msgstr "Trend delle segnalazioni"
 
 #: testmanager/templates/testmanagerstats.html:82
-#: testmanager/templates/testmanagerstats_compatible.html:71
+#: testmanager/templates/testmanagerstats_compatible.html:70
 msgid "No data available"
-msgstr ""
+msgstr "Nessun dato disponibile"
 
 #: testmanager/templates/testmanagerstats.html:83
-#: testmanager/templates/testmanagerstats_compatible.html:72
+#: testmanager/templates/testmanagerstats_compatible.html:71
 msgid "Not applicable to \"All Test Plans\"."
-msgstr ""
+msgstr "Non applicabile a \"Tutti i Piani di Test\"."
 
 #: testmanager/templates/testmanagerstats.html:83
-#: testmanager/templates/testmanagerstats_compatible.html:72
+#: testmanager/templates/testmanagerstats_compatible.html:71
 msgid "Select a Test Plan to see this chart."
-msgstr ""
+msgstr "Seleziona un Piano di Test per vedere questo grafico."
 
 #: testmanager/templates/testmanagerstats.html:96
-#: testmanager/templates/testmanagerstats_compatible.html:85
+#: testmanager/templates/testmanagerstats_compatible.html:84
 msgid "Start Date:"
-msgstr ""
+msgstr "Dal:"
 
 #: testmanager/templates/testmanagerstats.html:97
 #: testmanager/templates/testmanagerstats.html:102
 #: testmanager/templates/testmanagerstats.html:119
 #, python-format
 msgid "Format: %(datehint)s"
-msgstr ""
+msgstr "Formato: %(datehint)s"
 
 #: testmanager/templates/testmanagerstats.html:101
-#: testmanager/templates/testmanagerstats_compatible.html:87
+#: testmanager/templates/testmanagerstats_compatible.html:86
 msgid "End Date:"
-msgstr ""
+msgstr "Al:"
 
 #: testmanager/templates/testmanagerstats.html:106
-#: testmanager/templates/testmanagerstats_compatible.html:89
+#: testmanager/templates/testmanagerstats_compatible.html:88
 msgid "Resolution:"
-msgstr ""
+msgstr "Risoluzione:"
 
 #: testmanager/templates/testmanagerstats.html:108
-#: testmanager/templates/testmanagerstats_compatible.html:91
+#: testmanager/templates/testmanagerstats_compatible.html:90
 msgid "1 Day"
-msgstr ""
+msgstr "1 Giorno"
 
 #: testmanager/templates/testmanagerstats.html:109
-#: testmanager/templates/testmanagerstats_compatible.html:92
+#: testmanager/templates/testmanagerstats_compatible.html:91
 msgid "1 Week"
-msgstr ""
+msgstr "1 Settimana"
 
 #: testmanager/templates/testmanagerstats.html:110
-#: testmanager/templates/testmanagerstats_compatible.html:93
+#: testmanager/templates/testmanagerstats_compatible.html:92
 msgid "2 Weeks"
-msgstr ""
+msgstr "2 Settimane"
 
 #: testmanager/templates/testmanagerstats.html:111
-#: testmanager/templates/testmanagerstats_compatible.html:94
+#: testmanager/templates/testmanagerstats_compatible.html:93
 msgid "1 Month"
-msgstr ""
+msgstr "1 Mese"
 
 #: testmanager/templates/testmanagerstats.html:112
-#: testmanager/templates/testmanagerstats_compatible.html:95
+#: testmanager/templates/testmanagerstats_compatible.html:94
 msgid "2 Months"
-msgstr ""
+msgstr "2 Mesi"
 
 #: testmanager/templates/testmanagerstats.html:113
-#: testmanager/templates/testmanagerstats_compatible.html:96
+#: testmanager/templates/testmanagerstats_compatible.html:95
 msgid "3 Months"
-msgstr ""
+msgstr "3 Mesi"
 
 #: testmanager/templates/testmanagerstats.html:114
-#: testmanager/templates/testmanagerstats_compatible.html:97
+#: testmanager/templates/testmanagerstats_compatible.html:96
 msgid "6 Months"
-msgstr ""
+msgstr "6 Mesi"
 
 #: testmanager/templates/testmanagerstats.html:115
-#: testmanager/templates/testmanagerstats_compatible.html:98
+#: testmanager/templates/testmanagerstats_compatible.html:97
 msgid "1 Year"
-msgstr ""
+msgstr "1 Anno"
 
 #: testmanager/templates/testmanagerstats.html:121
-#: testmanager/templates/testmanagerstats_compatible.html:101
-#, fuzzy
+#: testmanager/templates/testmanagerstats_compatible.html:100
 msgid "Test Plan:"
 msgstr "Piano di Test: "
 
 #: testmanager/templates/testmanagerstats.html:123
-#: testmanager/templates/testmanagerstats_compatible.html:103
-#, fuzzy
+#: testmanager/templates/testmanagerstats_compatible.html:102
 msgid "All Test Plans"
-msgstr "Piani di Test disponibili"
+msgstr "Tutti i Piani di Test"
 
-#: testmanager/templates/testmanagerstats.html:131
-#: testmanager/templates/testmanagerstats_compatible.html:111
+#: testmanager/templates/testmanagerstats.html:132
+#: testmanager/templates/testmanagerstats_compatible.html:110
 msgid "URL to bookmark:"
-msgstr ""
+msgstr "URL da salvare nei preferiti:"
 
-#: testmanager/templates/testmanagerstats.html:145
-#: testmanager/templates/testmanagerstats_compatible.html:125
+#: testmanager/templates/testmanagerstats.html:146
+#: testmanager/templates/testmanagerstats_compatible.html:124
 msgid "Export this data to Excel"
-msgstr ""
+msgstr "Esporta i dati in Excel"
 
-#: testmanager/templates/testmanagerstats.html:145
-#: testmanager/templates/testmanagerstats_compatible.html:125
+#: testmanager/templates/testmanagerstats.html:146
+#: testmanager/templates/testmanagerstats_compatible.html:124
 msgid "(CSV format)"
-msgstr ""
-
-#~ msgid "Test Manager Settings"
-#~ msgstr "Impostazioni Test Manager"
-
-#~ msgid "Settings for Test Manager"
-#~ msgstr "Impostazioni del Test Manager"
-
-#~ msgid "Test Statistics default settings"
-#~ msgstr "Impostazioni di default per le Statistiche di Test"
-
-#~ msgid "Number of days shown by default:"
-#~ msgstr "Numero di giorni mostrati per default:"
-
-#~ msgid "Number of days between each data point:"
-#~ msgstr "Numero di giorni tra ogni campione:"
-
-#~ msgid "Test Manager visualization settings"
-#~ msgstr "Impostazioni di visualizzazione del Test Manager"
-
-#~ msgid "Sort a test plan's test cases by:"
-#~ msgstr "Ordina i casi di test nel piano per:"
-
-#~ msgid "User-specified (use \"Organize Test Catalogs\" to set)"
-#~ msgstr "Specificato dall'utente (mediante \"Organizza i Cataloghi di Test\")"
-
-#~ msgid "Modification time"
-#~ msgstr "Data di modifica"
-
-#~ msgid "Open Test Cases in a new window:"
-#~ msgstr "Apri i Casi di Test in una nuova finestra"
-
-#~ msgid "Default Test Catalog view type:"
-#~ msgstr "Vista di default per i Cataloghi di Test"
-
-#~ msgid "Tree"
-#~ msgstr "Albero"
-
-#~ msgid "Table"
-#~ msgstr "Tabella"
-
-#~ msgid "Default Test Plan view type:"
-#~ msgstr "Vista di default per i Piani di Test"
-
-#~ msgid "Visible Test Catalog columns in table view"
-#~ msgstr "Colonne visibili nella vista tabellare dei Cataloghi di Test"
-
-#~ msgid "Totals Row"
-#~ msgstr "Riga dei Totali"
-
-#~ msgid "Sum"
-#~ msgstr "Somma"
-
-#~ msgid "Average"
-#~ msgstr "Media"
-
-#~ msgid "Count"
-#~ msgstr "Conteggio"
-
-#~ msgid "Visible Test Plan columns in table view"
-#~ msgstr "Colonne visibili nella vista tabellare dei Piani di Test"
-
-#~ msgid "Test Manager Templates"
-#~ msgstr "Template del Test Manager"
-
-#~ msgid "Test Manager Templates Configuration"
-#~ msgstr "Configurazione dei Template del Test Manager"
-
-#~ msgid "Test Catalog Templates"
-#~ msgstr "Template per Cataloghi di Test"
-
-#~ msgid "No Templates created yet."
-#~ msgstr "Nessun Template ancora creato."
-
-#~ msgid "Delete Selected"
-#~ msgstr "Cancella Selezionato"
-
-#~ msgid "Add Test Catalog Template"
-#~ msgstr "Aggiungi un Template per Cataloghi di Test"
-
-#~ msgid "Test Case Templates"
-#~ msgstr "Template per Casi di Test"
-
-#~ msgid "Add Test Case Template"
-#~ msgstr "Aggiungi un Template per Casi di Test"
-
-#~ msgid "Default template for Test Catalog"
-#~ msgstr "Template di default per Cataloghi di Test"
-
-#~ msgid "None"
-#~ msgstr "Nessuno"
-
-#~ msgid "Save Default Test Catalog Template"
-#~ msgstr "Salva template di default per Cataloghi di Test"
-
-#~ msgid "Default template for Test Case"
-#~ msgstr "Template di default per Cataloghi di Test"
-
-#~ msgid "Save Default Test Case Template"
-#~ msgstr "Salva template di default per Cataloghi di Test"
-
-#~ msgid ""
-#~ "Default Test Case template for specific"
-#~ " Test Catalogs (overrides default above)"
-#~ msgstr "Template di default per i Casi di Test di ciascun Catalogo"
-
-#~ msgid "Test Catalog ID"
-#~ msgstr "Catalogo di Test"
-
-#~ msgid "Test Case Template"
-#~ msgstr "Template per i Casi di Test"
-
-#~ msgid "Default"
-#~ msgstr ""
-
-#~ msgid "Save Template Configuration"
-#~ msgstr "Salva configurazione dei Template"
-
-#~ msgid "Edit Template"
-#~ msgstr "Modifica Template"
-
-#~ msgid "Content"
-#~ msgstr "Testo"
-
-#~ msgid "Submit Changes"
-#~ msgstr "Salva Modifiche"
-
-#~ msgid "Preview"
-#~ msgstr "Anteprima"
-
-#~ msgid "Test Case import results"
-#~ msgstr "Risultati dell'importazione"
-
-#~ msgid "Got to the"
-#~ msgstr "Vai al"
-
-#~ msgid "enclosing Test Catalog"
-#~ msgstr "Catalogo di Test che lo contiene"
-
-#~ msgid "Errors"
-#~ msgstr "Errori"
-
-#~ msgid "Row number"
-#~ msgstr "Numero riga"
-
-#~ msgid "Test Title"
-#~ msgstr "Titolo del Test"
-
-#~ msgid "Test Cases imported successfully"
-#~ msgstr "I Casi di Test sono stati importati con successo"
-
-#~ msgid "Test Management Statistics"
-#~ msgstr "Statistiche sulla gestione dei Test"
-
-#~ msgid "Test activity trend"
-#~ msgstr "Trend dell'attività di test"
-
-#~ msgid "Current test status"
-#~ msgstr "Stato attuale del test"
-
-#~ msgid "Tickets trend"
-#~ msgstr "Trend delle segnalazioni"
-
-#~ msgid "No data available"
-#~ msgstr "Nessun dato disponibile"
-
-#~ msgid "Not applicable to \"All Test Plans\"."
-#~ msgstr "Non applicabile a \"Tutti i Piani di Test\"."
-
-#~ msgid "Select a Test Plan to see this chart."
-#~ msgstr "Seleziona un Piano di Test per vedere questo grafico."
-
-#~ msgid "Start Date:"
-#~ msgstr "Dal:"
-
-#~ msgid "Format: %(datehint)s"
-#~ msgstr "Formato: %(datehint)s"
-
-#~ msgid "End Date:"
-#~ msgstr "Al:"
-
-#~ msgid "Resolution:"
-#~ msgstr "Risoluzione:"
-
-#~ msgid "1 Day"
-#~ msgstr "1 Giorno"
-
-#~ msgid "1 Week"
-#~ msgstr "1 Settimana"
-
-#~ msgid "2 Weeks"
-#~ msgstr "2 Settimane"
-
-#~ msgid "1 Month"
-#~ msgstr "1 Mese"
-
-#~ msgid "2 Months"
-#~ msgstr "2 Mesi"
-
-#~ msgid "3 Months"
-#~ msgstr "3 Mesi"
-
-#~ msgid "6 Months"
-#~ msgstr "6 Mesi"
-
-#~ msgid "1 Year"
-#~ msgstr "1 Anno"
-
-#~ msgid "Test Plan:"
-#~ msgstr "Piano di Test: "
-
-#~ msgid "All Test Plans"
-#~ msgstr "Tutti i Piani di Test"
-
-#~ msgid "URL to bookmark:"
-#~ msgstr "URL da salvare nei preferiti:"
-
-#~ msgid "Export this data to Excel"
-#~ msgstr "Esporta i dati in Excel"
-
-#~ msgid "(CSV format)"
-#~ msgstr "(formato CSV)"
+msgstr "(formato CSV)"
 
