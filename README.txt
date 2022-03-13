@@ -188,6 +188,10 @@ Change History:
 (Refer to the tickets on trac-hacks or SourceForge for complete 
 descriptions.)
 
+Release 1.9.3 (2022-03-13): 
+
+  o A big effort to update and complete all the translations. Also thanls to longradix for adding Dutch and updating German.
+
 Release 1.9.2 (2022-03-05): 
 
   o Fixed Ticket #14116 (Trac-Hacks): Wrong Status of test cases in testplan is displayed
