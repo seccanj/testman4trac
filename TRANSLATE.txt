@@ -1,0 +1,103 @@
+
+To extract the transatable messages from the source code and translate them, on Linux:
+
+ 1) Make sure you have Trac installed and available in the Python lookup 
+    path. 
+    Babel should also be available in the Python lookup path.
+    To make this library available to Python you can either install it
+    centrally, or reference it using the PYTHONLIB environment variable.
+
+    To install all the dependencies, for example:
+    pip install trac==1.0.20
+    pip install genshi==0.7.6
+    pip install babel==2.9.1
+
+ 2) Open a shell and give the following commands:
+
+    cd testman4trac
+    python setup.py extract_messages
+
+    
+    In case of errors, try the analogous:
+    
+    cd testman4trac
+    pybabel extract --project=testman4trac --input-dirs=testmanager -o testmanager/locale/messages.pot
+
+ 3) Check if a translation file for your language already exists, i.e. a directory with your langiage code 
+    (for example "it" for italian) exists under the "testman4trac/testmanager/locale" directory.
+
+ 4) If such a translation exixts, jump to step 5).
+    Otherwise, suppose you wish to add a japanese translation. The language code for japanese is "ja".
+    Then, give the following commands (notice the "ja" code that appears twice in the command):
+
+    cd testmanager
+    pybabel init -i locale/messages.pot -l ja -o locale/ja/LC_MESSAGES/testmanager.po
+ 
+    This will create the "locale/ja/LC_MESSAGES/testmanager.po" file.
+    Now jump to step 6)
+
+ 5) Update the line numbers in the translation file according to the updated "messages.pot" file.
+
+    cd testmanager
+    python setup.py update_catalog -l de
+    python setup.py update_catalog_js -l de
+    python setup.py update_catalog -l es
+    python setup.py update_catalog_js -l es
+    python setup.py update_catalog -l fr
+    python setup.py update_catalog_js -l fr
+    python setup.py update_catalog -l it
+    python setup.py update_catalog_js -l it
+    python setup.py update_catalog -l ko
+    python setup.py update_catalog_js -l ko
+    python setup.py update_catalog -l nl
+    python setup.py update_catalog_js -l nl
+    python setup.py update_catalog -l ru
+    python setup.py update_catalog_js -l ru
+
+
+    In case of errors, try the analogous:
+
+    cd testmanager
+    pybabel update -i locale/messages.pot -l de -o locale/de/LC_MESSAGES/testmanager.po
+    pybabel update -i locale/messages.pot -l es -o locale/es/LC_MESSAGES/testmanager.po
+    pybabel update -i locale/messages.pot -l fr -o locale/fr/LC_MESSAGES/testmanager.po
+    pybabel update -i locale/messages.pot -l it -o locale/it/LC_MESSAGES/testmanager.po
+    pybabel update -i locale/messages.pot -l ko -o locale/ko/LC_MESSAGES/testmanager.po
+    pybabel update -i locale/messages.pot -l nl -o locale/nl/LC_MESSAGES/testmanager.po
+    pybabel update -i locale/messages.pot -l ru -o locale/ru/LC_MESSAGES/testmanager.po
+
+ 6) Edit the "locale/<your language code>/LC_MESSAGES/testmanager.po" file with an ecodeing-aware text editor
+    (such as Geany)
+
+ 7) Look for untranslated messages, i.e. messages wich have an English text but are missing the
+    same message in the specific langage.
+    
+    
+    For example, the following is an untranslated message:
+
+    #: testmanager/admin.py:91
+    msgid "Error saving the settings"
+    msgstr ""
+
+
+ 8) Write the correct translation in the empty string, as follows:
+
+    #: testmanager/admin.py:91
+    msgid "Error saving the settings"
+    msgstr "Fehler beim Speichern der Einstellungen"
+
+
+ 9) Save the file.
+
+ 10) Edit the "build.sh" or "build.cmd" file and add the commands to build the new language files.
+     For example, for japanese (notice the "ja" code at the end of each command):
+
+    python setup.py update_catalog_js -l ja
+    python setup.py compile_catalog -f -l ja
+    python setup.py compile_catalog_js -f -l ja
+    
+
+ 11) Build the plugins following the instructions in BUILD.txt.
+
+ 12) If you wish, provide your translated files to the plugin author, contacting him at otrebor.dev@gmail.com. Thanks!
+
