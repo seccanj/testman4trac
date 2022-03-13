@@ -14,14 +14,14 @@ To build the four plugins that make up the application:
     
  2) Unzip the source code distribution package
  
- 3) Open a shell, cd into the testman4trac-parent directory
+ 3) Open a shell, cd into the testman4trac root directory
     
  4) Build the source code using the provided build script:
     
         ./build.sh [-f] [-i path/to/your/trac/project/env]
         
         Where:
-            -f :    fast: does not generate the localized message catalogs (you should build them at least on the first build run)
+            -f :    fast: does not generate the localized message catalogs (you should generate them at least on the first build run)
             -i :    installs the built plugins into your trac environment
  
     The build shell script can copy the resulting egg files into your desired 

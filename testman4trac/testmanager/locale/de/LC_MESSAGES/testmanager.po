@@ -65,7 +65,7 @@ msgstr ""
 #: testmanager/admin.py:184
 #, python-format
 msgid "Error deleting Test Case template '%s'"
-msgstr "Feher beim Löschen des Testfall-Templates '%s'"
+msgstr "Fehler beim Löschen des Testfall-Templates '%s'"
 
 #: testmanager/admin.py:186
 #, python-format
@@ -149,7 +149,7 @@ msgstr "Zeitstempel"
 
 #: testmanager/api.py:419
 msgid "The operation was successful."
-msgstr ""
+msgstr "Erfolgreich"
 
 #: testmanager/api.py:458
 msgid "An error occurred while adding the test catalog."
@@ -273,11 +273,11 @@ msgstr "Snapshot"
 
 #: testmanager/api.py:1551 testmanager/api.py:1552
 msgid "No"
-msgstr "Ja"
+msgstr "Nein"
 
 #: testmanager/api.py:1551 testmanager/api.py:1552
 msgid "Yes"
-msgstr "Nein"
+msgstr "Ja"
 
 #: testmanager/model.py:902 testmanager/model.py:906 testmanager/model.py:912
 #: testmanager/model.py:919
@@ -286,7 +286,7 @@ msgstr "Wiki-Seiten-Name"
 
 #: testmanager/model.py:907
 msgid "Order"
-msgstr ""
+msgstr "Sortierung"
 
 #: testmanager/model.py:911
 msgid "Plan ID"
@@ -360,11 +360,11 @@ msgstr ""
 
 #: testmanager/stats.py:375
 msgid "All Test Cases"
-msgstr ""
+msgstr "Alle Testfalle"
 
 #: testmanager/stats.py:376
 msgid "All Successful"
-msgstr ""
+msgstr "Alles erfolgreich"
 
 #: testmanager/stats.py:377
 msgid "All Untested"
@@ -372,7 +372,7 @@ msgstr ""
 
 #: testmanager/stats.py:378
 msgid "All Failed"
-msgstr ""
+msgstr "Alle gefehlt"
 
 #: testmanager/stats.py:386
 msgid "Total Tickets"
@@ -534,7 +534,7 @@ msgstr "Test-Verzeichnis exportieren"
 
 #: testmanager/wiki.py:329 testmanager/wiki.py:1035
 msgid "Organize Test Catalogs"
-msgstr ""
+msgstr "Organisier Test Verzeichnisse"
 
 #: testmanager/wiki.py:344
 msgid "Delete this version"
@@ -558,7 +558,7 @@ msgstr "Testplan exportieren"
 
 #: testmanager/wiki.py:396 testmanager/wiki.py:783 testmanager/wiki.py:807
 msgid "Clone Test Plan"
-msgstr ""
+msgstr "Clone Test Plan"
 
 #: testmanager/wiki.py:420 testmanager/wiki.py:1281
 msgid "Contained Test Cases"
@@ -648,7 +648,7 @@ msgstr "Speichern"
 
 #: testmanager/wiki.py:719
 msgid "New Test Plan"
-msgstr ""
+msgstr "Neue Test Plan"
 
 #: testmanager/wiki.py:721
 msgid "Specify the new Test Plan properties."
@@ -689,7 +689,7 @@ msgstr "Erstelle einen Testplan"
 #: testmanager/wiki.py:780
 #, python-format
 msgid "Copy of %s"
-msgstr ""
+msgstr "Copy des %s"
 
 #: testmanager/wiki.py:785
 msgid "Specify the name of the new Test Plan."
@@ -697,7 +697,7 @@ msgstr ""
 
 #: testmanager/wiki.py:793
 msgid "New Test Plan name:"
-msgstr ""
+msgstr "Neue Test Plan Name:"
 
 #: testmanager/wiki.py:820
 msgid "Object change history"
@@ -763,13 +763,13 @@ msgstr "Import"
 
 #: testmanager/wiki.py:910
 msgid "Export Test Cases"
-msgstr ""
+msgstr "Export Testfälle"
 
 #: testmanager/wiki.py:912
 msgid ""
 "Select a name and a location on your machine for the CSV file to export "
 "the test cases to."
-msgstr "Wählen sie einen Speicherort und Filenamen für deen Export der Testfälle."
+msgstr "Wählen sie einen Speicherort und Filenamen für den Export der Testfälle."
 
 #: testmanager/wiki.py:915
 msgid "Export options"
@@ -900,7 +900,7 @@ msgstr ""
 
 #: testmanager/wiki.py:1779
 msgid "Status color: "
-msgstr ""
+msgstr "Status Farbe: "
 
 #: testmanager/wiki.py:1823
 msgid "Change the Status:"
@@ -1071,7 +1071,7 @@ msgstr "Testfall-Template"
 
 #: testmanager/templates/admin_templates.html:129
 msgid "Default"
-msgstr ""
+msgstr "Default"
 
 #: testmanager/templates/admin_templates.html:138
 msgid "Save Template Configuration"
@@ -1145,7 +1145,7 @@ msgstr "Fehlerbericht"
 #: testmanager/templates/testmanagerstats.html:76
 #: testmanager/templates/testmanagerstats_compatible.html:65
 msgid "No data available"
-msgstr ""
+msgstr "Kein Data"
 
 #: testmanager/templates/testmanagerstats.html:77
 #: testmanager/templates/testmanagerstats_compatible.html:66
@@ -1160,14 +1160,14 @@ msgstr ""
 #: testmanager/templates/testmanagerstats.html:90
 #: testmanager/templates/testmanagerstats_compatible.html:79
 msgid "Start Date:"
-msgstr "Start Datum:"
+msgstr "Anfangs Datum:"
 
 #: testmanager/templates/testmanagerstats.html:91
 #: testmanager/templates/testmanagerstats.html:96
 #: testmanager/templates/testmanagerstats.html:113
 #, python-format
 msgid "Format: %(datehint)s"
-msgstr ""
+msgstr "Format: %(datehint)s"
 
 #: testmanager/templates/testmanagerstats.html:95
 #: testmanager/templates/testmanagerstats_compatible.html:81
