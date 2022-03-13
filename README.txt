@@ -190,7 +190,8 @@ descriptions.)
 
 Release 1.9.3 (2022-03-13): 
 
-  o A big effort to update and complete all the translations. Also thanls to longradix for adding Dutch and updating German.
+  o A big effort to update and complete all the translations. 
+    Also thanks to longradix for adding Dutch and updating German and Google Translate for the rest :-)
 
 Release 1.9.2 (2022-03-05): 
 
