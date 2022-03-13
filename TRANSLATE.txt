@@ -1,5 +1,5 @@
 
-To extract the transatable messages from the source code, on Linux:
+To extract the transatable messages from the source code and translate them, on Linux:
 
  1) Make sure you have Trac installed and available in the Python lookup 
     path. 
@@ -13,11 +13,15 @@ To extract the transatable messages from the source code, on Linux:
     pip install babel==2.9.1
 
  2) Open a shell and give the following commands:
- 
+
+    cd testman4trac
+    python setup.py extract_messages
+
+    
+    In case of errors, try the analogous:
+    
     cd testman4trac
     pybabel extract --project=testman4trac --input-dirs=testmanager -o testmanager/locale/messages.pot
-
-    python setup.py extract_messages
 
  3) Check if a translation file for your language already exists, i.e. a directory with your langiage code 
     (for example "it" for italian) exists under the "testman4trac/testmanager/locale" directory.
@@ -33,6 +37,25 @@ To extract the transatable messages from the source code, on Linux:
     Now jump to step 6)
 
  5) Update the line numbers in the translation file according to the updated "messages.pot" file.
+
+    cd testmanager
+    python setup.py update_catalog -l de
+    python setup.py update_catalog_js -l de
+    python setup.py update_catalog -l es
+    python setup.py update_catalog_js -l es
+    python setup.py update_catalog -l fr
+    python setup.py update_catalog_js -l fr
+    python setup.py update_catalog -l it
+    python setup.py update_catalog_js -l it
+    python setup.py update_catalog -l ko
+    python setup.py update_catalog_js -l ko
+    python setup.py update_catalog -l nl
+    python setup.py update_catalog_js -l nl
+    python setup.py update_catalog -l ru
+    python setup.py update_catalog_js -l ru
+
+
+    In case of errors, try the analogous:
 
     cd testmanager
     pybabel update -i locale/messages.pot -l de -o locale/de/LC_MESSAGES/testmanager.po
