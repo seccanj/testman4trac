@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Test Manager for Trac plugin\n"
 "Report-Msgid-Bugs-To: otrebor.dev@gmail.com\n"
-"POT-Creation-Date: 2022-03-05 19:56+0100\n"
+"POT-Creation-Date: 2022-03-14 00:29+0100\n"
 "PO-Revision-Date: 2013-11-30 09:30+0000\n"
 "Last-Translator: valgussev <valgussev@gmail.com>\n"
 "Language: ru\n"
@@ -20,7 +20,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: testmanager/admin.py:44 testmanager/templates/testmanagerstats.html:88
 #: testmanager/templates/testmanagerstats_compatible.html:77
@@ -90,9 +90,8 @@ msgid "Failed to update default Test Catalog template"
 msgstr "Ошибка обновления стандартного шаблона тестового каталога"
 
 #: testmanager/admin.py:230
-#, fuzzy
 msgid "Default Test Case template updated"
-msgstr "Стандартный шаблон тестового каталога обновлен"
+msgstr "Обновлен шаблон тестового набора по умолчанию."
 
 #: testmanager/admin.py:245
 msgid "Failed to update Test Case templates"
@@ -107,10 +106,10 @@ msgid "Template saved"
 msgstr "Шаблон сохранен"
 
 #: testmanager/admin.py:329 testmanager/model.py:920
-#: testmanager/templates/admin_settings.html:41
-#: testmanager/templates/admin_templates.html:30
-#: testmanager/templates/admin_templates.html:61
-#: testmanager/templates/admin_templates.html:152 testmanager/wiki.py:983
+#: testmanager/templates/admin_settings.html:40
+#: testmanager/templates/admin_templates.html:29
+#: testmanager/templates/admin_templates.html:60
+#: testmanager/templates/admin_templates.html:151 testmanager/wiki.py:983
 msgid "Name"
 msgstr "Имя"
 
@@ -135,9 +134,9 @@ msgid "Last Change"
 msgstr "Последнее изменение"
 
 #: testmanager/admin.py:356 testmanager/api.py:1490
-#: testmanager/templates/admin_templates.html:30
-#: testmanager/templates/admin_templates.html:61
-#: testmanager/templates/admin_templates.html:157
+#: testmanager/templates/admin_templates.html:29
+#: testmanager/templates/admin_templates.html:60
+#: testmanager/templates/admin_templates.html:156
 msgid "Description"
 msgstr "Описание"
 
@@ -167,31 +166,34 @@ msgid "An error occurred while generating the test plan."
 msgstr "Возникла ошибка при генерировании Тест-плана"
 
 #: testmanager/api.py:536
-#, fuzzy
 msgid "An error occurred while adding the test case into the selected Test Plans."
-msgstr "Возникла ошибка при добавлении Тест-кейса в Тест-план"
+msgstr ""
+"Произошла ошибка при добавлении тестового примера в выбранные планы "
+"тестирования."
 
 #: testmanager/api.py:567
-#, fuzzy, python-format
+#, python-format
 msgid "The Test Case was already contained in the '%s' Test Plan."
-msgstr "Тест-кейс уже содержится в выбранном Тест-плане"
+msgstr "Тестовый пример уже содержится в плане тестирования '%s'"
 
 #: testmanager/api.py:573
-#, fuzzy, python-format
+#, python-format
 msgid "An error occurred while adding the test case into the '%s' Test Plan."
-msgstr "Возникла ошибка при добавлении Тест-кейса в Тест-план"
+msgstr "Произошла ошибка при добавлении тестового случая в план тестирования «%s»."
 
 #: testmanager/api.py:575
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "An error occurred while adding the test case into the Test Plan with id "
 "'%s'."
-msgstr "Возникла ошибка при добавлении Тест-кейса в Тест-план"
+msgstr ""
+"Произошла ошибка при добавлении тестового случая в план тестирования с "
+"идентификатором '%s'"
 
 #: testmanager/api.py:578
-#, fuzzy, python-format
+#, python-format
 msgid "The Test Case was successfully added to %s Test Plans."
-msgstr "Тест-кейс был успешно добавлен в план"
+msgstr "Тестовый пример был успешно добавлен в %s планов тестирования"
 
 #: testmanager/api.py:627
 msgid "The Test Case(s) were successfully pasted into the catalog."
@@ -236,7 +238,9 @@ msgstr "Тест-план был дублирован успешно."
 #: testmanager/api.py:928
 #, python-format
 msgid "Error moving the test case with id %s and title '%s'."
-msgstr "Ошибка перемещения Тест-кейса с id %s и заголовком '%s'"
+msgstr ""
+"Ошибка при перемещении тестового случая с идентификатором %s и заголовком"
+" '%s'"
 
 #: testmanager/api.py:943
 #, python-format
@@ -444,7 +448,7 @@ msgstr ""
 "Выберете каталог, в который хотите вставить Тест-кейс и нажмите кнопку "
 "'Вставить скопированный Тест-кейс сюда'"
 
-#: testmanager/templates/admin_templates.html:173 testmanager/wiki.py:210
+#: testmanager/templates/admin_templates.html:172 testmanager/wiki.py:210
 #: testmanager/wiki.py:213 testmanager/wiki.py:229 testmanager/wiki.py:233
 #: testmanager/wiki.py:462 testmanager/wiki.py:467 testmanager/wiki.py:767
 #: testmanager/wiki.py:808 testmanager/wiki.py:897 testmanager/wiki.py:961
@@ -488,7 +492,7 @@ msgstr ""
 "Выберете каталог (например этот), в который хотите вставить Тест-кейс и "
 "нажмите кнопку 'Переместить скопированный Тест-кейс сюда'"
 
-#: testmanager/templates/admin_templates.html:119 testmanager/wiki.py:236
+#: testmanager/templates/admin_templates.html:118 testmanager/wiki.py:236
 msgid "Test Catalog"
 msgstr "Каталог тестов"
 
@@ -825,7 +829,7 @@ msgstr ""
 "Перетащите Тест-кейсы, чтобы изменить их порядок, или чтобы переместить "
 "их в другой тестовый каталог"
 
-#: testmanager/templates/testimportresults.html:29 testmanager/wiki.py:1056
+#: testmanager/templates/testimportresults.html:28 testmanager/wiki.py:1056
 msgid "Error"
 msgstr "Ошибка"
 
@@ -923,215 +927,213 @@ msgstr "Изменить статус:"
 msgid "Status change history"
 msgstr "Статус истории изменений"
 
-#: testmanager/templates/admin_settings.html:14
+#: testmanager/templates/admin_settings.html:13
 msgid "Test Manager Settings"
 msgstr "Настройки тестового менеджера"
 
-#: testmanager/templates/admin_settings.html:17
+#: testmanager/templates/admin_settings.html:16
 msgid "Settings for Test Manager"
 msgstr "Настройки тестового менеджера"
 
-#: testmanager/templates/admin_settings.html:20
+#: testmanager/templates/admin_settings.html:19
 msgid "Test Statistics default settings"
 msgstr "Стандартные настройки статистики тестов"
 
-#: testmanager/templates/admin_settings.html:23
+#: testmanager/templates/admin_settings.html:22
 msgid "Number of days shown by default:"
 msgstr "Количество дней, показанных по умолчанию:"
 
-#: testmanager/templates/admin_settings.html:27
+#: testmanager/templates/admin_settings.html:26
 msgid "Number of days between each data point:"
 msgstr "Количество дней между датами:"
 
-#: testmanager/templates/admin_settings.html:34
+#: testmanager/templates/admin_settings.html:33
 msgid "Test Manager visualization settings"
 msgstr "Настройки отображения тестового менеджера"
 
-#: testmanager/templates/admin_settings.html:37
+#: testmanager/templates/admin_settings.html:36
 msgid "Sort a test plan's test cases by:"
 msgstr "Сортировать Тест-кейсы Тест-плана по:"
 
-#: testmanager/templates/admin_settings.html:40
+#: testmanager/templates/admin_settings.html:39
 msgid "User-specified (use \"Organize Test Catalogs\" to set)"
 msgstr "Указанное пользователем (нажмите \"Организовать тестовый каталог\")"
 
-#: testmanager/templates/admin_settings.html:42
+#: testmanager/templates/admin_settings.html:41
 msgid "Modification time"
 msgstr "Время изменения"
 
-#: testmanager/templates/admin_settings.html:47
+#: testmanager/templates/admin_settings.html:46
 msgid "Open Test Cases in a new window:"
 msgstr "Открыть Тест-кейс в новом окне:"
 
-#: testmanager/templates/admin_settings.html:51
+#: testmanager/templates/admin_settings.html:50
 msgid "Default Test Catalog view type:"
 msgstr "Стандартный вид тестового каталога:"
 
-#: testmanager/templates/admin_settings.html:54
-#: testmanager/templates/admin_settings.html:63
+#: testmanager/templates/admin_settings.html:53
+#: testmanager/templates/admin_settings.html:62
 msgid "Tree"
 msgstr "Дерево"
 
-#: testmanager/templates/admin_settings.html:55
-#: testmanager/templates/admin_settings.html:64
+#: testmanager/templates/admin_settings.html:54
+#: testmanager/templates/admin_settings.html:63
 msgid "Table"
 msgstr "Таблица"
 
-#: testmanager/templates/admin_settings.html:60
+#: testmanager/templates/admin_settings.html:59
 msgid "Default Test Plan view type:"
 msgstr "Стандартный виде Тест-плана:"
 
-#: testmanager/templates/admin_settings.html:72
+#: testmanager/templates/admin_settings.html:71
 msgid "Visible Test Catalog columns in table view"
 msgstr "Видимые столбцы тестового каталога в табличном виде"
 
-#: testmanager/templates/admin_settings.html:74
-#: testmanager/templates/admin_settings.html:95
+#: testmanager/templates/admin_settings.html:73
+#: testmanager/templates/admin_settings.html:94
 msgid "Totals Row"
 msgstr "Общее число строк"
 
-#: testmanager/templates/admin_settings.html:82
-#: testmanager/templates/admin_settings.html:103
+#: testmanager/templates/admin_settings.html:81
+#: testmanager/templates/admin_settings.html:102
 msgid "Sum"
 msgstr "Сумма"
 
-#: testmanager/templates/admin_settings.html:83
-#: testmanager/templates/admin_settings.html:104
+#: testmanager/templates/admin_settings.html:82
+#: testmanager/templates/admin_settings.html:103
 msgid "Average"
 msgstr "Среднее"
 
-#: testmanager/templates/admin_settings.html:84
-#: testmanager/templates/admin_settings.html:105
+#: testmanager/templates/admin_settings.html:83
+#: testmanager/templates/admin_settings.html:104
 msgid "Count"
 msgstr "Количество"
 
-#: testmanager/templates/admin_settings.html:93
+#: testmanager/templates/admin_settings.html:92
 msgid "Visible Test Plan columns in table view"
 msgstr "Видимые столбцы Тест-плана в табличном виде"
 
-#: testmanager/templates/admin_templates.html:14
+#: testmanager/templates/admin_templates.html:13
 msgid "Test Manager Templates"
 msgstr "Шаблоны мэнеджера тестов"
 
-#: testmanager/templates/admin_templates.html:21
+#: testmanager/templates/admin_templates.html:20
 msgid "Test Manager Templates Configuration"
 msgstr "Настройки шаблонов менеджера тестов"
 
-#: testmanager/templates/admin_templates.html:24
+#: testmanager/templates/admin_templates.html:23
 msgid "Test Catalog Templates"
 msgstr "Шаблоны каталога тестов"
 
-#: testmanager/templates/admin_templates.html:25
-#: testmanager/templates/admin_templates.html:54
+#: testmanager/templates/admin_templates.html:24
+#: testmanager/templates/admin_templates.html:53
 msgid "No Templates created yet."
 msgstr "Шаблоны еще не созданы"
 
-#: testmanager/templates/admin_templates.html:42
-#: testmanager/templates/admin_templates.html:73
+#: testmanager/templates/admin_templates.html:41
+#: testmanager/templates/admin_templates.html:72
 msgid "Delete Selected"
 msgstr "Удалить выбранные"
 
-#: testmanager/templates/admin_templates.html:48
+#: testmanager/templates/admin_templates.html:47
 msgid "Add Test Catalog Template"
 msgstr "Добавить шаблон тестового каталога"
 
-#: testmanager/templates/admin_templates.html:53
+#: testmanager/templates/admin_templates.html:52
 msgid "Test Case Templates"
 msgstr "Шаблоны Тест-кейсов"
 
-#: testmanager/templates/admin_templates.html:79
+#: testmanager/templates/admin_templates.html:78
 msgid "Add Test Case Template"
 msgstr "Добавить шаблон Тест-кейса"
 
-#: testmanager/templates/admin_templates.html:84
+#: testmanager/templates/admin_templates.html:83
 msgid "Default template for Test Catalog"
 msgstr "Стандартный шаблон для тестового каталога"
 
-#: testmanager/templates/admin_templates.html:88
-#: testmanager/templates/admin_templates.html:103
+#: testmanager/templates/admin_templates.html:87
+#: testmanager/templates/admin_templates.html:102
 msgid "None"
 msgstr "Не выбрано"
 
-#: testmanager/templates/admin_templates.html:93
+#: testmanager/templates/admin_templates.html:92
 msgid "Save Default Test Catalog Template"
 msgstr "Сохранить стандартный шаблон тестового каталога"
 
-#: testmanager/templates/admin_templates.html:99
-#, fuzzy
+#: testmanager/templates/admin_templates.html:98
 msgid "Default template for Test Case"
-msgstr "Стандартный шаблон для тестового каталога"
+msgstr "Шаблон по умолчанию для тестового примера"
 
-#: testmanager/templates/admin_templates.html:108
-#, fuzzy
+#: testmanager/templates/admin_templates.html:107
 msgid "Save Default Test Case Template"
-msgstr "Сохранить стандартный шаблон тестового каталога"
+msgstr "Сохранить шаблон тестового примера по умолчанию"
 
-#: testmanager/templates/admin_templates.html:114
-#, fuzzy
+#: testmanager/templates/admin_templates.html:113
 msgid ""
 "Default Test Case template for specific Test Catalogs (overrides default "
 "above)"
-msgstr "Стандартны шаблон Тест-кейса для каждого тестового каталога"
+msgstr ""
+"Шаблон тестового примера по умолчанию для определенных каталогов тестов "
+"(переопределяет значение по умолчанию выше)"
 
-#: testmanager/templates/admin_templates.html:119
-#, fuzzy
+#: testmanager/templates/admin_templates.html:118
 msgid "Test Catalog ID"
-msgstr "Каталог тестов"
+msgstr "Идентификатор каталога тестов"
 
-#: testmanager/templates/admin_templates.html:119
+#: testmanager/templates/admin_templates.html:118
 msgid "Test Case Template"
 msgstr "Шаблон Тест-кейса"
 
-#: testmanager/templates/admin_templates.html:129
+#: testmanager/templates/admin_templates.html:128
 msgid "Default"
-msgstr ""
+msgstr "По умолчанию"
 
-#: testmanager/templates/admin_templates.html:138
+#: testmanager/templates/admin_templates.html:137
 msgid "Save Template Configuration"
 msgstr "Сохранить конфигурацию шаблона"
 
-#: testmanager/templates/admin_templates.html:148
+#: testmanager/templates/admin_templates.html:147
 msgid "Edit Template"
 msgstr "Редактировать шаблон"
 
-#: testmanager/templates/admin_templates.html:162
+#: testmanager/templates/admin_templates.html:161
 msgid "Content"
 msgstr "Содержимое"
 
-#: testmanager/templates/admin_templates.html:172
+#: testmanager/templates/admin_templates.html:171
 msgid "Submit Changes"
 msgstr "Подтвердить изменения"
 
-#: testmanager/templates/admin_templates.html:178
+#: testmanager/templates/admin_templates.html:177
 msgid "Preview"
 msgstr "Предпросмотр"
 
-#: testmanager/templates/testimportresults.html:19
+#: testmanager/templates/testimportresults.html:18
 msgid "Test Case import results"
 msgstr "Импортировать результаты Тест-кейса"
 
-#: testmanager/templates/testimportresults.html:20
+#: testmanager/templates/testimportresults.html:19
 msgid "Got to the"
 msgstr "Перейти"
 
-#: testmanager/templates/testimportresults.html:21
+#: testmanager/templates/testimportresults.html:20
 msgid "enclosing Test Catalog"
 msgstr "вложенный каталог тестов"
 
-#: testmanager/templates/testimportresults.html:23
+#: testmanager/templates/testimportresults.html:22
 msgid "Errors"
 msgstr "Ошибки"
 
-#: testmanager/templates/testimportresults.html:27
+#: testmanager/templates/testimportresults.html:26
 msgid "Row number"
 msgstr "Номер строки"
 
-#: testmanager/templates/testimportresults.html:28
-#: testmanager/templates/testimportresults.html:49
+#: testmanager/templates/testimportresults.html:27
+#: testmanager/templates/testimportresults.html:48
 msgid "Test Title"
 msgstr "Заголовок теста"
 
-#: testmanager/templates/testimportresults.html:45
+#: testmanager/templates/testimportresults.html:44
 msgid "Test Cases imported successfully"
 msgstr "Тест-кей был импортирован успешно"
 
@@ -1256,4 +1258,7 @@ msgstr "Экспортировать данные в Excel"
 #: testmanager/templates/testmanagerstats_compatible.html:119
 msgid "(CSV format)"
 msgstr "(Формат CSV)"
+
+#~ msgid "# import 'macros.html' as jmacros with context"
+#~ msgstr ""
 

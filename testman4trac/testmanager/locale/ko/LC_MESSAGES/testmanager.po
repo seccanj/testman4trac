@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Test Manager for Trac plugin\n"
 "Report-Msgid-Bugs-To: otrebor.dev@gmail.com\n"
-"POT-Creation-Date: 2022-03-05 19:56+0100\n"
+"POT-Creation-Date: 2022-03-14 00:29+0100\n"
 "PO-Revision-Date: 2013-08-20 01:52+0000\n"
 "Last-Translator: chohy <chohy@yahoo.com>\n"
 "Language: ko\n"
@@ -19,7 +19,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: testmanager/admin.py:44 testmanager/templates/testmanagerstats.html:88
 #: testmanager/templates/testmanagerstats_compatible.html:77
@@ -89,9 +89,8 @@ msgid "Failed to update default Test Catalog template"
 msgstr "기본 테스트 카탈로그 템플릿 업데이트 실패 "
 
 #: testmanager/admin.py:230
-#, fuzzy
 msgid "Default Test Case template updated"
-msgstr "기본 테스트 케이스 템플릿이 업데이트되었습니다. "
+msgstr "기본 테스트 케이스 템플릿 업데이트됨. "
 
 #: testmanager/admin.py:245
 msgid "Failed to update Test Case templates"
@@ -106,10 +105,10 @@ msgid "Template saved"
 msgstr "템플릿이 저장되었습니다. "
 
 #: testmanager/admin.py:329 testmanager/model.py:920
-#: testmanager/templates/admin_settings.html:41
-#: testmanager/templates/admin_templates.html:30
-#: testmanager/templates/admin_templates.html:61
-#: testmanager/templates/admin_templates.html:152 testmanager/wiki.py:983
+#: testmanager/templates/admin_settings.html:40
+#: testmanager/templates/admin_templates.html:29
+#: testmanager/templates/admin_templates.html:60
+#: testmanager/templates/admin_templates.html:151 testmanager/wiki.py:983
 msgid "Name"
 msgstr "이름 "
 
@@ -134,9 +133,9 @@ msgid "Last Change"
 msgstr "마지막 변경 "
 
 #: testmanager/admin.py:356 testmanager/api.py:1490
-#: testmanager/templates/admin_templates.html:30
-#: testmanager/templates/admin_templates.html:61
-#: testmanager/templates/admin_templates.html:157
+#: testmanager/templates/admin_templates.html:29
+#: testmanager/templates/admin_templates.html:60
+#: testmanager/templates/admin_templates.html:156
 msgid "Description"
 msgstr "설명 "
 
@@ -166,31 +165,30 @@ msgid "An error occurred while generating the test plan."
 msgstr "테스트 계획을 생성하는 중에 오류가 발생했습니다. "
 
 #: testmanager/api.py:536
-#, fuzzy
 msgid "An error occurred while adding the test case into the selected Test Plans."
-msgstr "테스트 케이스를 계획에 추가하는 동안 오류가 발생했습니다. "
+msgstr "선택한 테스트 계획에 테스트 케이스를 추가하는 동안 오류가 발생했습니다.. "
 
 #: testmanager/api.py:567
-#, fuzzy, python-format
+#, python-format
 msgid "The Test Case was already contained in the '%s' Test Plan."
-msgstr "지정된 테스트 계획에 테스트 케이스가 이미 포함되어 있습니다. "
+msgstr "지정된 테스트 계획에 테스트 케이스가 이미 포함되어 있습니다 '%s'. "
 
 #: testmanager/api.py:573
-#, fuzzy, python-format
+#, python-format
 msgid "An error occurred while adding the test case into the '%s' Test Plan."
-msgstr "테스트 케이스를 계획에 추가하는 동안 오류가 발생했습니다. "
+msgstr "테스트 케이스를 계획에 추가하는 동안 오류가 발생했습니다 '%s'. "
 
 #: testmanager/api.py:575
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "An error occurred while adding the test case into the Test Plan with id "
 "'%s'."
-msgstr "테스트 케이스를 계획에 추가하는 동안 오류가 발생했습니다. "
+msgstr "테스트 케이스를 계획에 추가하는 동안 오류가 발생했습니다 '%s'. "
 
 #: testmanager/api.py:578
-#, fuzzy, python-format
+#, python-format
 msgid "The Test Case was successfully added to %s Test Plans."
-msgstr "테스트 케이스가 계획에 추가되었습니다. "
+msgstr "테스트 케이스가 계획에 추가되었습니다 '%s'. "
 
 #: testmanager/api.py:627
 msgid "The Test Case(s) were successfully pasted into the catalog."
@@ -235,12 +233,12 @@ msgstr "테스트 계획 복제가 완료되었습니다. "
 #: testmanager/api.py:928
 #, python-format
 msgid "Error moving the test case with id %s and title '%s'."
-msgstr "id가 %s(이)고 타이틀이 '%s'인 테스트 케이스를 이동 중에 오류가 발생했습니다. "
+msgstr "ID가 %s이고 제목이 '%s'인 테스트 케이스를 이동하는 동안 오류가 발생했습니다. "
 
 #: testmanager/api.py:943
 #, python-format
 msgid "Error copying the test case with id %s and title '%s'."
-msgstr "id가 %s(이)고 타이틀이 '%s'인 테스트 케이스를 복사 중에 오류가 발생했습니다. "
+msgstr "ID가 %s이고 제목이 '%s'인 테스트 사례를 복사하는 동안 오류가 발생했습니다. "
 
 #: testmanager/api.py:1478
 msgid "Type"
@@ -437,7 +435,7 @@ msgid ""
 " the copied Test Cases here'. "
 msgstr "테스트 케이스를 붙여넣을 카탈로그를 선택한 후 '복사한 테스트 케이스를 여기로 붙여넣기'를 클릭합니다."
 
-#: testmanager/templates/admin_templates.html:173 testmanager/wiki.py:210
+#: testmanager/templates/admin_templates.html:172 testmanager/wiki.py:210
 #: testmanager/wiki.py:213 testmanager/wiki.py:229 testmanager/wiki.py:233
 #: testmanager/wiki.py:462 testmanager/wiki.py:467 testmanager/wiki.py:767
 #: testmanager/wiki.py:808 testmanager/wiki.py:897 testmanager/wiki.py:961
@@ -475,7 +473,7 @@ msgid ""
 "click on 'Move the copied Test Case here'. "
 msgstr "테스트 케이스를 붙여넣을 카탈로그를 (현재 것 포함) 선택한 후 '복사한 테스트 케이스를 여기로 이동'을 클릭합니다. "
 
-#: testmanager/templates/admin_templates.html:119 testmanager/wiki.py:236
+#: testmanager/templates/admin_templates.html:118 testmanager/wiki.py:236
 msgid "Test Catalog"
 msgstr "테스트 카탈로그 "
 
@@ -802,7 +800,7 @@ msgid ""
 "different catalogs."
 msgstr "테스트 케이스를 재구성하거나 다른 카탈로그로 이동하려면 끌어서 놓으십시오. "
 
-#: testmanager/templates/testimportresults.html:29 testmanager/wiki.py:1056
+#: testmanager/templates/testimportresults.html:28 testmanager/wiki.py:1056
 msgid "Error"
 msgstr "오류 "
 
@@ -895,215 +893,211 @@ msgstr "상태 변경: "
 msgid "Status change history"
 msgstr "상태 변경 기록 "
 
-#: testmanager/templates/admin_settings.html:14
+#: testmanager/templates/admin_settings.html:13
 msgid "Test Manager Settings"
 msgstr "테스트 관리자 설정 "
 
-#: testmanager/templates/admin_settings.html:17
+#: testmanager/templates/admin_settings.html:16
 msgid "Settings for Test Manager"
 msgstr "테스트 관리자에 대한 설정 "
 
-#: testmanager/templates/admin_settings.html:20
+#: testmanager/templates/admin_settings.html:19
 msgid "Test Statistics default settings"
 msgstr "테스트 통계 기본 설정 "
 
-#: testmanager/templates/admin_settings.html:23
+#: testmanager/templates/admin_settings.html:22
 msgid "Number of days shown by default:"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:27
+#: testmanager/templates/admin_settings.html:26
 msgid "Number of days between each data point:"
 msgstr ""
 
-#: testmanager/templates/admin_settings.html:34
+#: testmanager/templates/admin_settings.html:33
 msgid "Test Manager visualization settings"
 msgstr "테스트 관리자 시각화 설정 "
 
-#: testmanager/templates/admin_settings.html:37
+#: testmanager/templates/admin_settings.html:36
 msgid "Sort a test plan's test cases by:"
 msgstr "테스트 계획의 테스트 케이스 정렬 기준: "
 
-#: testmanager/templates/admin_settings.html:40
+#: testmanager/templates/admin_settings.html:39
 msgid "User-specified (use \"Organize Test Catalogs\" to set)"
 msgstr "사용자 지정됨(설정하려면 \"테스트 카탈로그 구성\"을 사용)"
 
-#: testmanager/templates/admin_settings.html:42
+#: testmanager/templates/admin_settings.html:41
 msgid "Modification time"
 msgstr "수정 시간: "
 
-#: testmanager/templates/admin_settings.html:47
+#: testmanager/templates/admin_settings.html:46
 msgid "Open Test Cases in a new window:"
 msgstr "테스트 케이스를 새 창에서 열기: "
 
-#: testmanager/templates/admin_settings.html:51
+#: testmanager/templates/admin_settings.html:50
 msgid "Default Test Catalog view type:"
 msgstr "기본 테스트 카탈로그 뷰 타입: "
 
-#: testmanager/templates/admin_settings.html:54
-#: testmanager/templates/admin_settings.html:63
+#: testmanager/templates/admin_settings.html:53
+#: testmanager/templates/admin_settings.html:62
 msgid "Tree"
 msgstr "트리 "
 
-#: testmanager/templates/admin_settings.html:55
-#: testmanager/templates/admin_settings.html:64
+#: testmanager/templates/admin_settings.html:54
+#: testmanager/templates/admin_settings.html:63
 msgid "Table"
 msgstr "표 "
 
-#: testmanager/templates/admin_settings.html:60
+#: testmanager/templates/admin_settings.html:59
 msgid "Default Test Plan view type:"
 msgstr "기본 테스트 계획 뷰 타입: "
 
-#: testmanager/templates/admin_settings.html:72
+#: testmanager/templates/admin_settings.html:71
 msgid "Visible Test Catalog columns in table view"
 msgstr "표 보기에 표시할 테스트 카탈로그 열"
 
-#: testmanager/templates/admin_settings.html:74
-#: testmanager/templates/admin_settings.html:95
+#: testmanager/templates/admin_settings.html:73
+#: testmanager/templates/admin_settings.html:94
 msgid "Totals Row"
 msgstr "요약 행 "
 
-#: testmanager/templates/admin_settings.html:82
-#: testmanager/templates/admin_settings.html:103
+#: testmanager/templates/admin_settings.html:81
+#: testmanager/templates/admin_settings.html:102
 msgid "Sum"
 msgstr "합계 "
 
-#: testmanager/templates/admin_settings.html:83
-#: testmanager/templates/admin_settings.html:104
+#: testmanager/templates/admin_settings.html:82
+#: testmanager/templates/admin_settings.html:103
 msgid "Average"
 msgstr "평균 "
 
-#: testmanager/templates/admin_settings.html:84
-#: testmanager/templates/admin_settings.html:105
+#: testmanager/templates/admin_settings.html:83
+#: testmanager/templates/admin_settings.html:104
 msgid "Count"
 msgstr "갯수 "
 
-#: testmanager/templates/admin_settings.html:93
+#: testmanager/templates/admin_settings.html:92
 msgid "Visible Test Plan columns in table view"
 msgstr "표 보기에 표시할 테스트 계획 열 "
 
-#: testmanager/templates/admin_templates.html:14
+#: testmanager/templates/admin_templates.html:13
 msgid "Test Manager Templates"
 msgstr "테스트 관리자 템플릿 "
 
-#: testmanager/templates/admin_templates.html:21
+#: testmanager/templates/admin_templates.html:20
 msgid "Test Manager Templates Configuration"
 msgstr "테스트 관리자 템플릿 구성 "
 
-#: testmanager/templates/admin_templates.html:24
+#: testmanager/templates/admin_templates.html:23
 msgid "Test Catalog Templates"
 msgstr "테스트 카탈로그 템플릿 "
 
-#: testmanager/templates/admin_templates.html:25
-#: testmanager/templates/admin_templates.html:54
+#: testmanager/templates/admin_templates.html:24
+#: testmanager/templates/admin_templates.html:53
 msgid "No Templates created yet."
 msgstr "생성된 템플릿이 없습니다. "
 
-#: testmanager/templates/admin_templates.html:42
-#: testmanager/templates/admin_templates.html:73
+#: testmanager/templates/admin_templates.html:41
+#: testmanager/templates/admin_templates.html:72
 msgid "Delete Selected"
 msgstr ""
 
-#: testmanager/templates/admin_templates.html:48
+#: testmanager/templates/admin_templates.html:47
 msgid "Add Test Catalog Template"
 msgstr "테스트 카탈로그 템플릿 추가 "
 
-#: testmanager/templates/admin_templates.html:53
+#: testmanager/templates/admin_templates.html:52
 msgid "Test Case Templates"
 msgstr "테스트 케이스 템플릿 "
 
-#: testmanager/templates/admin_templates.html:79
+#: testmanager/templates/admin_templates.html:78
 msgid "Add Test Case Template"
 msgstr "테스트 케이스 템플릿 추가 "
 
-#: testmanager/templates/admin_templates.html:84
+#: testmanager/templates/admin_templates.html:83
 msgid "Default template for Test Catalog"
 msgstr "테스트 카탈로그에 대한 기본 템플릿 "
 
-#: testmanager/templates/admin_templates.html:88
-#: testmanager/templates/admin_templates.html:103
+#: testmanager/templates/admin_templates.html:87
+#: testmanager/templates/admin_templates.html:102
 msgid "None"
 msgstr "없음 "
 
-#: testmanager/templates/admin_templates.html:93
+#: testmanager/templates/admin_templates.html:92
 msgid "Save Default Test Catalog Template"
 msgstr "기본 테스트 카탈로그 템플릿 저장 "
 
-#: testmanager/templates/admin_templates.html:99
-#, fuzzy
+#: testmanager/templates/admin_templates.html:98
 msgid "Default template for Test Case"
-msgstr "테스트 카탈로그에 대한 기본 템플릿 "
+msgstr "테스트 케이스의 기본 템플릿 "
 
-#: testmanager/templates/admin_templates.html:108
-#, fuzzy
+#: testmanager/templates/admin_templates.html:107
 msgid "Save Default Test Case Template"
-msgstr "기본 테스트 카탈로그 템플릿 저장 "
+msgstr "기본 테스트 케이스 템플릿 저장 "
 
-#: testmanager/templates/admin_templates.html:114
-#, fuzzy
+#: testmanager/templates/admin_templates.html:113
 msgid ""
 "Default Test Case template for specific Test Catalogs (overrides default "
 "above)"
-msgstr "각 테스트 카탈로그에 대한 기본 테스트 케이스 템플릿 "
+msgstr "특정 테스트 카탈로그에 대한 기본 테스트 케이스 템플릿(위의 기본값 무시) "
 
-#: testmanager/templates/admin_templates.html:119
-#, fuzzy
+#: testmanager/templates/admin_templates.html:118
 msgid "Test Catalog ID"
-msgstr "테스트 카탈로그 "
+msgstr "테스트 카탈로그 ID "
 
-#: testmanager/templates/admin_templates.html:119
+#: testmanager/templates/admin_templates.html:118
 msgid "Test Case Template"
 msgstr "테스트 케이스 템플릿 "
 
-#: testmanager/templates/admin_templates.html:129
+#: testmanager/templates/admin_templates.html:128
 msgid "Default"
 msgstr ""
 
-#: testmanager/templates/admin_templates.html:138
+#: testmanager/templates/admin_templates.html:137
 msgid "Save Template Configuration"
 msgstr "템플릿 구성 저장 "
 
-#: testmanager/templates/admin_templates.html:148
+#: testmanager/templates/admin_templates.html:147
 msgid "Edit Template"
 msgstr "템플릿 편집 "
 
-#: testmanager/templates/admin_templates.html:162
+#: testmanager/templates/admin_templates.html:161
 msgid "Content"
 msgstr "콘텐츠"
 
-#: testmanager/templates/admin_templates.html:172
+#: testmanager/templates/admin_templates.html:171
 msgid "Submit Changes"
 msgstr "변경 전송 "
 
-#: testmanager/templates/admin_templates.html:178
+#: testmanager/templates/admin_templates.html:177
 msgid "Preview"
 msgstr "미리보기 "
 
-#: testmanager/templates/testimportresults.html:19
+#: testmanager/templates/testimportresults.html:18
 msgid "Test Case import results"
 msgstr "테스트 케이스 가져오기 결과 "
 
-#: testmanager/templates/testimportresults.html:20
+#: testmanager/templates/testimportresults.html:19
 msgid "Got to the"
 msgstr ""
 
-#: testmanager/templates/testimportresults.html:21
+#: testmanager/templates/testimportresults.html:20
 msgid "enclosing Test Catalog"
 msgstr ""
 
-#: testmanager/templates/testimportresults.html:23
+#: testmanager/templates/testimportresults.html:22
 msgid "Errors"
 msgstr "오류 "
 
-#: testmanager/templates/testimportresults.html:27
+#: testmanager/templates/testimportresults.html:26
 msgid "Row number"
 msgstr "행 번호 "
 
-#: testmanager/templates/testimportresults.html:28
-#: testmanager/templates/testimportresults.html:49
+#: testmanager/templates/testimportresults.html:27
+#: testmanager/templates/testimportresults.html:48
 msgid "Test Title"
 msgstr "테스트 타이틀 "
 
-#: testmanager/templates/testimportresults.html:45
+#: testmanager/templates/testimportresults.html:44
 msgid "Test Cases imported successfully"
 msgstr "테스트 케이스 가져오기 완료 "
 
@@ -1228,4 +1222,7 @@ msgstr "현재 데이터를 Excel로 내보내기 "
 #: testmanager/templates/testmanagerstats_compatible.html:119
 msgid "(CSV format)"
 msgstr "(CSV 형식) "
+
+#~ msgid "# import 'macros.html' as jmacros with context"
+#~ msgstr ""
 
