@@ -8,28 +8,32 @@
       i18n:domain="testmanager"
 	  >
   <xi:include href="layout.html" />
+  <!--
   <xi:include href="macros.html" />
-
-  # import 'macros.html' as jmacros with context
+  --> 
 
   <head>
 
 	<link rel="stylesheet" type="text/css" href="chrome/testmanager/css/stats.css" />
 
+	<!--
     <script type="text/javascript">
         var jQuery_trac_old = $.noConflict(true);
     </script>
-	
+
 	<link href="chrome/testmanager/css/blitzer/jquery-ui-1.10.3.custom.css" rel="stylesheet" type="text/css"/>
 	<script src="chrome/testmanager/js/jquery-1.9.1.js"></script>
 	<script src="chrome/testmanager/js/jquery-ui-1.10.3.custom.js"></script>
-    
+	-->
+
 	<script language="javascript" type="text/javascript" src="chrome/testmanager/js/jquery.flot.js"></script>
 	<script language="javascript" type="text/javascript" src="chrome/testmanager/js/jquery.flot.pie.js"></script>
 
     <script type="text/javascript">
+		/*
         var jQuery_testmanager = $.noConflict(true);
 		$ = jQuery_trac_old;
+		*/
 		
 		var resolution = ${resolution};
 		var baseurl    = "${baseurl}";
@@ -37,18 +41,6 @@
 		var end_date   = "${end_date}";
 
 	</script>
-
-    <script type="text/javascript">
-
-        (function($) {
-            $(document).ready(function() {
-                $("#start_date").datepicker();
-                $("#end_date").datepicker();
-                
-            });
-        })(jQuery_testmanager);	
-		
-    </script>
 
 	<script language="javascript" type="text/javascript" src="chrome/testmanager/js/stats.js"></script>
     
@@ -63,8 +55,6 @@
 
 	<div>
 	<form method="post" id="dt_frm" action="javascript:doRequestData()">
-
-		${jmacros.form_token_input()}
 
 		<div id="tabs">
 			<ul>
@@ -94,15 +84,9 @@
 			<legend>Settings</legend>
 				<span id="period_container">
 					<label for="start_date">Start Date: </label>
-					<input type="text" name="start_date" id="start_date" size="${len(date_hint)}"
-						value="${start_date and format_date(start_date)}" readonly="${readonly}"
-						title="${_('Format: %(datehint)s', datehint=date_hint)}"/>                
-					
+					<input id="start_date" type="text" name="start_date" value="${start_date}" size="10"/>
 					<label for="end_date">End Date: </label>
-					<input type="text" name="end_date" id="end_date" size="${len(date_hint)}"
-						value="${end_date and format_date(end_date)}" readonly="${readonly}"
-						title="${_('Format: %(datehint)s', datehint=date_hint)}"/>                
-
+					<input id="end_date" type="text" name="end_date" value="${end_date}" size="10"/>
 					<label for="resolution">Resolution: </label>
 					<select id="resolution" name="resolution">
 					<option value="1" selected="${resolution=='1' or None}">1 Day</option>
@@ -145,6 +129,11 @@
 				<br />
 				<a id="export_excel" href="">Export this data to Excel</a>&nbsp;&nbsp;&nbsp;(CSV format)
 			</small></div>
+
+			<!--
+			${jmacros.form_token_input()}
+			-->
+
 			</fieldset>
 		</div>
 	</form>

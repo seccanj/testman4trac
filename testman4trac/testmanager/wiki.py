@@ -147,7 +147,7 @@ class WikiTestManagerInterface(Component):
         context = web_context(req)
 
         formatter = Formatter(
-            #self.env, Context.from_request(req, Resource('testmanager'))
+            self.env, #Context.from_request(req, Resource('testmanager'))
             context
             )
         
@@ -248,7 +248,7 @@ class WikiTestManagerInterface(Component):
             buttonLabel = _("Add a Sub-Catalog")
 
         insert2 = tag.div()(
-                    HTML(self._build_catalog_tree(formatter.context, page_name, mode, fulldetails, table_columns, table_columns_map, custom_ctx)),
+                    HTML(self._build_catalog_tree(req, formatter.context, page_name, mode, fulldetails, table_columns, table_columns_map, custom_ctx)),
                     tag.div(class_='testCaseList')(
                         tag.br(), tag.br()
                     ))
@@ -267,6 +267,8 @@ class WikiTestManagerInterface(Component):
                         tag.span(id='catErrorMsgSpan', style='color: red;'),
                         tag.br(),
                         tag.form(id='createTestCatalogForm', action='%s/testcreate' % fix_base_location(req), method='post')(
+                           tag.input(type='hidden', name='__FORM_TOKEN',
+                                     value=req.form_token),
                             tag.input(type='hidden', name='type', value='catalog'),
                             tag.input(type='hidden', name='path', value=cat_name),
                             tag.input(type='text', name='title', size='50'),
@@ -284,6 +286,8 @@ class WikiTestManagerInterface(Component):
                             tag.span(id='errorMsgSpan', style='color: red;'),
                             tag.br(),
                             tag.form(id='createTestCaseForm', action='%s/testcreate' % fix_base_location(req), method='post')(
+                                tag.input(type='hidden', name='__FORM_TOKEN',
+                                            value=req.form_token),
                                 tag.input(type='hidden', name='type', value='testcase'),
                                 tag.input(type='hidden', name='path', value=cat_name),
                                 tag.input(type='text', name='title', size='50'),
@@ -296,6 +300,8 @@ class WikiTestManagerInterface(Component):
                             tag.span(id='errorMsgSpan2', style='color: red;'),
                             tag.br(),
                             tag.form(id='createTestPlanForm', action='%s/testcreate' % fix_base_location(req), method='post')(
+                                tag.input(type='hidden', name='__FORM_TOKEN',
+                                            value=req.form_token),
                                 tag.input(type='hidden', name='mustSubmit', value='false'),
                                 tag.input(type='hidden', name='type', value='testplan'),
                                 tag.input(type='hidden', name='path', value=cat_name),
@@ -339,11 +345,11 @@ class WikiTestManagerInterface(Component):
                     )
 
             insert2.append(tag.div(class_='field')(
-                self._build_testplan_list(cat_name, mode, fulldetails, show_delete_button)
+                self._build_testplan_list(req, cat_name, mode, fulldetails, show_delete_button)
                 ))
 
             insert2.append(tag.div(class_='field')(
-                self._get_object_change_history_markup(test_catalog)
+                self._get_object_change_history_markup(req, test_catalog)
                 ))
 
         insert2.append(tag.div()(tag.br(), tag.br(), tag.br(), tag.br()))
@@ -394,7 +400,7 @@ class WikiTestManagerInterface(Component):
                     )
 
         insert2 = tag.div()(
-                    HTML(self._build_testplan_tree(formatter.context, str(planid), page_name, mode, self.sortby, table_columns, table_columns_map, custom_ctx)),
+                    HTML(self._build_testplan_tree(req, formatter.context, str(planid), page_name, mode, self.sortby, table_columns, table_columns_map, custom_ctx)),
                     tag.div(class_='testCaseList')(
                     tag.br(),
                     self._get_custom_fields_markup(req, tp, tmmodelprovider.get_custom_fields_for_realm('testplan')),
@@ -406,7 +412,7 @@ class WikiTestManagerInterface(Component):
                     tag.br(),
                     ),
                     tag.div(class_='field')(
-                        self._get_object_change_history_markup(tp)
+                        self._get_object_change_history_markup(req, tp)
                         ),
                     tag.div()(
                         HTML(self._build_testcase_change_status_full_menu())
@@ -497,7 +503,7 @@ class WikiTestManagerInterface(Component):
                     HTML(u'&nbsp;&nbsp;'), 
                     tag.input(type='button', id='addToTestPlanTCButton', value=_("Add to a Test Plan"), onclick='addTestCaseToTestplanDialog("'+tc_name+'")'),
                     tag.div(class_='field')(
-                        self._get_object_change_history_markup(test_case)
+                        self._get_object_change_history_markup(req, test_case)
                         ),
                     tag.br(), tag.br(), tag.br(), tag.br()
                     )
@@ -556,8 +562,8 @@ class WikiTestManagerInterface(Component):
                     HTML(u'&nbsp;&nbsp;'), 
                     self._get_remove_from_tp_markup(tp, tc_name, planid),
                     tag.br(), tag.br(), 
-                    self._get_testcase_status_history_markup(formatter, has_status, page_name, planid),
-                    self._get_object_change_history_markup(tcip, ['status']),
+                    self._get_testcase_status_history_markup(req, formatter, has_status, page_name, planid),
+                    self._get_object_change_history_markup(req, tcip, ['status']),
                     tag.br(), tag.br(), tag.br(), tag.br()
                     )
                     
@@ -612,9 +618,9 @@ class WikiTestManagerInterface(Component):
         else:
             return tag.span()()
             
-    def _get_testcase_status_history_markup(self, formatter, has_status, page_name, planid):
+    def _get_testcase_status_history_markup(self, req, formatter, has_status, page_name, planid):
         if has_status:
-            return HTML(self._build_testcase_status_history(planid, page_name))
+            return HTML(self._build_testcase_status_history(req, planid, page_name))
         else:
             return tag.span()()
 
@@ -771,6 +777,7 @@ class WikiTestManagerInterface(Component):
                 </fieldset>
                 <fieldset>
                     <div class="buttons">
+                        <input type="hidden" name="__FORM_TOKEN" value=\"""" + req.form_token + """\" />
                         <input type="hidden" name="cat_name" value="%s" />
                         <input type="button" value='""" + _("Create Test Plan") + """' onclick="createTestPlanConfirm('%s')" style="text-align: right;"></input>
                         <input type="button" value='""" + _("Cancel") + """' onclick="createTestPlanCancel()" style="text-align: right;"></input>
@@ -813,6 +820,7 @@ class WikiTestManagerInterface(Component):
                 </fieldset>
                 <fieldset>
                     <div class="buttons">
+                        <input type="hidden" name="__FORM_TOKEN" value=\"""" + req.form_token + """\" />
                         <input type="button" value='""" + _("Clone Test Plan") + """' onclick="cloneTestPlanConfirm(%s)" style="text-align: right;"></input>
                         <input type="button" value='""" + _("Cancel") + """' onclick="cloneTestPlanCancel()" style="text-align: right;"></input>
                     </div>
@@ -825,9 +833,11 @@ class WikiTestManagerInterface(Component):
         
         return result
     
-    def _get_object_change_history_markup(self, obj, exclude_fields=None):
+    def _get_object_change_history_markup(self, req, obj, exclude_fields=None):
         text = u'<form id="objectChangeHistory" class="printableform"><fieldset id="objectChangeHistoryFields" class="collapsed"><legend class="foldable" style="cursor: pointer;"><a href="#no6"  onclick="expandCollapseSection(\'objectChangeHistoryFields\')">'+_("Object change history")+'</a></legend>'
         
+        text += '<input type="hidden" name="__FORM_TOKEN" value="' + req.form_token + '" />'
+
         text += '<table class="listing"><thead>'
         text += '<tr><th>'+_("Timestamp")+'</th><th>'+_("Author")+'</th><th>'+_("Property")+'</th><th>'+_("Previous Value")+'</th><th>'+_("New Value")+'</th></tr>'
         text += '</thead><tbody>'
@@ -902,6 +912,7 @@ class WikiTestManagerInterface(Component):
                 </fieldset>
                 <fieldset>
                     <div class="buttons">
+                        <input type="hidden" name="__FORM_TOKEN" value=\"""" + req.form_token + """\" />
                         <input type="hidden" name="cat_name" value="%s" />
                         <input type="submit" name="import_file" value='""" + _("Import") + """' style="text-align: right;"></input>
                         <input type="button" value='""" + _("Cancel") + """' onclick="importTestCasesCancel()" style="text-align: right;"></input>
@@ -965,6 +976,7 @@ class WikiTestManagerInterface(Component):
                 </fieldset>
                 <fieldset>
                     <div class="buttons">
+                        <input type="hidden" name="__FORM_TOKEN" value=\"""" + req.form_token + """\" />
                         <input type="hidden" name="cat_name" value="%s" />
                         <input type="hidden" name="planid" value="%s" />
                         <input type="hidden" name="type" value="%s" />
@@ -1029,6 +1041,7 @@ class WikiTestManagerInterface(Component):
                 </fieldset>
                 <fieldset>
                     <div class="buttons">
+                        <input type="hidden" name="__FORM_TOKEN" value=\"""" + req.form_token + """\" />
                         <input type="button" value='""" + _("Add to Test Plan") + """' onclick="addTestCaseToPlan('%s', '%s')" style="text-align: right;"></input>
                         <input type="button" value='""" + _("Cancel") + """' onclick="addTestCaseToPlanCancel()" style="text-align: right;"></input>
                     </div>
@@ -1051,6 +1064,7 @@ class WikiTestManagerInterface(Component):
                 """ + self._build_catalog_organize(cat_name) + """ 
                 <fieldset>
                     <div class="buttons">
+                        <input type="hidden" name="__FORM_TOKEN" value=\"""" + req.form_token + """\" />
                         <input type="hidden" name="test_list" value="" />
                         <input type="hidden" name="path" value=\"""" + cat_name + """\" />
                         <input type="button" name="save" value='""" + _("Save") + """' onclick="postCatalogOrganization()" style="text-align: right;"></input>
@@ -1107,8 +1121,8 @@ class WikiTestManagerInterface(Component):
             tag.script(src='../chrome/testmanager/js/jquery.mjs.nestedSortable.js', type='text/javascript'),
             )
 
-        if self.env.get_version() < 25:
-            common_code.append(tag.script(src='../chrome/testmanager/js/compatibility.js', type='text/javascript'))
+        #if self.env.get_version() < 25:
+        #    common_code.append(tag.script(src='../chrome/testmanager/js/compatibility.js', type='text/javascript'))
 
         try:
             if req.locale is not None:
@@ -1156,7 +1170,7 @@ class WikiTestManagerInterface(Component):
 
         return text    
                 
-    def _build_catalog_tree(self, context, curpage, mode='tree', fulldetails=False, table_columns=None, table_columns_map=None, custom_ctx=None):
+    def _build_catalog_tree(self, req, context, curpage, mode='tree', fulldetails=False, table_columns=None, table_columns_map=None, custom_ctx=None):
         # Determine current catalog name
         cat_name = 'TC'
         if curpage.find('_TC') >= 0:
@@ -1188,7 +1202,10 @@ class WikiTestManagerInterface(Component):
         elif mode == 'tree_table':
             text +='<div style="padding: 0px 0px 10px 10px">'+_("Filter:")+' <input id="tcFilter" title="'+_("Type the test to search for, even more than one word. You can also filter on the test case status (untested, successful, failed).")+'" type="text" size="40" onkeyup="starthighlightTable(\'testcaseList\', this.value)"/>&nbsp;&nbsp;<span id="testcaseList_searchResultsNumberId" style="font-weight: bold;"></span></div>'
             text += '<form id="testCatalogRunBook" class="printableform"><fieldset id="testCatalogRunBookFields" class="expanded">'
-            text += '<table id="testcaseList" class="listing"><thead><tr>';
+
+            text += '<input type="hidden" name="__FORM_TOKEN" value="' + req.form_token + '" />'
+
+            text += '<table id="testcaseList" class="listing"><thead><tr>'
             
             # Prepare a container for calculating and keeping the totals
             totals = {}
@@ -1200,7 +1217,7 @@ class WikiTestManagerInterface(Component):
                     totals[col['name']] = {'operation': col['totals'], 'count': 0, 'sum': 0, 'average': 0}
 
             ind['totals'] = totals
-            text += '</tr></thead><tbody>';
+            text += '</tr></thead><tbody>'
             
             text += self._render_subtree_as_table(context, None, components, ind, 0, table_columns, table_columns_map, custom_ctx, fulldetails)
             
@@ -1211,7 +1228,7 @@ class WikiTestManagerInterface(Component):
         
         return text
     
-    def _build_testplan_tree(self, context, planid, curpage, mode='tree', sortby='custom', table_columns=None, table_columns_map=None, custom_ctx=None):
+    def _build_testplan_tree(self, req, context, planid, curpage, mode='tree', sortby='custom', table_columns=None, table_columns_map=None, custom_ctx=None):
         testmanagersystem = TestManagerSystem(self.env)
         default_status = testmanagersystem.get_default_tc_status()
         
@@ -1239,7 +1256,10 @@ class WikiTestManagerInterface(Component):
         elif mode == 'tree_table':
             text +='<div style="padding: 0px 0px 10px 10px">'+_("Filter:")+' <input id="tcFilter" title="'+_("Type the test to search for, even more than one word. You can also filter on the test case status (untested, successful, failed).")+'" type="text" size="40" onkeyup="starthighlightTable(\'testcaseList\', this.value)"/>&nbsp;&nbsp;<span id="testcaseList_searchResultsNumberId" style="font-weight: bold;"></span></div>'
             text += '<form id="testPlan" class="printableform"><fieldset id="testPlanFields" class="expanded">'
-            text += '<table id="testcaseList" class="listing"><thead><tr>';
+
+            text += '<input type="hidden" name="__FORM_TOKEN" value="' + req.form_token + '" />'
+
+            text += '<table id="testcaseList" class="listing"><thead><tr>'
 
             # Prepare a container for calculating and keeping the totals
             totals = {}
@@ -1252,7 +1272,7 @@ class WikiTestManagerInterface(Component):
 
             ind['totals'] = totals
                     
-            text += '</tr></thead><tbody>';
+            text += '</tr></thead><tbody>'
             
             text += self._render_subtree_as_table(context, planid, components, ind, 0, table_columns, table_columns_map, custom_ctx)
 
@@ -1264,7 +1284,7 @@ class WikiTestManagerInterface(Component):
         return text
 
 
-    def _build_testplan_list(self, curpage, mode, fulldetails, show_delete_button):
+    def _build_testplan_list(self, req, curpage, mode, fulldetails, show_delete_button):
         # Determine current catalog name
         cat_name = 'TC'
         catid = '-1'
@@ -1278,6 +1298,9 @@ class WikiTestManagerInterface(Component):
         markup, num_plans = self._render_testplan_list(catid, mode, fulldetails, show_delete_button)
 
         text = u'<form id="testPlanList" class="printableform"><fieldset id="testPlanListFields" class="collapsed"><legend class="foldable" style="cursor: pointer;"><a href="#no4"  onclick="expandCollapseSection(\'testPlanListFields\')">'+_("Available Test Plans")+' ('+str(num_plans)+')</a></legend>'
+
+        text += '<input type="hidden" name="__FORM_TOKEN" value="' + req.form_token + '" />'
+
         text +='<div style="padding: 0px 0px 10px 10px">'+_("Filter:")+' <input id="tpFilter" title="'+_("Type the test to search for, even more than one word.")+'" type="text" size="40" onkeyup="starthighlightTable(\'testPlanListTable\', this.value)"/>&nbsp;&nbsp;<span id="testPlanListTable_searchResultsNumberId" style="font-weight: bold;"></span></div>'
         text += markup
         text += '</fieldset></form>'
@@ -1879,7 +1902,7 @@ class WikiTestManagerInterface(Component):
         
         return text
         
-    def _build_testcase_status_history(self, planid, curpage):
+    def _build_testcase_status_history(self, req, planid, curpage):
         testmanagersystem = TestManagerSystem(self.env)
         tc_statuses = testmanagersystem.get_tc_statuses_by_name()
 
@@ -1888,7 +1911,9 @@ class WikiTestManagerInterface(Component):
         tcip = TestCaseInPlan(self.env, tc_id, planid)
         
         text = u'<form id="testCaseHistory" class="printableform"><fieldset id="testCaseHistoryFields" class="collapsed"><legend class="foldable" style="cursor: pointer;"><a href="#no3"  onclick="expandCollapseSection(\'testCaseHistoryFields\')">'+_("Status change history")+'</a></legend>'
-        
+
+        text += '<input type="hidden" name="__FORM_TOKEN" value="' + req.form_token + '" />'
+
         text += '<table class="listing"><thead>'
         text += '<tr><th>'+_("Timestamp")+'</th><th>'+_("Author")+'</th><th>'+_("Status")+'</th></tr>'
         text += '</thead><tbody>'

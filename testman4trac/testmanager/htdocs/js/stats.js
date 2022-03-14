@@ -51,161 +51,159 @@ function isDataEmpty(arr) {
 	return isEmpty;
 }
 
-(function($) {
-	$(document).ready(function() {
-		function updateCharts() {
-			var data = [];
-			
-			/***************** FIRST CHART: Test activity ****************/
-			
-			$.ajax({
-				dataType: "json",
-				url: baseurl + "/teststats?content=chartdata"+rqstr(),
-				async: false
-			}).done(function ( ajaxData ) {
-				data = ajaxData;
-			});
-
-			var flotBarPlaceholder = $("#flotBarChartId");
-			flotBarPlaceholder.unbind();
-			
-			$.plot(flotBarPlaceholder, data['testActivity'].series, {
-				xaxis: {
-						ticks: data['testActivity'].xaxis
-					},
-				yaxis: {
-						min: 0
-					},
-				legend: {
-						show: true,
-						backgroundColor: "#EEEEEE",
-						backgroundOpacity: 0.5,
-						container: $("#flotBarChartLegendId")
-					}				
-				});
-			
-			/***************** SECOND CHART: Test current status ****************/
-
-			var flotPiePlaceholder = $("#flotPieChartId");
-			var flotPieChartEmptyId = $("#flotPieChartEmptyId");
-			var flotPiePlaceholderReplacement = $("#flotPieChartReplacementId");
-			
-			if ($("#testplan").val() == '__all') {
-				flotPiePlaceholder.hide();
-				flotPieChartEmptyId.hide();
-				flotPiePlaceholderReplacement.show();
-			} else {
-				flotPiePlaceholderReplacement.hide();
-				
-				if (isDataEmpty(data['testStatus'].series)) {
-					flotPiePlaceholder.hide();
-					flotPieChartEmptyId.show();
-				} else {
-					flotPiePlaceholder.show();
-					flotPieChartEmptyId.hide();
-					
-					flotPiePlaceholder.unbind();
-				
-					$.plot(flotPiePlaceholder, data['testStatus'].series, {
-						series: {
-								pie: { 
-									show: true,
-									radius: 1,
-									label: {
-										show: true,
-										radius: 1,
-										formatter: labelFormatter,
-										background: {
-											color: "#EEEEEE",
-											opacity: 0.8
-										}
-									}
-								}							
-							},
-						legend: {
-								show: true,
-								backgroundColor: "#EEEEEE",
-								backgroundOpacity: 0.5,
-								container: $("#flotPieChartLegendId")
-							}						
-					});
-				}
-			}
-
-			/***************** THIRD CHART: Tickets against plans ****************/
-			
-			var flotTicketPlaceholder = $("#flotTicketChartId");
-			flotTicketPlaceholder.unbind();
-			
-			$.plot(flotTicketPlaceholder, data['ticketsTrend'].series, {
-				xaxis: {
-						ticks: data['ticketsTrend'].xaxis
-					},
-				yaxis: {
-						min: 0
-					},
-				legend: {
-						show: true,
-						backgroundColor: "#EEEEEE",
-						backgroundOpacity: 0.5,
-						container: $("#flotTicketChartLegendId")
-					}
-				});
-		}
+$(document).ready(function() {
+	function updateCharts() {
+		var data = [];
 		
-		$("#updateChartButtonId").click(function () {
-			setProvided();
-			updateCharts();
-			updateStaticURL();
+		/***************** FIRST CHART: Test activity ****************/
+		
+		$.ajax({
+			dataType: "json",
+			url: baseurl + "/teststats?content=chartdata"+rqstr(),
+			async: false
+		}).done(function ( ajaxData ) {
+			data = ajaxData;
 		});
 
-		function rqstr() {
-			
-			return  "&start_date=" + $("#start_date").val() + 
-				"&end_date=" + $("#end_date").val() +
-				"&resolution=" + $("#resolution").val() +
-				"&testplan=" + $("#testplan").val();
-		}
+		var flotBarPlaceholder = $("#flotBarChartId");
+		flotBarPlaceholder.unbind();
+		
+		$.plot(flotBarPlaceholder, data['testActivity'].series, {
+			xaxis: {
+					ticks: data['testActivity'].xaxis
+				},
+			yaxis: {
+					min: 0
+				},
+			legend: {
+					show: true,
+					backgroundColor: "#EEEEEE",
+					backgroundOpacity: 0.5,
+					container: $("#flotBarChartLegendId")
+				}				
+			});
+		
+		/***************** SECOND CHART: Test current status ****************/
 
-		function updateStaticURL(){
-			urlAddress = baseurl + "/teststats?content=render" + rqstr();
+		var flotPiePlaceholder = $("#flotPieChartId");
+		var flotPieChartEmptyId = $("#flotPieChartEmptyId");
+		var flotPiePlaceholderReplacement = $("#flotPieChartReplacementId");
+		
+		if ($("#testplan").val() == '__all') {
+			flotPiePlaceholder.hide();
+			flotPieChartEmptyId.hide();
+			flotPiePlaceholderReplacement.show();
+		} else {
+			flotPiePlaceholderReplacement.hide();
 			
-			$("#static_url").html(urlAddress);
-			$("#export_excel").attr("href", baseurl + "/teststats?content=downloadcsv" + rqstr());
-		}
-
-		function setProvided(res, mile){
-			if (!res) {
-				res = resolution;
+			if (isDataEmpty(data['testStatus'].series)) {
+				flotPiePlaceholder.hide();
+				flotPieChartEmptyId.show();
+			} else {
+				flotPiePlaceholder.show();
+				flotPieChartEmptyId.hide();
+				
+				flotPiePlaceholder.unbind();
+			
+				$.plot(flotPiePlaceholder, data['testStatus'].series, {
+					series: {
+							pie: { 
+								show: true,
+								radius: 1,
+								label: {
+									show: true,
+									radius: 1,
+									formatter: labelFormatter,
+									background: {
+										color: "#EEEEEE",
+										opacity: 0.8
+									}
+								}
+							}							
+						},
+					legend: {
+							show: true,
+							backgroundColor: "#EEEEEE",
+							backgroundOpacity: 0.5,
+							container: $("#flotPieChartLegendId")
+						}						
+				});
 			}
-			
-			$("#resolution").selectedIndex = {1:0, 7:1, 14:2, 30:3, 60:4, 90:5, 180:6, 360:7}[res];
 		}
 
+		/***************** THIRD CHART: Tickets against plans ****************/
+		
+		var flotTicketPlaceholder = $("#flotTicketChartId");
+		flotTicketPlaceholder.unbind();
+		
+		$.plot(flotTicketPlaceholder, data['ticketsTrend'].series, {
+			xaxis: {
+					ticks: data['ticketsTrend'].xaxis
+				},
+			yaxis: {
+					min: 0
+				},
+			legend: {
+					show: true,
+					backgroundColor: "#EEEEEE",
+					backgroundOpacity: 0.5,
+					container: $("#flotTicketChartLegendId")
+				}
+			});
+	}
+	
+	$("#updateChartButtonId").click(function () {
 		setProvided();
 		updateCharts();
 		updateStaticURL();
-		
-		chartTabs = $('#tabs').tabs(
-			{
-				select: function(event, ui) {
-					switch (ui.index) {
-						case 0:
-							$('#period_container').show();
-							$('#bookmark_container').show();
-							break;
-						case 1:
-							$('#period_container').hide();
-							$('#bookmark_container').hide();
-							break;
-						case 2:
-							$('#period_container').show();
-							$('#bookmark_container').hide();
-							break;
-					}
-			   }
-			}
-		);
-		
 	});
-})(jQuery_testmanager);	
+
+	function rqstr() {
+		
+		return  "&start_date=" + $("#start_date").val() + 
+			"&end_date=" + $("#end_date").val() +
+			"&resolution=" + $("#resolution").val() +
+			"&testplan=" + $("#testplan").val();
+	}
+
+	function updateStaticURL(){
+		urlAddress = baseurl + "/teststats?content=render" + rqstr();
+		
+		$("#static_url").html(urlAddress);
+		$("#export_excel").attr("href", baseurl + "/teststats?content=downloadcsv" + rqstr());
+	}
+
+	function setProvided(res, mile){
+		if (!res) {
+			res = resolution;
+		}
+		
+		$("#resolution").selectedIndex = {1:0, 7:1, 14:2, 30:3, 60:4, 90:5, 180:6, 360:7}[res];
+	}
+
+	setProvided();
+	updateCharts();
+	updateStaticURL();
+	
+	chartTabs = $('#tabs').tabs(
+		{
+			select: function(event, ui) {
+				switch (ui.index) {
+					case 0:
+						$('#period_container').show();
+						$('#bookmark_container').show();
+						break;
+					case 1:
+						$('#period_container').hide();
+						$('#bookmark_container').hide();
+						break;
+					case 2:
+						$('#period_container').show();
+						$('#bookmark_container').hide();
+						break;
+				}
+			}
+		}
+	);
+	
+});

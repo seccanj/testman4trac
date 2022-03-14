@@ -9,8 +9,6 @@
 
   <xi:include href="admin.html" />
 
-  # import 'macros.html' as jmacros with context
-
   <head>
     <title>Test Manager Templates</title>
   </head>
@@ -27,7 +25,9 @@
         <div id="tcat_table" py:if="not len(tcat_templates)">No Templates created yet.</div>
         <form id="tcat_table" method="post" py:if="len(tcat_templates)">
 
-          ${jmacros.form_token_input()}
+        <!--
+        ${jmacros.form_token_input()}
+        -->
 
           <table class="listing">
             <thead>
@@ -50,7 +50,9 @@
         <br />
         <form id="tcat_add" method="post">
 
-          ${jmacros.form_token_input()}
+        <!--
+        ${jmacros.form_token_input()}
+        -->
 
           <input type="text" name="tcat_add_name" value="$tcat_add_name" size="40" />
           <input type="submit" name="tcat_add" value="${_('Add Test Catalog Template')}" />
@@ -64,7 +66,9 @@
         </div>
         <form id="tc_table" method="post" py:if="len(tc_templates)">
 
-          ${jmacros.form_token_input()}
+        <!--
+        ${jmacros.form_token_input()}
+        -->
 
           <table class="listing">
             <thead>
@@ -87,7 +91,9 @@
         <br />
         <form id="tc_add" method="post">
 
-          ${jmacros.form_token_input()}
+        <!--
+        ${jmacros.form_token_input()}
+        -->
 
           <input type="text" name="tc_add_name" value="$tc_add_name" size="40" />
           <input type="submit" name="tc_add" value="${_('Add Test Case Template')}" />
@@ -98,7 +104,9 @@
         <legend>Default template for Test Catalog</legend>
         <form method="post">
 
-          ${jmacros.form_token_input()}
+        <!--
+        ${jmacros.form_token_input()}
+        -->
 
           <div class="field">
             <select size="1" name="tcat_default">
@@ -116,7 +124,9 @@
         <legend>Default template for Test Case</legend>
         <form method="post">
 
-          ${jmacros.form_token_input()}
+        <!--
+        ${jmacros.form_token_input()}
+        -->
 
           <div class="field">
             <select size="1" name="tc_default">
@@ -134,7 +144,9 @@
         <legend>Default Test Case template for specific Test Catalogs (overrides default above)</legend>
         <form method="post">
 
-          ${jmacros.form_token_input()}
+        <!--
+        ${jmacros.form_token_input()}
+        -->
 
           <table class="listing">
             <thead>
@@ -171,7 +183,9 @@
       <h2>Edit Template</h2>
       <form id="t_edit" method="post">
 
+        <!--
         ${jmacros.form_token_input()}
+        -->
 
         <table>
           <tr>

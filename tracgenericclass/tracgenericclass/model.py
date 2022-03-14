@@ -291,7 +291,7 @@ class AbstractVariableFieldsObject(object):
     def _fetch_object(self, key, dbb=None):
         self.env.log.debug('>>> _fetch_object')
     
-        with env.db_query as db:
+        with self.env.db_query as db:
             if not self.pre_fetch_object(db):
                 self.env.log.debug('<<< _fetch_object (pre_fetch_object returned False)')
                 return
@@ -702,7 +702,7 @@ class AbstractVariableFieldsObject(object):
             for k in self.get_key_prop_names():
                 sql_where += " AND " + k + "=%%s" 
 
-            with env.db_query as db:
+            with self.env.db_query as db:
                 cursor = db.cursor()
 
                 cursor.execute(("SELECT time,author,field,oldvalue,newvalue FROM %s_change " + sql_where+ " ORDER BY time DESC")
@@ -786,7 +786,7 @@ class AbstractVariableFieldsObject(object):
         """
         self.env.log.debug('>>> list_matching_objects')
         
-        with env.db_query as db:
+        with self.env.db_query as db:
             self.pre_list_matching_objects(db)
 
             cursor = db.cursor()

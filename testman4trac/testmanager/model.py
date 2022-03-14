@@ -168,7 +168,7 @@ class TestCatalog(AbstractTestDescription):
         
         cat_re = re.compile('^TT[0-9]*$')
         
-        for tc in tc_search.list_matching_objects(exact_match=False, db=db):
+        for tc in tc_search.list_matching_objects(exact_match=False):
             # Only return direct sub-catalogs and exclude test cases
             if cat_re.match(tc['page_name'].partition(self.values['page_name']+'_')[2]) :
                 yield tc
@@ -191,7 +191,7 @@ class TestCatalog(AbstractTestDescription):
         tc_search = TestCase(self.env)
         tc_search['page_name'] = self.values['page_name'] + ('_TC%', '%_TC%')[deep]
         
-        for tc in tc_search.list_matching_objects(exact_match=False, db=db):
+        for tc in tc_search.list_matching_objects(exact_match=False):
             self.env.log.debug('    ---> Found testcase %s' % tc['id'])
             if plan_id is None:
                 yield tc
@@ -218,7 +218,7 @@ class TestCatalog(AbstractTestDescription):
         tp_search['contains_all'] = None
         tp_search['freeze_tc_versions'] = None
         
-        for tp in tp_search.list_matching_objects(db=db):
+        for tp in tp_search.list_matching_objects():
             yield tp
 
         self.env.log.debug('<<< list_testplans')
@@ -226,7 +226,7 @@ class TestCatalog(AbstractTestDescription):
     def get_last_order(self, dbb=None):
         tcat_page_filter = "%s_TC%%" % self.values['page_name']
         
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
             cursor.execute("SELECT max(exec_order) FROM testcase WHERE page_name LIKE %s",
                 (tcat_page_filter,))
@@ -303,12 +303,12 @@ class TestCatalog(AbstractTestDescription):
         AbstractTestDescription.pre_delete(self, db)
         
         self.env.log.debug("Deleting all test cases related to this catalog id '%s'" % self['id'])
-        for tc in self.list_testcases(db=db):
-            tc.delete(db=db)
+        for tc in self.list_testcases(db):
+            tc.delete(db)
             
         self.env.log.debug("Deleting all sub catalogs in this catalog id '%s'" % self['id'])
-        for tcat in self.list_subcatalogs(db=db):
-            tcat.delete(db=db)
+        for tcat in self.list_subcatalogs(db):
+            tcat.delete(db)
         
         return True
 
@@ -321,7 +321,7 @@ class TestCatalog(AbstractTestDescription):
         self.env.log.debug("Deleting all test plans related to this catalog id '%s'" % self['id'])
 
         for tp in self.list_testplans(db):
-            tp.delete(db=db)
+            tp.delete(db)
 
         AbstractTestDescription.post_delete(self, db)
 
@@ -430,7 +430,7 @@ class TestCase(AbstractTestDescription):
                 # Remove test case from all the plans
                 tcip_search = TestCaseInPlan(self.env)
                 tcip_search['id'] = self.values['id']
-                for tcip in tcip_search.list_matching_objects(db=db):
+                for tcip in tcip_search.list_matching_objects():
                     tcip.delete(db)
 
             # Update self properties and save
@@ -448,7 +448,7 @@ class TestCase(AbstractTestDescription):
         """
         self.env.log.debug('>>> get_related_tickets')
     
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
             cursor.execute("SELECT id FROM ticket WHERE id in " +
                 "(SELECT ticket FROM ticket_custom WHERE name='testcaseid' AND value=%s)",
@@ -581,7 +581,7 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
         Returns an ordered list of status changes, along with timestamp
         and author, starting from the most recent.
         """
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
 
             sql = "SELECT time, author, status FROM testcasehistory WHERE id=%s AND planid=%s ORDER BY time DESC"
@@ -597,7 +597,7 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
         """
         self.env.log.debug('>>> get_related_tickets')
     
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
             cursor.execute("SELECT id FROM ticket WHERE id in " +
                 "(SELECT ticket FROM ticket_custom WHERE name='testcaseid' AND value=%s) " +
@@ -745,7 +745,7 @@ class TestPlan(AbstractVariableFieldsObject):
         #self.env.log.debug("Deleting all test cases in the plan...")
         #tcip_search = TestCaseInPlan(self.env)
         #tcip_search['planid'] = self.values['id']
-        #for tcip in tcip_search.list_matching_objects(db=db):
+        #for tcip in tcip_search.list_matching_objects(db):
         #    self.env.log.debug("Deleting test case in plan, with id %s" % tcip['id'])
         #    tcip.delete(db)
 
@@ -770,7 +770,7 @@ class TestPlan(AbstractVariableFieldsObject):
         """
         self.env.log.debug('>>> get_selected_testcases')
         
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
 
             cursor.execute('SELECT id FROM testcaseinplan WHERE planid = %s', (self.values['id'],))

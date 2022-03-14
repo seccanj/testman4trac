@@ -34,21 +34,31 @@ from tracgenericclass.util import *
 
 
 try:
-    from trac.util.datefmt import (utc, parse_date, 
+    from trac.util import datefmt
+    from trac.util.datefmt import (parse_date, 
                                    get_date_format_hint, 
-                                   pretty_timedelta, format_datetime, format_date, format_time,
-                                   from_utimestamp, http_date, utc, is_24_hours,
+                                   format_date, is_24_hours,
                                    user_time, get_date_format_jquery_ui, 
                                    get_time_format_jquery_ui, get_month_names_jquery_ui,
                                    get_day_names_jquery_ui, get_timezone_list_jquery_ui,
+                                   datetime_now,
+                                   get_period_names_jquery_ui, get_timepicker_separator_jquery_ui,
                                    get_first_week_day_jquery_ui)
+
     compatibility = False
 
 except ImportError:
     compatibility = True
 
 # TODO To be removed
-compatibility = True
+#compatibility = True
+
+try:
+    from babel import Locale
+except ImportError:
+    locale_en = None
+else:
+    locale_en = Locale.parse('en_US')
 
 try:
     from testmanager.api import _, tag_, N_
@@ -107,7 +117,7 @@ class TestStatsPlugin(Component):
         if at_date:
             dates_condition += " AND time <= %s" % to_any_timestamp(at_date)
 
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
 
             cursor.execute("SELECT COUNT(*) FROM wiki WHERE name LIKE '%s' AND version = 1 %s" % (path_filter, dates_condition))
@@ -125,7 +135,7 @@ class TestStatsPlugin(Component):
         specified status between from_date and at_date.
         '''
         
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
 
             if testplan == None or testplan == '':
@@ -155,7 +165,7 @@ class TestStatsPlugin(Component):
             testplan_filter = "INNER JOIN ticket_custom AS tcus ON t.id = tcus.ticket AND tcus.name = 'planid' AND tcus.value = '%s'" % testplan
 
 
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
 
             #self.env.log.debug("select COUNT(*) FROM ticket AS t %s WHERE time > %s and time <= %s" % 
@@ -180,7 +190,7 @@ class TestStatsPlugin(Component):
         else:
             testplan_filter = "INNER JOIN ticket_custom AS tcus ON tch.ticket = tcus.ticket AND tcus.name = 'planid' AND tcus.value = '%s'" % testplan
 
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
 
             #self.env.log.debug("select COUNT(*) FROM ticket_change AS tch %s WHERE tch.field = 'status' AND tch.newvalue = '%s' AND tch.time > %s AND tch.time <= %s"
@@ -227,7 +237,8 @@ class TestStatsPlugin(Component):
         # Stats start from (about) two years back
         beginning = today - timedelta(720)        
 
-        if not None in [req.args.get('end_date'), req.args.get('start_date'), req.args.get('resolution')]:
+        if not None in [req.args.get('end_date'), req.args.get('start_date'), req.args.get('resolution')] \
+           and not 'undefined' in [req.args.get('end_date'), req.args.get('start_date'), req.args.get('resolution')]:
             # form submit
             grab_at_date = req.args.get('end_date')
             grab_from_date = req.args.get('start_date')
@@ -253,8 +264,15 @@ class TestStatsPlugin(Component):
                 at_date = parse_date(grab_at_date, req.tz)+timedelta(2)
                 from_date = parse_date(grab_from_date, req.tz)
             else:
-                at_date = user_time(req, parse_date, grab_at_date, hint='date')
-                from_date = user_time(req, parse_date, grab_from_date, hint='date')
+                if Locale:
+                    at_date = parse_date(grab_at_date, req.tz, locale_en)+timedelta(2)
+                    from_date = parse_date(grab_from_date, req.tz, locale_en)
+                else:
+                    at_date = parse_date(grab_at_date, req.tz)+timedelta(2)
+                    from_date = parse_date(grab_from_date, req.tz)
+
+                #at_date = user_time(req, parse_date, grab_at_date, hint='date')
+                #from_date = user_time(req, parse_date, grab_from_date, hint='date')
 
             graph_res = int(grab_resolution)
 
@@ -461,14 +479,15 @@ class TestStatsPlugin(Component):
 
             template_name = 'testmanagerstats.html'
             if compatibility:
-                data['start_date'] = format_date(from_date)
-                data['end_date'] = format_date(at_date)
+                data['start_date'] = format_date(from_date, 'iso8601', datefmt.utc)
+                data['end_date'] = format_date(at_date, 'iso8601', datefmt.utc)
 
                 template_name = 'testmanagerstats_compatible.html'
 
             else:
-                data['start_date'] = from_date
-                data['end_date'] = at_date
+                data['start_date'] = format_date(from_date, 'iso8601', datefmt.utc)
+                data['end_date'] = format_date(at_date, 'iso8601', datefmt.utc)
+
 
                 Chrome(self.env).add_jquery_ui(req)
                 
@@ -477,21 +496,29 @@ class TestStatsPlugin(Component):
                         })
                         
                 is_iso8601 = req.lc_time == 'iso8601'
+                now = datetime_now(req.tz)
+                tzoffset = now.strftime('%z')
+                default_timezone = (-1 if tzoffset.startswith('-') else 1) * \
+                                (int(tzoffset[1:3]) * 60 + int(tzoffset[3:5]))
+                timezone_list = get_timezone_list_jquery_ui(now) \
+                                if is_iso8601 else None
+
                 add_script_data(req, jquery_ui={
                     'month_names': get_month_names_jquery_ui(req),
                     'day_names': get_day_names_jquery_ui(req),
                     'date_format': get_date_format_jquery_ui(req.lc_time),
                     'time_format': get_time_format_jquery_ui(req.lc_time),
                     'ampm': not is_24_hours(req.lc_time),
+                    'period_names': get_period_names_jquery_ui(req),
                     'first_week_day': get_first_week_day_jquery_ui(req),
-                    'timepicker_separator': 'T' if is_iso8601 else ' ',
+                    'timepicker_separator': get_timepicker_separator_jquery_ui(req),
                     'show_timezone': is_iso8601,
-                    'timezone_list': get_timezone_list_jquery_ui() \
-                                     if is_iso8601 else [],
-                    'timezone_iso8601': is_iso8601,
+                    'default_timezone': default_timezone,
+                    'timezone_list': timezone_list,
+                    'timezone_iso8601': is_iso8601
                 })
                     
-            return template_name, data
+            return template_name, data, None
  
     # ITemplateProvider methods
     def get_templates_dirs(self):

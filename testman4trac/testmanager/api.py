@@ -151,7 +151,7 @@ class TestManagerSystem(Component):
 
     def get_config_property(self, propname):
         try:
-            with env.db_query as db:
+            with self.env.db_query as db:
                 cursor = db.cursor()
                 sql = "SELECT value FROM testconfig WHERE propname=%s"
                 
@@ -231,7 +231,7 @@ class TestManagerSystem(Component):
         result += '<tr><th>'+_("Timestamp")+'</th><th>'+_("Author")+'</th><th>'+_("Status")+'</th></tr>'
         result += '</thead><tbody>'
         
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
 
             sql = "SELECT time, author, status FROM testcasehistory WHERE id='"+str(id)+"' AND planid='"+str(planid)+"' ORDER BY time DESC"
@@ -252,7 +252,7 @@ class TestManagerSystem(Component):
     def list_all_testplans(self):
         """Returns a list of all test plans."""
 
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
 
             sql = "SELECT id, catid, page_name, name, author, time FROM testplan ORDER BY catid, id"
@@ -1167,7 +1167,7 @@ class TestManagerSystem(Component):
 
     def get_template_by_id(self, t_id):
         """ Returns a template text by its id """
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
 
             try:
@@ -1186,7 +1186,7 @@ class TestManagerSystem(Component):
 
     def get_template_by_name(self, t_name, t_type):
         """ Get a single template by name and type """
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
             
             try:
@@ -1240,7 +1240,7 @@ class TestManagerSystem(Component):
         """ Get all templates of desired type """
         items = []
 
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
             
             try:
@@ -1259,7 +1259,7 @@ class TestManagerSystem(Component):
 
     def template_exists(self, name, t_type):
         """ Check if a given template with desired name and type already exists """
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
             
             try:
@@ -1278,7 +1278,7 @@ class TestManagerSystem(Component):
 
     def template_in_use(self, t_id):
         """ Check if a given Test Case template is in use """
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
             
             try:
@@ -1302,7 +1302,7 @@ class TestManagerSystem(Component):
         
         # TODO: Use the TestCatalog class instead
         
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
             cursor.execute("SELECT id, page_name from testcatalog")
             items = []
@@ -1741,7 +1741,7 @@ class TestManagerSystem(Component):
         return do_sort
         
     def list_matching_subpages(self, curpage):
-        with env.db_query as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
 
             sql = "SELECT w1.name, w1.text, w1.version FROM wiki w1, (SELECT name, max(version) as ver FROM wiki WHERE name LIKE '%s%%' GROUP BY name) w2 WHERE w1.version = w2.ver AND w1.name = w2.name ORDER BY w2.name" % curpage

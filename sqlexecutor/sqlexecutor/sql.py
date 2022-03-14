@@ -125,7 +125,7 @@ class SqlExecutor(Component):
             except:
                 self.env.log.error(formatExceptionInfo())
             
-            return 'result.html', data
+            return 'result.html', data, None
 
 
     # ITemplateProvider methods

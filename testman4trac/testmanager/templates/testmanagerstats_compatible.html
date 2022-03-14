@@ -5,54 +5,56 @@
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:py="http://genshi.edgewall.org/"
-      i18n:domain="testmanager">
-
+      i18n:domain="testmanager"
+	  >
   <xi:include href="layout.html" />
   <!--
   <xi:include href="macros.html" />
-  -->
-
-  # import 'macros.html' as jmacros with context
+  --> 
 
   <head>
 
-    <link rel="stylesheet" type="text/css" href="chrome/testmanager/css/stats.css" />
+	<link rel="stylesheet" type="text/css" href="chrome/testmanager/css/stats.css" />
 
+	<!--
     <script type="text/javascript">
         var jQuery_trac_old = $.noConflict(true);
     </script>
-    
-    <link href="chrome/testmanager/css/blitzer/jquery-ui-1.10.3.custom.css" rel="stylesheet" type="text/css"/>
-    <script src="chrome/testmanager/js/jquery-1.9.1.js"></script>
-    <script src="chrome/testmanager/js/jquery-ui-1.10.3.custom.js"></script>
 
-    <script language="javascript" type="text/javascript" src="chrome/testmanager/js/jquery.flot.js"></script>
-    <script language="javascript" type="text/javascript" src="chrome/testmanager/js/jquery.flot.pie.js"></script>
-    
+	<link href="chrome/testmanager/css/blitzer/jquery-ui-1.10.3.custom.css" rel="stylesheet" type="text/css"/>
+	<script src="chrome/testmanager/js/jquery-1.9.1.js"></script>
+	<script src="chrome/testmanager/js/jquery-ui-1.10.3.custom.js"></script>
+	-->
+
+	<script language="javascript" type="text/javascript" src="chrome/testmanager/js/jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="chrome/testmanager/js/jquery.flot.pie.js"></script>
+
     <script type="text/javascript">
+		/*
         var jQuery_testmanager = $.noConflict(true);
-        $ = jQuery_trac_old;
-        
-        var resolution = ${resolution};
-        var baseurl    = "${baseurl}";
-        var start_date = "${start_date}";
-        var end_date   = "${end_date}";
-    </script>
+		$ = jQuery_trac_old;
+		*/
+		
+		var resolution = ${resolution};
+		var baseurl    = "${baseurl}";
+		var start_date = "${start_date}";
+		var end_date   = "${end_date}";
 
-    <script language="javascript" type="text/javascript" src="chrome/testmanager/js/stats.js"></script>
+	</script>
 
+	<script language="javascript" type="text/javascript" src="chrome/testmanager/js/stats.js"></script>
+    
   </head>
 
   <body class="yui-skin-sam">
 	<p></p>
+
 	<span class="chart_title">
 	<h1>Test Management Statistics</h1>
 	</span>
 
 	<div>
 	<form method="post" id="dt_frm" action="javascript:doRequestData()">
-
-		${jmacros.form_token_input()}
 
 		<div id="tabs">
 			<ul>
@@ -79,7 +81,7 @@
 
 		<div id="settingsContainer">
 			<fieldset id="Settings">
-				<legend>Settings</legend>
+			<legend>Settings</legend>
 				<span id="period_container">
 					<label for="start_date">Start Date: </label>
 					<input id="start_date" type="text" name="start_date" value="${start_date}" size="10"/>
@@ -95,8 +97,11 @@
 					<option value="90" selected="${resolution=='90' or None}">3 Months</option>
 					<option value="180" selected="${resolution=='180' or None}">6 Months</option>
 					<option value="360" selected="${resolution=='360' or None}">1 Year</option>
-					</select>
+				</select>
 				</span>
+				<div>
+					<span class="hint" i18n:msg="datehint">Format: $date_hint</span>
+				</div>
 				<label for="testplan">Test Plan: </label>
 				<select id="testplan" name="testplan">
 					<option value="__all">All Test Plans</option>
@@ -105,24 +110,30 @@
 					</py:for> 
 				</select>
 				<input id="updateChartButtonId" type="button" name="Update Chart" value="Update Chart" />
-				<p></p>
-				<div id="bookmark_container" class="help"><small>
-					<b>URL to bookmark:</b> <span id="static_url"></span>
-					<br />
+			<p></p>
 
-					<script type="text/javascript">
-						if (window.sidebar) {
-							document.write('<a href="javascript:addBookmark()">Bookmark this chart</a>&nbsp;&nbsp;&nbsp;(On Firefox you\'ll need to Ctrl-click on the bookmark to then open it)'); 
-						} else if (window.opera) {
-							if (window.print) {
-								document.write('<a rel="sidebar" href="javascript:addBookmark()">Bookmark this chart</a>'); 
-							}
+			<div id="bookmark_container" class="help"><small>
+				<b>URL to bookmark:</b> <span id="static_url"></span>
+				<br />
+
+				<script type="text/javascript">
+					if (window.sidebar) {
+						document.write('<a href="javascript:addBookmark()">Bookmark this chart</a>&nbsp;&nbsp;&nbsp;(On Firefox you\'ll need to Ctrl-click on the bookmark to then open it)'); 
+					} else if (window.opera) {
+						if (window.print) {
+							document.write('<a rel="sidebar" href="javascript:addBookmark()">Bookmark this chart</a>'); 
 						}
-					</script>
+					}
+				</script>
 
-					<br />
-					<a id="export_excel" href="">Export this data to Excel</a>&nbsp;&nbsp;&nbsp;(CSV format)
-				</small></div>
+				<br />
+				<a id="export_excel" href="">Export this data to Excel</a>&nbsp;&nbsp;&nbsp;(CSV format)
+			</small></div>
+
+			<!--
+			${jmacros.form_token_input()}
+			-->
+
 			</fieldset>
 		</div>
 	</form>
