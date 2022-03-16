@@ -192,6 +192,10 @@ Change History:
 descriptions.)
 
 
+Release 2.0.0 (2022-03-16): 
+  o Fixed compatibility with Trac 1.4. The 2.x plugins are not compatible with Trac previous to 1.4 anymore.
+    Use plugins versions 1.x with Trac 1.2.
+
 Release 1.10.2 (2022-03-13): 
 
   o A big effort to update and complete all the translations.

@@ -16,7 +16,7 @@ from setuptools import setup
 
 setup(
     name = 'TracGenericClass',
-    version = '1.2.0',
+    version = '2.0.0',
     packages = ['tracgenericclass'],
     package_data = {'tracgenericclass' : ['*.txt', 'templates/*.html', 'htdocs/*.*', 'htdocs/js/*.js', 'htdocs/css/*.css', 'htdocs/images/*.*']},
     author = 'Roberto Longobardi',
@@ -32,5 +32,6 @@ setup(
         'tracgenericclass.model = tracgenericclass.model', 
         'tracgenericclass.util = tracgenericclass.util'
     ]},
-    install_requires = ['Trac']
+    dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'https://trac.edgewall.org/wiki'],
+    install_requires = ['Genshi >= 0.6', 'Trac >= 1.4']
 )

@@ -35,6 +35,10 @@ Change History:
 
 (Refer to the tickets on trac-hacks for complete descriptions.)
 
+Release 2.0.0 (2022-03-16): 
+  o Fixed compatibility with Trac 1.4. The 2.x plugins are not compatible with Trac previous to 1.4 anymore.
+    Use plugins versions 1.x with Trac 1.2.
+
 Release 1.2.0 (2022-02-07): 
   o Removed use of deprecated APIs and replaced with updated ones. Plugin now compatible with Trac 1.4.
 

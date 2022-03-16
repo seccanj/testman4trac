@@ -16,7 +16,7 @@ from setuptools import setup
 
 setup(
     name = 'TracGenericWorkflow',
-    version = '1.1.0',
+    version = '2.0.0',
     packages = ['tracgenericworkflow','tracgenericworkflow.upgrades'],
     package_data = {'tracgenericworkflow' : ['*.txt', 'templates/*.html', 'htdocs/*.*', 'htdocs/js/*.js', 'htdocs/css/*.css', 'htdocs/images/*.*']},
     author = 'Roberto Longobardi',
@@ -32,6 +32,6 @@ setup(
         'tracgenericworkflow.model = tracgenericworkflow.model', 
         'tracgenericworkflow.operations = tracgenericworkflow.operations'
     ]},
-    dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass'],
-    install_requires = ['Genshi >= 0.6', 'TracGenericClass >= 1.1.7']
+    dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'https://trac.edgewall.org/wiki', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass'],
+    install_requires = ['Genshi >= 0.6', 'Trac >= 1.4', 'TracGenericClass >= 2.0.0']
 )
