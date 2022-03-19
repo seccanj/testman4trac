@@ -35,7 +35,7 @@ find . -type f -name "*.bak" -print -exec rm -f {} \;
 
 cd ..
 
-zip -r testman4trac.$VER.src.zip testman4trac.$VER
-tar cvzf testmanager.$VER.src.tar.gz testman4trac.$VER
+zip -r testman4trac.$VER-Trac_1.4.src.zip testman4trac.$VER
+tar cvzf testmanager.$VER-Trac_1.4.src.tar.gz testman4trac.$VER
 
 #rm -rf testman4trac.$VER testman4trac.$VER.SVN testman4trac.$VER.GIT

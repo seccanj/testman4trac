@@ -192,9 +192,15 @@ Change History:
 descriptions.)
 
 
-Release 2.0.0 (2022-03-16): 
-  o Fixed compatibility with Trac 1.4. The 2.x plugins are not compatible with Trac previous to 1.4 anymore.
-    Use plugins versions 1.x with Trac 1.2.
+Release 2.0.0 (2022-03-19): 
+
+  o Fixed compatibility with Trac 1.4. This version only works with Trac 1.4.x.
+    With Trac 0.12.x use plugins v. 1.9.x.
+    With Trac 1.2 use plugins v. 1.20.x.
+    There is currently no version that works with Trac 1.5.x.
+
+  o With this version a big effort has been done to update and complete all the translations.
+    Also thanks to @longradix for adding Dutch and updating German and to Google Translate for the rest :-)
 
 Release 1.10.2 (2022-03-13): 
 

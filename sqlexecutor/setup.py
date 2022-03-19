@@ -29,5 +29,5 @@ setup(
     keywords = 'trac plugin generic class framework persistence sql execution run test case management project quality assurance statistics stats charts charting graph',
     entry_points = {'trac.plugins': ['sqlexecutor.sql = sqlexecutor.sql']},
     dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'https://trac.edgewall.org/wiki', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass'],
-    install_requires = ['Genshi >= 0.6', 'Trac >= 1.4', 'TracGenericClass >= 2.0.0']
+    install_requires = ['Genshi >= 0.6', 'Trac >= 1.4, < 1.5', 'TracGenericClass >= 2.0.0']
 )

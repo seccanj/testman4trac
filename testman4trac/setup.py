@@ -81,6 +81,6 @@ setup(
             'testmanager.workflow = testmanager.workflow'
         ]},
     dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'https://trac.edgewall.org/wiki', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass', 'http://trac-hacks.org/wiki/TracGenericWorkflowPlugin'],
-    install_requires = ['Genshi >= 0.6', 'Trac >= 1.4', 'TracGenericClass >= 2.0.0', 'TracGenericWorkflow >= 2.0.0'],
+    install_requires = ['Genshi >= 0.6', 'Trac >= 1.4, < 1.5', 'TracGenericClass >= 2.0.0', 'TracGenericWorkflow >= 2.0.0'],
     **extra
 )

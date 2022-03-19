@@ -33,5 +33,5 @@ setup(
         'tracgenericclass.util = tracgenericclass.util'
     ]},
     dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'https://trac.edgewall.org/wiki'],
-    install_requires = ['Genshi >= 0.6', 'Trac >= 1.4']
+    install_requires = ['Genshi >= 0.6', 'Trac >= 1.4, < 1.5']
 )
