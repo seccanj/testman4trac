@@ -1,11 +1,18 @@
-Check the tutorial on YouTube: http://www.youtube.com/watch?v=BIi3QMT0rT4 
-
 Test Manager plugin for Trac
 
 Copyright (C) 2010-2022 Roberto Longobardi
  
-This file is part of the Test Manager plugin for Trac.
- 
+
+Guide to releases:
+  * With Trac 1.4.x  use plugins v. 2.x.
+  * With Trac 1.2    use plugins v. 1.20.x.
+  * With Trac 0.12.x use plugins v. 1.9.x.
+   
+    There is currently no version that works with Trac 1.5.x.
+
+
+Check the tutorial on YouTube: http://www.youtube.com/watch?v=BIi3QMT0rT4 
+
 This software is licensed as described in the file COPYING, which
 you should have received as part of this distribution. The terms
 are also available at: 
@@ -131,7 +138,7 @@ The Test Manager functionality is split up into three plugins:
 
     TestManager:
         
-        Provides the test management-related funcitonality.
+        Provides the test management-related functionality.
         
         Features:
             * Define test cases and organize in test catalogs (test 
