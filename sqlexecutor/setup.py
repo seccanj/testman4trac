@@ -16,7 +16,7 @@ from setuptools import setup
 
 setup(
     name = 'SQLExecutor',
-    version = '2.0.0',
+    version = '1.20.0',
     packages = ['sqlexecutor'],
     package_data = {'sqlexecutor' : ['*.txt', 'templates/*.html', 'htdocs/*.*', 'htdocs/js/*.js', 'htdocs/css/*.css', 'htdocs/images/*.*']},
     author = 'Roberto Longobardi',
@@ -29,5 +29,5 @@ setup(
     keywords = 'trac plugin generic class framework persistence sql execution run test case management project quality assurance statistics stats charts charting graph',
     entry_points = {'trac.plugins': ['sqlexecutor.sql = sqlexecutor.sql']},
     dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'https://trac.edgewall.org/wiki', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass'],
-    install_requires = ['Genshi >= 0.6', 'Trac >= 1.4', 'TracGenericClass >= 2.0.0']
+    install_requires = ['Genshi >= 0.6', 'Trac >= 1.2, < 1.3', 'TracGenericClass >= 1.20.0']
 )
