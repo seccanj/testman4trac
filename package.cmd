@@ -2,7 +2,7 @@ set VER=%1
 
 call clean.cmd
 call build.cmd
-zip -r testman4trac.%VER%.0.12-1.0.zip bin docs
+zip -r testman4trac.%VER%.Trac_1.2.zip bin docs
 
 call clean.cmd
 
@@ -23,6 +23,6 @@ call clean.cmd
 
 cd ..
 
-zip -r testman4trac.%VER%.src.zip testman4trac.%VER%
+zip -r testman4trac.%VER%-Trac_1.2.src.zip testman4trac.%VER%
 
 rmdir /s /q testman4trac.%VER%
