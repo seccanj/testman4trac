@@ -9,8 +9,8 @@ echo $PY_VERSION
 . ./clean.sh
 
 . ./build.sh
-zip -r testman4trac.$VER-Py_$PY_VERSION-Trac_0.12-1.0.zip bin docs
-tar cvzf testmanager.$VER-Py_$PY_VERSION-Trac_0.12-1.0.tar.gz bin docs
+zip -r testman4trac.$VER-Py_$PY_VERSION-Trac_0.12.zip bin docs
+tar cvzf testmanager.$VER-Py_$PY_VERSION-Trac_0.12.tar.gz bin docs
 
 . ./clean.sh
 
@@ -35,7 +35,7 @@ find . -type f -name "*.bak" -print -exec rm -f {} \;
 
 cd ..
 
-zip -r testman4trac.$VER.src.zip testman4trac.$VER
-tar cvzf testmanager.$VER.src.tar.gz testman4trac.$VER
+zip -r testman4trac.$VER.Trac_0.12.src.zip testman4trac.$VER
+tar cvzf testmanager.$VER.Trac_0.12.src.tar.gz testman4trac.$VER
 
 #rm -rf testman4trac.$VER testman4trac.$VER.SVN testman4trac.$VER.GIT
