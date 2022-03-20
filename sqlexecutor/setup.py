@@ -16,7 +16,7 @@ from setuptools import setup
 
 setup(
     name = 'SQLExecutor',
-    version = '1.0.7',
+    version = '1.9.4',
     packages = ['sqlexecutor'],
     package_data = {'sqlexecutor' : ['*.txt', 'templates/*.html', 'htdocs/*.*', 'htdocs/js/*.js', 'htdocs/css/*.css', 'htdocs/images/*.*']},
     author = 'Roberto Longobardi',
@@ -28,6 +28,6 @@ setup(
     long_description = 'A Trac plugin to create Test Cases, organize them in catalogs and track their execution status and outcome. This module provides a generic SQL executor to help debugging your application.',
     keywords = 'trac plugin generic class framework persistence sql execution run test case management project quality assurance statistics stats charts charting graph',
     entry_points = {'trac.plugins': ['sqlexecutor = sqlexecutor']},
-    dependency_links = ['http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass'],
-    install_requires = ['TracGenericClass >= 1.1.7']
+    dependency_links = ['https://trac.edgewall.org/wiki', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass'],
+    install_requires = ['Trac < 1.0', 'TracGenericClass >= 1.9.4']
 )

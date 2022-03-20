@@ -16,7 +16,7 @@ from setuptools import setup
 
 setup(
     name = 'TracGenericWorkflow',
-    version = '1.0.5',
+    version = '1.9.4',
     packages = ['tracgenericworkflow','tracgenericworkflow.upgrades'],
     package_data = {'tracgenericworkflow' : ['*.txt', 'templates/*.html', 'htdocs/*.*', 'htdocs/js/*.js', 'htdocs/css/*.css', 'htdocs/images/*.*']},
     author = 'Roberto Longobardi',
@@ -28,6 +28,6 @@ setup(
     long_description = 'A Trac plugin to create Test Cases, organize them in catalogs and track their execution status and outcome. This module provides a generic workflow engine working on any Trac Resource.',
     keywords = 'trac plugin test case management workflow engine resource project quality assurance statistics stats charts charting graph',
     entry_points = {'trac.plugins': ['tracgenericworkflow = tracgenericworkflow']},
-    dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass'],
-    install_requires = ['Genshi >= 0.6', 'TracGenericClass >= 1.1.7']
-    )
+    dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'https://trac.edgewall.org/wiki', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass'],
+    install_requires = ['Genshi >= 0.6', 'Trac < 1.0', 'TracGenericClass >= 1.9.4']
+)

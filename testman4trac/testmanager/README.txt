@@ -189,6 +189,10 @@ Change History:
 descriptions.)
 
 
+Release 1.9.4 (2022-03-20): 
+
+  o Aligned release versions of all plugins. Setting strict external dependencies.
+
 Release 1.9.3 (2022-03-13): 
 
   o A big effort to update and complete all the translations. 

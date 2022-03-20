@@ -44,6 +44,10 @@ Change History:
 
 (Refer to the tickets on trac-hacks for complete descriptions.)
 
+Release 1.9.4 (2022-03-20): 
+
+  o Aligned release versions of all plugins. Setting strict external dependencies.
+
 Release 1.0.4 (2012-10-14):
   This release makes the plugins compatible with Trac 1.0.
   o Fixed Ticket #10293 (Track-Hacks): New install impossible on Trac 1.0beta1

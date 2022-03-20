@@ -36,7 +36,7 @@ except ImportError:
 
 setup(
     name = 'TestManager',
-    version = '1.9.3',
+    version = '1.9.4',
     packages = ['testmanager','testmanager.upgrades'],
     package_data = {
         'testmanager' : [
@@ -66,7 +66,7 @@ setup(
     long_description = 'A Trac plugin to create Test Cases, organize them in catalogs and track their execution status and outcome.',
     keywords = 'trac plugin test case management project quality assurance statistics stats charts charting graph',
     entry_points = {'trac.plugins': ['testmanager = testmanager']},
-    dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass', 'http://trac-hacks.org/wiki/TracGenericWorkflowPlugin'],
-    install_requires = ['Genshi >= 0.6', 'TracGenericClass >= 1.1.7', 'TracGenericWorkflow >= 1.0.5'],
+    dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'https://trac.edgewall.org/wiki', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass', 'http://trac-hacks.org/wiki/TracGenericWorkflowPlugin'],
+    install_requires = ['Genshi >= 0.6', 'Trac < 1.0', 'TracGenericClass >= 1.9.4', 'TracGenericWorkflow >= 1.9.4'],
     **extra
 )
