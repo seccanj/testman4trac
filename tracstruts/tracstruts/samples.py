@@ -32,7 +32,7 @@ class MyActionsClass(object):
         It renders through the specified template "my_action_method_input_template.html"
         """
         
-        print "inside my_action_init_view"
+        print("inside my_action_init_view")
         
         return 'success'
 
@@ -70,7 +70,7 @@ class MyActionsClass(object):
         It renders through the specified template "my_action_method_output_template.html".
         """
         
-        print "inside my_action_method. Parameters: %s %s %s %s %s %s" % (self.a1, self.a2, self.a3, a5, a6, a7)
+        print("inside my_action_method. Parameters: %s %s %s %s %s %s" % (self.a1, self.a2, self.a3, a5, a6, a7))
         
         self.a1 = "AA1"
         self.a3 = a5
@@ -113,7 +113,7 @@ class MyActionsClass(object):
         parameter "field_name".
         """
         
-        print "inside my_action_ajax_method. Parameters: %s %s %s %s %s %s" % (self.a1, self.a2, self.a3, a5, a6, a7)
+        print("inside my_action_ajax_method. Parameters: %s %s %s %s %s %s" % (self.a1, self.a2, self.a3, a5, a6, a7))
         
         self.ajax_result = '{"a1": "'+self.a1+'", "a2": "'+self.a2+'", "a5": "'+a5+'", "a6": "'+a6+'"}'
         

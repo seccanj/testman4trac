@@ -15,6 +15,7 @@
 
 import re
 from trac.core import *
+from trac.util.datefmt import get_timezone
 from trac.util.text import CRLF
 
 def get_page_title(text):
@@ -63,4 +64,9 @@ quotes_escape_table = {
 
 def quotes_escape(text):
     return "".join(quotes_escape_table.get(c,c) for c in text)
+
+def get_default_timezone(env):
+    tzinfo = get_timezone(env.config.get('trac', 'default_timezone'))
+
+    return tzinfo
 

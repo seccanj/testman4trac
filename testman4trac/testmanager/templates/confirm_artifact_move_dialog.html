@@ -28,7 +28,6 @@
 			
 				<ul>
 					<li py:for="tc_title, status, tp_id, tp_name, tp_author, tp_date in confirm_data">
-						Test case "${tc_title}", ${statuses_by_name[status][1]} in test plan "${tp_name}" (created by <em>${authorinfo(tp_author)}</em> ${pretty_dateinfo(tp_date)}.)
 					</li>
 				</ul>
 			</py:if>

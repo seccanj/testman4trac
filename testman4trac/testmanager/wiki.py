@@ -19,9 +19,9 @@ try:
 except ImportError:
     from io import StringIO
 
-from trac.core import *
+from trac.core import Component, implements, TracError
 from trac.resource import Resource
-from trac.util import format_datetime, format_date
+from trac.util.datefmt import utc, format_datetime
 from trac.web.api import ITemplateStreamFilter
 from trac.web.chrome import add_stylesheet, add_script, ITemplateProvider, web_context
 from trac.wiki.api import WikiSystem, IWikiChangeListener

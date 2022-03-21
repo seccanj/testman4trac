@@ -102,7 +102,7 @@ class TestManagerAdmin(Component):
         data['testcatalog_columns'] = testcatalog_columns
         data['testplan_columns'] = testplan_columns
         
-        return 'admin_settings.html', data
+        return 'admin_settings.html', data, None
 
     def _render_templates(self, req, cat, page, component):
         req.perm.assert_permission('TRAC_ADMIN')
@@ -302,7 +302,7 @@ class TestManagerAdmin(Component):
 
         add_stylesheet(req, 'common/css/wiki.css')
         add_stylesheet(req, 'testmanager/css/admin.css')
-        return 'admin_templates.html', data
+        return 'admin_templates.html', data, None
 
         
 def get_all_table_columns_for_object(env, objtype, settings):

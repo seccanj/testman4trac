@@ -17,7 +17,7 @@ import math
 
 from genshi.builder import tag
 
-from trac.core import *
+from trac.core import Component, implements
 from trac.resource import Resource
 from trac.search import ISearchSource
 from trac.util import to_unicode

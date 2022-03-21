@@ -617,6 +617,7 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
             
             cursor.execute(sql, (self.values['id'], self.values['planid']))
             for ts, author, status in cursor:
+                self.env.log.debug(ts)
                 yield ts, author, status.lower()
 
     def get_related_tickets(self, dbb=None):

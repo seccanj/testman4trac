@@ -216,6 +216,7 @@ class Actions(object):
                 'wiki_contents': 'out',
                 'attachments': 'out',
                 'can_modify': 'out',
+                'tzinfo': 'out',
                 'Markup': 'out',
                 'custom_fields': 'out',
                 'custom_field_values': 'out',
@@ -256,6 +257,7 @@ class Actions(object):
         context = web_context(self.req, page.resource)
         self.attachments = AttachmentModule(self.env).attachment_data(context)
         self.can_modify = _can_modify(self.req)
+        self.tzinfo = get_default_timezone(self.env)
 
         if include_status:
             self.obj = test_plan
@@ -296,6 +298,7 @@ class Actions(object):
                 'wiki_contents': 'out',
                 'attachments': 'out',
                 'can_modify': 'out',
+                'tzinfo': 'out',
                 'default_outcome': 'out',
                 'statuses_by_name': 'out',
                 'Markup': 'out',
@@ -341,6 +344,7 @@ class Actions(object):
         context = web_context(self.req, page.resource)
         self.attachments = AttachmentModule(self.env).attachment_data(context)
         self.can_modify = _can_modify(self.req)
+        self.tzinfo = get_default_timezone(self.env)
 
         if include_status:
             self.obj = test_case_in_plan
