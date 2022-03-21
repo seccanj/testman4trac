@@ -1,5 +1,5 @@
 # Korean translations for TestManager.
-# Copyright (C) 2010-2015 Roberto Longobardi
+# Copyright (C) 2010-2022 Roberto Longobardi
 # This file is distributed under the same license as the TestManager
 # project.
 #
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Test Manager for Trac plugin\n"
 "Report-Msgid-Bugs-To: otrebor.dev@gmail.com\n"
-"POT-Creation-Date: 2022-03-21 11:02+0100\n"
+"POT-Creation-Date: 2022-03-21 22:29+0100\n"
 "PO-Revision-Date: 2013-08-02 00:56+0000\n"
 "Last-Translator: chohy <chohy@yahoo.com>\n"
 "Language: ko\n"

@@ -1,5 +1,5 @@
 # French translations for TestManager.
-# Copyright (C) 2010-2015 Roberto Longobardi
+# Copyright (C) 2010-2022 Roberto Longobardi
 # This file is distributed under the same license as the TestManager
 # project.
 #
@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Test Manager for Trac plugin\n"
 "Report-Msgid-Bugs-To: otrebor.dev@gmail.com\n"
-"POT-Creation-Date: 2022-03-21 11:02+0100\n"
+"POT-Creation-Date: 2022-03-21 22:29+0100\n"
 "PO-Revision-Date: 2013-08-23 11:32+0000\n"
 "Last-Translator: LauraL <l.longobardi@bluewin.ch>\n"
 "Language: fr\n"
@@ -105,7 +105,7 @@ msgstr ""
 msgid "Template saved"
 msgstr ""
 
-#: testmanager/admin.py:334 testmanager/model.py:942
+#: testmanager/admin.py:334 testmanager/model.py:943
 #: testmanager/templates/admin_settings.html:41
 #: testmanager/templates/admin_templates.html:30
 #: testmanager/templates/admin_templates.html:61
@@ -113,18 +113,18 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: testmanager/admin.py:342 testmanager/api.py:1531 testmanager/model.py:923
-#: testmanager/model.py:928 testmanager/model.py:934 testmanager/model.py:940
+#: testmanager/admin.py:342 testmanager/api.py:1531 testmanager/model.py:924
+#: testmanager/model.py:929 testmanager/model.py:935 testmanager/model.py:941
 msgid "ID"
 msgstr ""
 
 #: testmanager/admin.py:351 testmanager/api.py:238 testmanager/api.py:251
-#: testmanager/api.py:1565 testmanager/model.py:937 testmanager/wiki.py:2014
+#: testmanager/api.py:1565 testmanager/model.py:938 testmanager/wiki.py:2014
 msgid "Status"
 msgstr ""
 
 #: testmanager/admin.py:352 testmanager/api.py:238 testmanager/api.py:1565
-#: testmanager/model.py:943 testmanager/wiki.py:540 testmanager/wiki.py:962
+#: testmanager/model.py:944 testmanager/wiki.py:540 testmanager/wiki.py:962
 #: testmanager/wiki.py:1122 testmanager/wiki.py:1418 testmanager/wiki.py:2014
 msgid "Author"
 msgstr ""
@@ -257,7 +257,7 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: testmanager/api.py:1539 testmanager/model.py:945 testmanager/wiki.py:542
+#: testmanager/api.py:1539 testmanager/model.py:946 testmanager/wiki.py:542
 #: testmanager/wiki.py:1427
 msgid "Contains all Test Cases"
 msgstr ""
@@ -278,43 +278,43 @@ msgstr ""
 msgid "All Catalogs"
 msgstr ""
 
-#: testmanager/model.py:924 testmanager/model.py:929
+#: testmanager/model.py:925 testmanager/model.py:930
 msgid "Wiki page name"
 msgstr ""
 
-#: testmanager/model.py:925
+#: testmanager/model.py:926
 msgid "Parent catalog ID"
 msgstr ""
 
-#: testmanager/model.py:930
+#: testmanager/model.py:931
 msgid "Order"
 msgstr ""
 
-#: testmanager/model.py:931
+#: testmanager/model.py:932
 msgid "Enclosing catalog ID"
 msgstr ""
 
-#: testmanager/model.py:935
+#: testmanager/model.py:936
 msgid "Plan ID"
 msgstr ""
 
-#: testmanager/model.py:936
+#: testmanager/model.py:937
 msgid "Wiki page version"
 msgstr ""
 
-#: testmanager/model.py:941
+#: testmanager/model.py:942
 msgid "Catalog ID"
 msgstr ""
 
-#: testmanager/model.py:944 testmanager/wiki.py:541 testmanager/wiki.py:1122
+#: testmanager/model.py:945 testmanager/wiki.py:541 testmanager/wiki.py:1122
 msgid "Created"
 msgstr ""
 
-#: testmanager/model.py:946
+#: testmanager/model.py:947
 msgid "Freeze Test Case versions"
 msgstr ""
 
-#: testmanager/model.py:1073
+#: testmanager/model.py:1074
 msgid ""
 "\n"
 "    Test Manager templates with blank IDs have been fixed.\n"
@@ -328,24 +328,24 @@ msgid ""
 "                    "
 msgstr ""
 
-#: testmanager/model.py:1095 testmanager/wiki.py:594 testmanager/wiki.py:654
+#: testmanager/model.py:1096 testmanager/wiki.py:594 testmanager/wiki.py:654
 msgid "Test Case"
 msgstr ""
 
-#: testmanager/model.py:1099
+#: testmanager/model.py:1100
 msgid "Test Plan"
 msgstr ""
 
-#: testmanager/model.py:1104 testmanager/stats.py:389
+#: testmanager/model.py:1105 testmanager/stats.py:389
 #: testmanager/templates/test_plan.html:40
 msgid "Successful"
 msgstr ""
 
-#: testmanager/model.py:1105
+#: testmanager/model.py:1106
 msgid "Untested"
 msgstr ""
 
-#: testmanager/model.py:1106 testmanager/stats.py:390
+#: testmanager/model.py:1107 testmanager/stats.py:390
 #: testmanager/templates/test_plan.html:42
 msgid "Failed"
 msgstr ""
@@ -442,7 +442,7 @@ msgstr ""
 
 #: testmanager/templates/admin_templates.html:157
 #: testmanager/templates/attachments_dialog.html:25
-#: testmanager/templates/confirm_artifact_move_dialog.html:45
+#: testmanager/templates/confirm_artifact_move_dialog.html:44
 #: testmanager/templates/custom_fields.html:43
 #: testmanager/templates/edit_description_dialog.html:22
 #: testmanager/templates/edit_title_dialog.html:22
@@ -1107,31 +1107,19 @@ msgid ""
 " plans indicated and eventually continue with this operation."
 msgstr ""
 
-#: testmanager/templates/confirm_artifact_move_dialog.html:30
-msgid "Test case \""
-msgstr ""
-
-#: testmanager/templates/confirm_artifact_move_dialog.html:31
-msgid "in test plan \""
-msgstr ""
-
-#: testmanager/templates/confirm_artifact_move_dialog.html:31
-msgid "\" (created by"
-msgstr ""
-
-#: testmanager/templates/confirm_artifact_move_dialog.html:37
+#: testmanager/templates/confirm_artifact_move_dialog.html:36
 msgid "Are you sure you want to move the selected"
 msgstr ""
 
-#: testmanager/templates/confirm_artifact_move_dialog.html:38
+#: testmanager/templates/confirm_artifact_move_dialog.html:37
 msgid "test case"
 msgstr ""
 
-#: testmanager/templates/confirm_artifact_move_dialog.html:38
+#: testmanager/templates/confirm_artifact_move_dialog.html:37
 msgid "test catalog"
 msgstr ""
 
-#: testmanager/templates/confirm_artifact_move_dialog.html:44
+#: testmanager/templates/confirm_artifact_move_dialog.html:43
 msgid "Confirm move"
 msgstr ""
 
@@ -2248,5 +2236,14 @@ msgstr ""
 #~ msgstr "Pré-visualisation"
 
 #~ msgid "Table view"
+#~ msgstr ""
+
+#~ msgid "Test case \""
+#~ msgstr ""
+
+#~ msgid "in test plan \""
+#~ msgstr ""
+
+#~ msgid "\" (created by"
 #~ msgstr ""
 
