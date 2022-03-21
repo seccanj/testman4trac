@@ -22,7 +22,7 @@ from datetime import date, datetime
 
 from trac.attachment import Attachment
 from trac.core import *
-from trac.db import Table, Column, Index, DatabaseManager, with_transaction
+from trac.db import Table, Column, Index, DatabaseManager
 from trac.resource import Resource, ResourceNotFound
 from trac.util.datefmt import utc, utcmax
 from trac.util.text import CRLF
@@ -317,68 +317,67 @@ class AbstractVariableFieldsObject(object):
     def _fetch_object(self, key, db=None):
         self.env.log.debug('>>> _fetch_object')
     
-        if not db:
-            db = self.env.get_read_db()
-
-        if not self.pre_fetch_object(db):
-            self.env.log.debug('<<< _fetch_object (pre_fetch_object returned False)')
-            return
-        
-        row = None
-
-        # Fetch the standard fields
-        std_fields = [f['name'] for f in self.fields
-                      if not f.get('custom')]
-        cursor = db.cursor()
-
-        sql_where = "WHERE 1=1"
-        for k in self.get_key_prop_names():
-            sql_where += " AND " + k + "=%%s" 
-
-        self.env.log.debug("Searching for %s: %s" % (self.realm, sql_where))
-        for k in self.get_key_prop_names():
-            self.env.log.debug("%s = %s" % (k, self[k]))
-        
-        cursor.execute(("SELECT %s FROM %s " + sql_where)
-                       % (','.join(std_fields), self.realm), self.get_key_prop_values())
-        row = cursor.fetchone()
-
-        if not row:
-            #raise ResourceNotFound(_('The specified object of type %(realm)s does not exist.', 
-            #                         realm=self.realm), _('Invalid object key'))
-            self.env.log.debug("Object NOT found.")
-            return False
-
-        self.env.log.debug("Object found.")
+        with self.env.db_query as db:
+            if not self.pre_fetch_object(db):
+                self.env.log.debug('<<< _fetch_object (pre_fetch_object returned False)')
+                return
             
-        self.key = self.build_key_object()
-        for i, field in enumerate(std_fields):
-            value = row[i]
-            if field in self.time_fields:
-                self.values[field] = from_any_timestamp(value)
-            elif value is None:
-                self.values[field] = '0'
-            else:
-                self.values[field] = value
+            row = None
 
-        # Fetch custom fields if available
-        custom_fields = [f['name'] for f in self.fields if f.get('custom')]
-        if len(custom_fields) > 0:
-            cursor.execute(("SELECT name,value FROM %s_custom " + sql_where)
-                           % self.realm, self.get_key_prop_values())
+            # Fetch the standard fields
+            std_fields = [f['name'] for f in self.fields
+                        if not f.get('custom')]
+            cursor = db.cursor()
 
-            for name, value in cursor:
-                if name in custom_fields:
-                    if value is None:
-                        self.values[name] = '0'
-                    else:
-                        self.values[name] = value
+            sql_where = "WHERE 1=1"
+            for k in self.get_key_prop_names():
+                sql_where += " AND " + k + "=%%s" 
 
-        self.post_fetch_object(db)
-    
-        self.exists = True
+            self.env.log.debug("Searching for %s: %s" % (self.realm, sql_where))
+            for k in self.get_key_prop_names():
+                self.env.log.debug("%s = %s" % (k, self[k]))
+            
+            cursor.execute(("SELECT %s FROM %s " + sql_where)
+                        % (','.join(std_fields), self.realm), self.get_key_prop_values())
+            row = cursor.fetchone()
 
-        self.env.log.debug('<<< _fetch_object')
+            if not row:
+                #raise ResourceNotFound(_('The specified object of type %(realm)s does not exist.', 
+                #                         realm=self.realm), _('Invalid object key'))
+                self.env.log.debug("Object NOT found.")
+                return False
+
+            self.env.log.debug("Object found.")
+                
+            self.key = self.build_key_object()
+            for i, field in enumerate(std_fields):
+                value = row[i]
+                if field in self.time_fields:
+                    self.values[field] = from_any_timestamp(value)
+                elif value is None:
+                    self.values[field] = '0'
+                else:
+                    self.values[field] = value
+
+            # Fetch custom fields if available
+            custom_fields = [f['name'] for f in self.fields if f.get('custom')]
+            if len(custom_fields) > 0:
+                cursor.execute(("SELECT name,value FROM %s_custom " + sql_where)
+                            % self.realm, self.get_key_prop_values())
+
+                for name, value in cursor:
+                    if name in custom_fields:
+                        if value is None:
+                            self.values[name] = '0'
+                        else:
+                            self.values[name] = value
+
+            self.post_fetch_object(db)
+        
+            self.exists = True
+
+            self.env.log.debug('<<< _fetch_object')
+
         return True
         
     def build_key_object(self):
@@ -471,21 +470,18 @@ class AbstractVariableFieldsObject(object):
             if name[9:] not in values:
                 self[name[9:]] = '0'
 
-    def insert(self, when=None, db=None):
+    def insert(self, when=None, dbb=None):
         """
         Add object to database.
         
         Parameters:
             When: a datetime object to specify a creation date.
-        
-        The `db` argument is deprecated in favor of `with_transaction()`.
         """
         self.env.log.debug('>>> insert')
 
         assert not self.exists, 'Cannot insert an existing object'
 
-        @self.env.with_transaction(db)
-        def do_insert(db):
+        with self.env.db_transaction as db:
             if not self.pre_insert(db):
                 self.env.log.debug('<<< insert (pre_insert returned False)')
                 return
@@ -552,13 +548,11 @@ class AbstractVariableFieldsObject(object):
         self.env.log.debug('<<< insert')
         return self.key
 
-    def save_changes(self, author=None, comment=None, when=None, db=None, cnum=''):
+    def save_changes(self, author=None, comment=None, when=None, dbb=None, cnum=''):
         """
         Store object changes in the database. The object must already exist in
         the database.  Returns False if there were no changes to save, True
         otherwise.
-        
-        The `db` argument is deprecated in favor of `with_transaction()`.
         """
         self.env.log.debug('>>> save_changes')
         assert self.exists, 'Cannot update a new object'
@@ -570,8 +564,7 @@ class AbstractVariableFieldsObject(object):
             when = datetime.now(utc)
         when_ts = to_any_timestamp(when)
             
-        @self.env.with_transaction(db)
-        def do_save_changes(db):
+        with self.env.db_transaction as db:
             if not self.pre_save_changes(db):
                 self.env.log.debug('<<< save_changes (pre_save_changes returned False)')
                 return
@@ -640,18 +633,15 @@ class AbstractVariableFieldsObject(object):
         self.env.log.debug('<<< save_changes')
         return True
 
-    def delete(self, db=None):
+    def delete(self, dbb=None):
         """
         Delete the object. Also clears the change history and the
         custom fields.
-        
-        The `db` argument is deprecated in favor of `with_transaction()`.
         """
 
         self.env.log.debug('>>> delete')
 
-        @self.env.with_transaction(db)
-        def do_delete(db):
+        with self.env.db_transaction as db:
             if not self.pre_delete(db):
                 self.env.log.debug('<<< delete (pre_delete returned False)')
                 return
@@ -693,7 +683,7 @@ class AbstractVariableFieldsObject(object):
         self.exists = False
         self.env.log.debug('<<< delete')
 
-    def save_as(self, new_key, when=None, db=None):
+    def save_as(self, new_key, when=None, dbb=None):
         """
         Saves (a copy of) the object with different key.
         The previous object is not deleted, so if needed it must be
@@ -701,8 +691,7 @@ class AbstractVariableFieldsObject(object):
         """
         self.env.log.debug('>>> save_as')
 
-        @self.env.with_transaction(db)
-        def do_save_as(db):
+        with self.env.db_transaction as db:
             old_key = self.key
             if not self.pre_save_as(old_key, new_key, db):
                 self.env.log.debug('<<< save_as (pre_save_as returned False)')
@@ -739,16 +728,14 @@ class AbstractVariableFieldsObject(object):
             for k in self.get_key_prop_names():
                 sql_where += " AND " + k + "=%%s" 
 
-            if not db:
-                db = self.env.get_read_db()
-                
-            cursor = db.cursor()
+            with self.env.db_query as db:
+                cursor = db.cursor()
 
-            cursor.execute(("SELECT time,author,field,oldvalue,newvalue FROM %s_change " + sql_where+ " ORDER BY time DESC")
-                           % self.realm, self.get_key_prop_values())
+                cursor.execute(("SELECT time,author,field,oldvalue,newvalue FROM %s_change " + sql_where+ " ORDER BY time DESC")
+                            % self.realm, self.get_key_prop_values())
 
-            for ts, author, fname, oldvalue, newvalue in cursor:
-                yield ts, author, fname, oldvalue, newvalue
+                for ts, author, fname, oldvalue, newvalue in cursor:
+                    yield ts, author, fname, oldvalue, newvalue
 
         self.env.log.debug('<<< list_change_history')
 
@@ -822,40 +809,36 @@ class AbstractVariableFieldsObject(object):
         An exact match, i.e. an SQL '=' operator, will be used, unless you
         specify exact_match=False, in which case the SQL 'LIKE' operator
         will be used.
-        
-        The `db` argument is deprecated in favor of `with_transaction()`.
         """
         self.env.log.debug('>>> list_matching_objects')
         
-        if not db:
-            db = self.env.get_read_db()
+        with self.env.db_query as db:
+            self.pre_list_matching_objects(db)
 
-        self.pre_list_matching_objects(db)
+            cursor = db.cursor()
 
-        cursor = db.cursor()
+            non_empty_std_names, non_empty_custom_names = self.get_non_empty_prop_names()
+            
+            non_empty_std_values = self.get_values(non_empty_std_names)
+            non_empty_custom_values = self.get_values(non_empty_custom_names)
 
-        non_empty_std_names, non_empty_custom_names = self.get_non_empty_prop_names()
-        
-        non_empty_std_values = self.get_values(non_empty_std_names)
-        non_empty_custom_values = self.get_values(non_empty_custom_names)
+            if operator == None:
+                operator = '='
+                if not exact_match:
+                    operator = ' LIKE '
+            
+            sql_where = '1=1'
+            for k in non_empty_std_names:
+                sql_where += " AND " + k + operator + '%%s'
+            
+            cursor.execute(('SELECT %s FROM %s WHERE ' + sql_where)
+                        % (','.join(self.get_key_prop_names()), self.realm), 
+                        non_empty_std_values)
 
-        if operator == None:
-            operator = '='
-            if not exact_match:
-                operator = ' LIKE '
-        
-        sql_where = '1=1'
-        for k in non_empty_std_names:
-            sql_where += " AND " + k + operator + '%%s'
-        
-        cursor.execute(('SELECT %s FROM %s WHERE ' + sql_where)
-                       % (','.join(self.get_key_prop_names()), self.realm), 
-                       non_empty_std_values)
-
-        for row in cursor:
-            key = self._get_key_from_row(row)
-            self.env.log.debug('<<< list_matching_objects - returning result')
-            yield self.create_instance(key)
+            for row in cursor:
+                key = self._get_key_from_row(row)
+                self.env.log.debug('<<< list_matching_objects - returning result')
+                yield self.create_instance(key)
 
         self.env.log.debug('<<< list_matching_objects')
        
@@ -984,8 +967,6 @@ class AbstractWikiPageWrapper(AbstractVariableFieldsObject):
     def delete(self, del_wiki_page=True, db=None):
         """
         Delete the object. Also deletes the Wiki page if so specified in the parameters.
-        
-        The `db` argument is deprecated in favor of `with_transaction()`.
         """
         
         # The actual wiki page deletion is delayed until pre_delete.
@@ -1001,7 +982,7 @@ class AbstractWikiPageWrapper(AbstractVariableFieldsObject):
         
         wikipage = WikiPage(self.env, self.values['page_name'])
         wikipage.text = self.text
-        wikipage.save(self.author, '', self.remote_addr)
+        wikipage.save(self.author, '')
         
         self.wikipage = wikipage
         
@@ -1015,7 +996,7 @@ class AbstractWikiPageWrapper(AbstractVariableFieldsObject):
         
         wikipage = WikiPage(self.env, self.values['page_name'])
         wikipage.text = self.text
-        wikipage.save(self.author, '', self.remote_addr)
+        wikipage.save(self.author, '')
     
         self.wikipage = wikipage
 
@@ -1326,7 +1307,7 @@ def need_db_upgrade_for_realm(env, realm, realm_schema, db=None):
 
     return False
 
-def create_db_for_realm(env, realm, realm_schema, db=None):
+def create_db_for_realm(env, realm, realm_schema, dbb=None):
     """
     Call this method from inside your Component IEnvironmentSetupParticipant's
     upgrade_environment() function to create the database tables corresponding to
@@ -1336,8 +1317,7 @@ def create_db_for_realm(env, realm, realm_schema, db=None):
                    the get_data_models() function in the IConcreteClassProvider
                    interface.
     """
-    @env.with_transaction(db)
-    def do_create_db_for_realm(db):
+    with env.db_transaction as db:
         cursor = db.cursor()
 
         db_backend, _ = DatabaseManager(env).get_connector()        
@@ -1417,8 +1397,7 @@ def upgrade_db_for_realm(env, package_name, realm, realm_schema, db=None):
     Each db version should have its own upgrade module, named
     upgrades/db_<schema>_<N>.py, where 'N' is the version number (int).
     """
-    @env.with_transaction(db)
-    def do_upgrade_db_for_realm(db):
+    with self.env.db_transaction as db:
         cursor = db.cursor()
 
         db_backend, _ = DatabaseManager(env).get_connector()        
@@ -1484,28 +1463,26 @@ def _set_installed_version(env, realm, version, db=None):
 def _get_system_value(env, key, default=None, db=None):
     result = default
 
-    if not db:
-        db = env.get_read_db()
-
-    cursor = db.cursor()
-    cursor.execute("SELECT value FROM system WHERE name=%s", (key,))
-    row = cursor.fetchone()
-    
-    if row and row[0]:
-        result = row[0]
-        env.log.debug('Found system key \'%s\' with value %s', key, result)
-    else:
-        env.log.debug('System key \'%s\' not found', key)
+    with env.db_query as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT value FROM system WHERE name=%s", (key,))
+        row = cursor.fetchone()
         
-    env.log.debug('Returning system key \'%s\' with value %s', key, result)
+        if row and row[0]:
+            result = row[0]
+            env.log.debug('Found system key \'%s\' with value %s', key, result)
+        else:
+            env.log.debug('System key \'%s\' not found', key)
+            
+        env.log.debug('Returning system key \'%s\' with value %s', key, result)
+
     return result
 
-def _set_system_value(env, key, value, db=None):
+def _set_system_value(env, key, value, dbb=None):
     """
     Atomic UPSERT (i.e. UPDATE or INSERT) db transaction to save realm DB version.
     """
-    @env.with_transaction(db)
-    def do_set_system_value(db):
+    with env.db_transaction as db:
         cursor = db.cursor()
         cursor.execute(
                 "UPDATE system SET value=%s WHERE name=%s", (value, key))

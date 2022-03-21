@@ -27,7 +27,6 @@ from operator import itemgetter
 from StringIO import StringIO
 
 from trac.core import *
-from trac.mimeview.api import Context
 from trac.perm import IPermissionRequestor, PermissionError
 from trac.resource import Resource, IResourceManager, render_resource_link, get_resource_url
 from trac.util import get_reporter_id, format_datetime, format_date

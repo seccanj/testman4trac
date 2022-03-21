@@ -17,8 +17,10 @@ from setuptools import setup
 extra = {} 
 
 try:
-    from trac.util.dist import get_l10n_js_cmdclass 
-    cmdclass = get_l10n_js_cmdclass() 
+    import babel
+
+    from trac.dist import get_l10n_js_cmdclass
+    cmdclass = get_l10n_js_cmdclass()
     if cmdclass: # OK, Babel is there
         extra['cmdclass'] = cmdclass 
         extractors = [ 
@@ -31,14 +33,17 @@ try:
         extra['message_extractors'] = { 
             'testmanager': extractors, 
         }
-except ImportError: 
+
+except ImportError as error:
+    print(error)
+    print("Babel not found!")
     pass
 
 setup(
-    name='TestManager',
-    version='2.0.0',
-    packages=['testmanager','testmanager.upgrades'],
-    package_data={
+    name = 'TestManager',
+    version = '3.0.0',
+    packages = ['testmanager','testmanager.upgrades'],
+    package_data = {
         'testmanager' : [
             'COPYING', 
             '*.txt', 
@@ -71,15 +76,29 @@ setup(
         ]
     },
     author = 'Roberto Longobardi',
-    author_email='otrebor.dev@gmail.com',
-    license='Modified BSD, same as Trac. See the file COPYING contained in the package.',
-    url='http://trac-hacks.org/wiki/TestManagerForTracPlugin',
-    download_url='https://sourceforge.net/projects/testman4trac/files/',
-    description='Test management plugin for Trac',
-    long_description='A Trac plugin to create Test Cases, organize them in catalogs and track their execution status and outcome.',
-    keywords='trac plugin test case management project quality assurance statistics stats charts charting graph',
-    entry_points = {'trac.plugins': ['testmanager = testmanager']},
-    dependency_links=['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass', 'http://trac-hacks.org/wiki/TracGenericWorkflowPlugin', 'http://trac-hacks.org/wiki/TestManagerForTracPlugin'],
-    install_requires=['Genshi >= 0.6', 'TracGenericClass >= 1.1.5', 'TracGenericWorkflow >= 1.0.4', 'TracStruts >= 1.0.0'],
+    author_email = 'otrebor.dev@gmail.com',
+    license = 'Modified BSD, same as Trac. See the file COPYING contained in the package.',
+    url = 'http://trac-hacks.org/wiki/TestManagerForTracPlugin',
+    download_url = 'https://sourceforge.net/projects/testman4trac/files/',
+    description = 'Test management plugin for Trac',
+    long_description = 'A Trac plugin to create Test Cases, organize them in catalogs and track their execution status and outcome.',
+    keywords = 'trac plugin test case management project quality assurance statistics stats charts charting graph',
+    entry_points = {'trac.plugins': [
+            'testmanager.actions = testmanager.actions', 
+            'testmanager.admin = testmanager.admin', 
+            'testmanager.api = testmanager.api', 
+            'testmanager.beans = testmanager.beans', 
+            'testmanager.constants = testmanager.constants', 
+            'testmanager.model = testmanager.model', 
+            'testmanager.rpcsupport = testmanager.rpcsupport', 
+            'testmanager.stats = testmanager.stats', 
+            'testmanager.util = testmanager.util', 
+            'testmanager.view = testmanager.view', 
+            'testmanager.web_ui = testmanager.web_ui', 
+            'testmanager.wiki = testmanager.wiki', 
+            'testmanager.workflow = testmanager.workflow'
+        ]},
+    dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'https://trac.edgewall.org', 'http://trac-hacks.org/wiki/TestManagerForTracPluginGenericClass', 'http://trac-hacks.org/wiki/TracGenericWorkflowPlugin'],
+    install_requires = ['Genshi >= 0.6', 'Trac >= 1.4', 'TracGenericClass >= 3.0.0', 'TracGenericWorkflow >= 3.0.0'],
     **extra
     )

@@ -25,7 +25,6 @@ from testmanager.model import TestCatalog, TestCase, TestCaseInPlan, TestPlan, T
 from testmanager.util import *
 
 from trac.attachment import AttachmentModule
-from trac.mimeview.api import Context
 from trac.util import get_reporter_id
 from trac.web.chrome import web_context
 from trac.web.session import *
@@ -1243,7 +1242,7 @@ def _can_admin(req):
 
 
 def _get_wiki_page_contents(req, env, page_name, markup):
-    context = Context.from_request(req, 'wiki', page_name)
+    context = web_context(req)
     wikidom = WikiParser(env).parse(markup)
     out = StringIO()
     f = Formatter(env, context)

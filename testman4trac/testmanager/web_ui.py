@@ -18,7 +18,6 @@ import math
 from genshi.builder import tag
 
 from trac.core import *
-from trac.mimeview import Context
 from trac.resource import Resource
 from trac.search import ISearchSource
 from trac.util import to_unicode

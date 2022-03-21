@@ -16,7 +16,7 @@ from setuptools import setup
 
 setup(
     name='TracStruts',
-    version='1.0.0',
+    version='3.0.0',
     packages=['tracstruts'],
     package_data={'tracstruts' : ['COPYING', '*.txt', 'templates/*.html', 'htdocs/*.*', 'htdocs/js/*.js', 'htdocs/css/*.css', 'htdocs/images/*.*']},
     author = 'Roberto Longobardi',
@@ -27,5 +27,11 @@ setup(
     description='Test management plugin for Trac - TracStruts component',
     long_description='A Trac plugin to create Test Cases, organize them in catalogs and track their execution status and outcome. This module provides an MVC framework, similar to Apache Struts for Java, to help develop Trac plugins.',
     keywords='trac plugin struts mvc generic class framework persistence sql execution run test case management project quality assurance statistics stats charts charting graph',
-    entry_points = {'trac.plugins': ['tracstruts = tracstruts']}
-    )
+    entry_points = {'trac.plugins': [
+            'tracstruts.api = tracstruts.api', 
+            'tracstruts.samples = tracstruts.samples', 
+            'tracstruts.tracstruts = tracstruts.tracstruts'
+        ]},
+    dependency_links = ['http://svn.edgewall.org/repos/genshi/trunk#egg=Genshi-dev', 'https://trac.edgewall.org'],
+    install_requires = ['Genshi >= 0.6', 'Trac >= 1.4']
+)

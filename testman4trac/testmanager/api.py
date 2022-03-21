@@ -27,13 +27,12 @@ from operator import itemgetter
 from StringIO import StringIO
 
 from trac.core import *
-from trac.mimeview.api import Context
 from trac.perm import IPermissionRequestor, PermissionError
 from trac.resource import Resource, IResourceManager, render_resource_link, get_resource_url
 from trac.util import get_reporter_id, format_datetime, format_date
 from trac.util.datefmt import utc
 from trac.web.api import IRequestHandler
-from trac.web.chrome import add_notice, add_warning, add_stylesheet
+from trac.web.chrome import add_notice, add_warning, add_stylesheet, web_context
 from trac.wiki.formatter import Formatter
 from trac.wiki.model import WikiPage
 from trac.wiki.parser import WikiParser
@@ -159,15 +158,15 @@ class TestManagerSystem(Component):
 
     def get_config_property(self, propname):
         try:
-            db = self.env.get_read_db()
-            cursor = db.cursor()
-            sql = "SELECT value FROM testconfig WHERE propname=%s"
-            
-            cursor.execute(sql, (propname,))
-            row = cursor.fetchone()
-            
-            if not row or len(row) == 0:
-                return None
+            with self.env.db_query as db:
+                cursor = db.cursor()
+                sql = "SELECT value FROM testconfig WHERE propname=%s"
+                
+                cursor.execute(sql, (propname,))
+                row = cursor.fetchone()
+                
+                if not row or len(row) == 0:
+                    return None
                 
             return row[0]
             
@@ -178,8 +177,7 @@ class TestManagerSystem(Component):
             return None
     
     def set_config_property(self, propname, value):
-        @with_transaction(self.env)
-        def do_set_config_property(db):
+        with self.env.db_transaction as db:
             cursor = db.cursor()
             sql = "SELECT COUNT(*) FROM testconfig WHERE propname = %s"
             cursor.execute(sql, (propname,))
@@ -240,20 +238,20 @@ class TestManagerSystem(Component):
         result += '<tr><th>'+_("Timestamp")+'</th><th>'+_("Author")+'</th><th>'+_("Status")+'</th></tr>'
         result += '</thead><tbody>'
         
-        db = self.env.get_read_db()
-        cursor = db.cursor()
+        with self.env.db_query as db:
+            cursor = db.cursor()
 
-        sql = "SELECT time, author, status FROM testcasehistory WHERE id='"+str(id)+"' AND planid='"+str(planid)+"' ORDER BY time DESC"
-        
-        cursor.execute(sql)
-        for ts, author, status in cursor:
-            result += '<tr>'
-            result += '<td>'+str(from_any_timestamp(ts))+'</td>'
-            result += '<td>'+author+'</td>'
-            result += '<td>'+_("Status")+'</td>'
-            result += '</tr>'
+            sql = "SELECT time, author, status FROM testcasehistory WHERE id='"+str(id)+"' AND planid='"+str(planid)+"' ORDER BY time DESC"
+            
+            cursor.execute(sql)
+            for ts, author, status in cursor:
+                result += '<tr>'
+                result += '<td>'+str(from_any_timestamp(ts))+'</td>'
+                result += '<td>'+author+'</td>'
+                result += '<td>'+_("Status")+'</td>'
+                result += '</tr>'
 
-        result += '</tbody></table>'
+            result += '</tbody></table>'
          
         return result
         
@@ -262,14 +260,14 @@ class TestManagerSystem(Component):
     def list_all_testplans(self):
         """Returns a list of all test plans."""
 
-        db = self.env.get_read_db()
-        cursor = db.cursor()
+        with self.env.db_query as db:
+            cursor = db.cursor()
 
-        sql = "SELECT id, catid, name, author, time FROM testplan ORDER BY catid, id"
-        
-        cursor.execute(sql)
-        for id, catid, name, author, ts  in cursor:
-            yield id, catid, name, author, str(from_any_timestamp(ts))
+            sql = "SELECT id, catid, name, author, time FROM testplan ORDER BY catid, id"
+            
+            cursor.execute(sql)
+            for id, catid, name, author, ts  in cursor:
+                yield id, catid, name, author, str(from_any_timestamp(ts))
 
 
     # IPermissionRequestor methods
@@ -844,7 +842,7 @@ class TestManagerSystem(Component):
             fulldetails = (fulldetails_str == 'on')
             raw_wiki_format = (raw_wiki_format_str == 'on')
 
-            context = Context.from_request(req, 'wiki', cat_name)
+            context = web_context(req)
             formatter = Formatter(self.env, context)
 
             tcat = TestCatalog(self.env, catid, cat_name)
@@ -1190,47 +1188,46 @@ class TestManagerSystem(Component):
 
     def get_template_by_id(self, t_id):
         """ Returns a template text by its id """
-        db = self.env.get_read_db()
-        cursor = db.cursor()
+        with self.env.db_query as db:
+            cursor = db.cursor()
 
-        try:
-            sql = "SELECT id, name, type, description, content FROM testmanager_templates WHERE id = %s"
-            cursor.execute(sql, (t_id,))
-            result = None
-            for id_, name, type_, description, content in cursor:
-                result = { 'id': id_, 'name': name, 'type': type_, 'description': description, 'content': content }
-                self.env.log.debug(result)
-            return result
+            try:
+                sql = "SELECT id, name, type, description, content FROM testmanager_templates WHERE id = %s"
+                cursor.execute(sql, (t_id,))
+                result = None
+                for id_, name, type_, description, content in cursor:
+                    result = { 'id': id_, 'name': name, 'type': type_, 'description': description, 'content': content }
+                    self.env.log.debug(result)
+                return result
 
-        except:
-            self.env.log.error("Error getting template with id %s" % t_id)
-            self.env.log.error(formatExceptionInfo())
-            return None
+            except:
+                self.env.log.error("Error getting template with id %s" % t_id)
+                self.env.log.error(formatExceptionInfo())
+                return None
 
     def get_template_by_name(self, t_name, t_type):
         """ Get a single template by name and type """
-        db = self.env.get_read_db()
-        cursor = db.cursor()
-        
-        try:
-            sql = "SELECT id, name, type, description, content FROM testmanager_templates WHERE name = %s AND type = %s;"
-            cursor.execute(sql, (t_name, t_type))
-            result = None
-            for id_, name, type_, description, content in cursor:
-                result = { 'id': id_, 'name': name, 'type': type_, 'description': description, 'content': content }
-            return result
+        with self.env.db_query as db:
+            cursor = db.cursor()
+            
+            try:
+                sql = "SELECT id, name, type, description, content FROM testmanager_templates WHERE name = %s AND type = %s;"
+                cursor.execute(sql, (t_name, t_type))
+                result = None
+                for id_, name, type_, description, content in cursor:
+                    result = { 'id': id_, 'name': name, 'type': type_, 'description': description, 'content': content }
+                return result
 
-        except:
-            self.env.log.error("Error getting template with name '%s' and type '%s'" % (t_name, t_type))
-            self.env.log.error(formatExceptionInfo())
-            return None
+            except:
+                self.env.log.error("Error getting template with name '%s' and type '%s'" % (t_name, t_type))
+                self.env.log.error(formatExceptionInfo())
+                return None
 
     # save a template
     def save_template(self, t_id, t_name, t_type, t_desc, t_cont, t_action):
         t_curr_id = t_id
         
-        @with_transaction(self.env)
-        def do_save_template(db):
+        with self.env.db_transaction as db:
             cursor = db.cursor()
 
             if t_action == 'ADD':
@@ -1251,8 +1248,7 @@ class TestManagerSystem(Component):
 
     def remove_template(self, t_id):
         """ Removes a single template by id """
-        @with_transaction(self.env)
-        def do_remove_template(db):
+        with self.env.db_transaction as db:
             cursor = db.cursor()
 
             sql = "DELETE FROM testmanager_templates WHERE id = %s"
@@ -1263,60 +1259,60 @@ class TestManagerSystem(Component):
 
     def get_templates(self, t_type):
         """ Get all templates of desired type """
-        db = self.env.get_read_db()
-        cursor = db.cursor()
+        with self.env.db_query as db:
+            cursor = db.cursor()
 
-        items = []
-        
-        try:
-            sql = "SELECT id, name, type, description, content FROM testmanager_templates WHERE type = %s ORDER BY name" 
-            cursor.execute(sql, (t_type,))
-            for id_, name, type_, description, content in cursor:
-                template = { 'id': id_, 'name': name, 'type': type_, 'description': description, 'content': content }
-                items.append(template)
+            items = []
             
-        except:
-            self.env.log.error("Error retrieving all the templates of type '%s'" % t_type)
-            self.env.log.error(formatExceptionInfo())
+            try:
+                sql = "SELECT id, name, type, description, content FROM testmanager_templates WHERE type = %s ORDER BY name" 
+                cursor.execute(sql, (t_type,))
+                for id_, name, type_, description, content in cursor:
+                    template = { 'id': id_, 'name': name, 'type': type_, 'description': description, 'content': content }
+                    items.append(template)
+                
+            except:
+                self.env.log.error("Error retrieving all the templates of type '%s'" % t_type)
+                self.env.log.error(formatExceptionInfo())
 
         return items
 
     def template_exists(self, name, t_type):
         """ Check if a given template with desired name and type already exists """
-        db = self.env.get_read_db()
-        cursor = db.cursor()
-        
-        try:
-            sql = "SELECT COUNT(id) FROM testmanager_templates WHERE name = %s AND type = %s"
-            cursor.execute(sql, (name, t_type))
-            row = cursor.fetchone()
+        with self.env.db_query as db:
+            cursor = db.cursor()
+            
+            try:
+                sql = "SELECT COUNT(id) FROM testmanager_templates WHERE name = %s AND type = %s"
+                cursor.execute(sql, (name, t_type))
+                row = cursor.fetchone()
 
-            if row is not None and int(row[0]) > 0:
-                return True
+                if row is not None and int(row[0]) > 0:
+                    return True
 
-        except:
-            self.env.log.error("Error checking if template with name '%s' and type '%s' exists" % (name, t_type))
-            self.env.log.error(formatExceptionInfo())
+            except:
+                self.env.log.error("Error checking if template with name '%s' and type '%s' exists" % (name, t_type))
+                self.env.log.error(formatExceptionInfo())
 
         return False
 
     def template_in_use(self, t_id):
         """ Check if a given Test Case template is in use """
-        db = self.env.get_read_db()
-        cursor = db.cursor()
-        
-        try:
-            sql = "SELECT COUNT(*) FROM testconfig where value = %s AND propname LIKE 'TC_TEMPLATE_FOR_TCAT_%%';"
-            cursor.execute(sql, (t_id,))
-            row = cursor.fetchone()
+        with self.env.db_query as db:
+            cursor = db.cursor()
             
-            if int(row[0]) > 0:
-                return True
-            else:
-                return False
-        except:
-            self.env.log.error("Error checking if template with id '%s' is in use",  t_id)
-            self.env.log.error(formatExceptionInfo())
+            try:
+                sql = "SELECT COUNT(*) FROM testconfig where value = %s AND propname LIKE 'TC_TEMPLATE_FOR_TCAT_%%';"
+                cursor.execute(sql, (t_id,))
+                row = cursor.fetchone()
+                
+                if int(row[0]) > 0:
+                    return True
+                else:
+                    return False
+            except:
+                self.env.log.error("Error checking if template with id '%s' is in use",  t_id)
+                self.env.log.error(formatExceptionInfo())
         
         # return true, just to be safe and not remove a template in case of other errors
         return True
@@ -1326,16 +1322,16 @@ class TestManagerSystem(Component):
         
         # TODO: Use the TestCatalog class instead
         
-        db = self.env.get_read_db()
-        cursor = db.cursor()
-        cursor.execute("SELECT id, page_name from testcatalog")
-        items = []
-        for c_id, c_name in cursor:
-            wikipage = WikiPage(self.env, c_name)
-            c_title = get_page_title(wikipage.text)
-            c_template_id = self.get_tc_template_id_for_catalog(c_id)
-            cat = {'id': c_id, 'name': c_name, 'title': c_title, 'template': c_template_id}
-            items.append(cat)
+        with self.env.db_query as db:
+            cursor = db.cursor()
+            cursor.execute("SELECT id, page_name from testcatalog")
+            items = []
+            for c_id, c_name in cursor:
+                wikipage = WikiPage(self.env, c_name)
+                c_title = get_page_title(wikipage.text)
+                c_template_id = self.get_tc_template_id_for_catalog(c_id)
+                cat = {'id': c_id, 'name': c_name, 'title': c_title, 'template': c_template_id}
+                items.append(cat)
             
         return sorted(items, key=itemgetter('title'))
 
@@ -1803,72 +1799,72 @@ class TestManagerSystem(Component):
         return do_sort
         
     def list_subcatalogs_pages(self, parent_id):
-        db = self.env.get_read_db()
-        cursor = db.cursor()
+        with self.env.db_query as db:
+            cursor = db.cursor()
 
-        #sql = "SELECT w1.name, w1.text, w1.version FROM wiki w1, (SELECT name, max(version) as ver FROM wiki WHERE name LIKE '%s%%' GROUP BY name) w2 WHERE w1.version = w2.ver AND w1.name = w2.name ORDER BY w2.name" % curpage
-        sql_testcatalogs = "SELECT tt.id, tt.page_name, w1.text FROM testcatalog tt, wiki w1, (SELECT name, max(version) as ver FROM wiki, testcatalog WHERE name = page_name GROUP BY name) w2 WHERE tt.parent_id = '%s' and w1.version = w2.ver AND w1.name = w2.name and w1.name = tt.page_name" % (parent_id,)
-        
-        cursor.execute(sql_testcatalogs)
-        for id_, name, text in cursor:
-            yield id_, name, text
+            #sql = "SELECT w1.name, w1.text, w1.version FROM wiki w1, (SELECT name, max(version) as ver FROM wiki WHERE name LIKE '%s%%' GROUP BY name) w2 WHERE w1.version = w2.ver AND w1.name = w2.name ORDER BY w2.name" % curpage
+            sql_testcatalogs = "SELECT tt.id, tt.page_name, w1.text FROM testcatalog tt, wiki w1, (SELECT name, max(version) as ver FROM wiki, testcatalog WHERE name = page_name GROUP BY name) w2 WHERE tt.parent_id = '%s' and w1.version = w2.ver AND w1.name = w2.name and w1.name = tt.page_name" % (parent_id,)
+            
+            cursor.execute(sql_testcatalogs)
+            for id_, name, text in cursor:
+                yield id_, name, text
         
         return
         
     def list_subcatalogs(self, catalog_id):
-        db = self.env.get_read_db()
-        cursor = db.cursor()
+        with self.env.db_query as db:
+            cursor = db.cursor()
 
-        sql_testcatalogs = "SELECT id FROM testcatalog WHERE parent_id = %s"
-        
-        cursor.execute(sql_testcatalogs, (catalog_id,))
+            sql_testcatalogs = "SELECT id FROM testcatalog WHERE parent_id = %s"
+            
+            cursor.execute(sql_testcatalogs, (catalog_id,))
 
-        result = []
-        for row in cursor:
-            id_ = row[0]
-            self.env.log.debug("    =======    Found sub catalog of catalog with id '%s': id='%s'" % (catalog_id, id_))
-            result.append(id_)
+            result = []
+            for row in cursor:
+                id_ = row[0]
+                self.env.log.debug("    =======    Found sub catalog of catalog with id '%s': id='%s'" % (catalog_id, id_))
+                result.append(id_)
         
         return result
 
     def list_subcases_pages(self, parent_id):
-        db = self.env.get_read_db()
-        cursor = db.cursor()
+        with self.env.db_query as db:
+            cursor = db.cursor()
 
-        #sql = "SELECT w1.name, w1.text, w1.version FROM wiki w1, (SELECT name, max(version) as ver FROM wiki WHERE name LIKE '%s%%' GROUP BY name) w2 WHERE w1.version = w2.ver AND w1.name = w2.name ORDER BY w2.name" % curpage
-        sql_testcases = "SELECT tt.id, tt.page_name, w1.text FROM testcase tt, wiki w1, (SELECT name, max(version) as ver FROM wiki, testcase WHERE name = page_name GROUP BY name) w2 WHERE tt.parent_id = '%s' and w1.version = w2.ver AND w1.name = w2.name and w1.name = tt.page_name" % (parent_id,)
-        
-        cursor.execute(sql_testcases)
-        for id_, name, text in cursor:
-            yield id_, name, text
+            #sql = "SELECT w1.name, w1.text, w1.version FROM wiki w1, (SELECT name, max(version) as ver FROM wiki WHERE name LIKE '%s%%' GROUP BY name) w2 WHERE w1.version = w2.ver AND w1.name = w2.name ORDER BY w2.name" % curpage
+            sql_testcases = "SELECT tt.id, tt.page_name, w1.text FROM testcase tt, wiki w1, (SELECT name, max(version) as ver FROM wiki, testcase WHERE name = page_name GROUP BY name) w2 WHERE tt.parent_id = '%s' and w1.version = w2.ver AND w1.name = w2.name and w1.name = tt.page_name" % (parent_id,)
+            
+            cursor.execute(sql_testcases)
+            for id_, name, text in cursor:
+                yield id_, name, text
         
         return
         
     def list_testcases(self, catalog_id):
-        db = self.env.get_read_db()
-        cursor = db.cursor()
+        with self.env.db_query as db:
+            cursor = db.cursor()
 
-        sql_testcases = "SELECT id FROM testcase WHERE parent_id = %s"
-        
-        cursor.execute(sql_testcases, (catalog_id,))
-        
-        result = []
-        for row in cursor:
-            result.append(row[0])
+            sql_testcases = "SELECT id FROM testcase WHERE parent_id = %s"
+            
+            cursor.execute(sql_testcases, (catalog_id,))
+            
+            result = []
+            for row in cursor:
+                result.append(row[0])
         
         return result
 
     def list_testcases_really_in_plan(self, catalog_id, plan_id):
-        db = self.env.get_read_db()
-        cursor = db.cursor()
+        with self.env.db_query as db:
+            cursor = db.cursor()
 
-        sql_testcases = "SELECT tcip.id FROM testcaseinplan as tcip, testcase as tc WHERE tc.parent_id = %s and tc.id = tcip.id and tcip.planid = %s ORDER BY tc.exec_order"
-        
-        cursor.execute(sql_testcases, (catalog_id, plan_id))
-        
-        result = []
-        for row in cursor:
-            result.append(row[0])
+            sql_testcases = "SELECT tcip.id FROM testcaseinplan as tcip, testcase as tc WHERE tc.parent_id = %s and tc.id = tcip.id and tcip.planid = %s ORDER BY tc.exec_order"
+            
+            cursor.execute(sql_testcases, (catalog_id, plan_id))
+            
+            result = []
+            for row in cursor:
+                result.append(row[0])
         
         return result
 

@@ -184,7 +184,7 @@ class TestCatalog(AbstractTestDescription):
         tc_search['parent_id'] = self.values['id']
         
         sub_catalogs = []
-        for tc in tc_search.list_matching_objects(exact_match=False, db=db):
+        for tc in tc_search.list_matching_objects(exact_match=False):
             sub_catalogs.append(tc)
             
         result.extend(sub_catalogs)
@@ -213,7 +213,7 @@ class TestCatalog(AbstractTestDescription):
         tc_search = TestCase(self.env)
         tc_search['parent_id'] = self.values['id']
         
-        for tc in tc_search.list_matching_objects(exact_match=False, db=db):
+        for tc in tc_search.list_matching_objects(exact_match=False):
             self.env.log.debug('    ---> Found testcase %s' % tc['id'])
             if plan_id is None:
                 yield tc
@@ -227,7 +227,7 @@ class TestCatalog(AbstractTestDescription):
                 yield tcip
 
         if deep:
-            for sub_catalog in self.list_subcatalogs(db=db):
+            for sub_catalog in self.list_subcatalogs(db):
                 yield sub_catalog.list_testcases(plan_id=plan_id, deep=True, db=db)
 
         self.env.log.debug('<<< list_testcases')
@@ -244,35 +244,32 @@ class TestCatalog(AbstractTestDescription):
         tp_search['contains_all'] = None
         tp_search['freeze_tc_versions'] = None
         
-        for tp in tp_search.list_matching_objects(db=db):
+        for tp in tp_search.list_matching_objects(db):
             yield tp
 
         self.env.log.debug('<<< list_testplans')
 
     def get_last_order(self, db=None):
-        if not db:
-            db = self.env.get_read_db()
-        
-        cursor = db.cursor()
-        cursor.execute("SELECT max(exec_order) FROM testcase WHERE parent_id = %s",
-            (self.values['id'],))
+        with self.env.db_query as db:
+            cursor = db.cursor()
+            cursor.execute("SELECT max(exec_order) FROM testcase WHERE parent_id = %s",
+                (self.values['id'],))
 
-        row = cursor.fetchone()
-        last_order = row[0]
-        
-        if last_order is None:
-            last_order = -1
+            row = cursor.fetchone()
+            last_order = row[0]
+            
+            if last_order is None:
+                last_order = -1
         
         return last_order
         
-    def remove_testcase_from_order(self, tc, db=None):
+    def remove_testcase_from_order(self, tc, dbb=None):
         """ 
         Removes the test case from the ordered list of test cases, rearranging the
         other test cases to fill the empty position.
         """
 
-        @self.env.with_transaction(db)
-        def do_remove_testcase_from_order(db):
+        with self.env.db_transaction as db:
             old_order = tc['exec_order']
 
             cursor = db.cursor()
@@ -282,14 +279,13 @@ class TestCatalog(AbstractTestDescription):
             cursor.execute("UPDATE testcase SET exec_order = exec_order - 1 WHERE parent_id = %s AND exec_order >= %s", 
                 (self.values['id'], old_order + 1))
                 
-    def insert_testcase_into_order(self, tc, new_order, db=None):
+    def insert_testcase_into_order(self, tc, new_order, dbb=None):
         """ 
         Inserts the test case into the ordered list of test cases, at the specified
         position, rearranging the other test cases accordingly.
         """
 
-        @self.env.with_transaction(db)
-        def do_insert_testcase_into_order(db):
+        with self.env.db_transaction as db:
             cursor = db.cursor()
             
             # Spostare avanti di 1 posizione tutti gli elementi
@@ -297,13 +293,12 @@ class TestCatalog(AbstractTestDescription):
             cursor.execute("UPDATE testcase SET exec_order = exec_order + 1 WHERE parent_id = %s AND exec_order >= %s", 
                 (self.values['id'], new_order))
                 
-    def change_testcase_order(self, tc, new_order, db=None):
+    def change_testcase_order(self, tc, new_order, dbb=None):
         """ 
         Moves the test case to a different position inside the same catalog.
         """
 
-        @self.env.with_transaction(db)
-        def do_change_testcase_order(db):
+        with self.env.db_transaction as db:
             old_order = tc['exec_order']
 
             cursor = db.cursor()
@@ -321,7 +316,7 @@ class TestCatalog(AbstractTestDescription):
                 cursor.execute("UPDATE testcase SET exec_order = exec_order - 1 WHERE parent_id = %s AND exec_order >= %s AND exec_order <= %s", 
                     (self.values['id'], old_order + 1, new_order))
 
-    def move_to(self, tcat, db=None):
+    def move_to(self, tcat, dbb=None):
         """ 
         Moves the test catalog under a different catalog.
         
@@ -330,8 +325,7 @@ class TestCatalog(AbstractTestDescription):
         are kept.
         """
 
-        @self.env.with_transaction(db)
-        def do_move_to(db):
+        with self.env.db_transaction as db:
             # Update self properties and save
             self['parent_id'] = tcat['id']
             
@@ -345,12 +339,12 @@ class TestCatalog(AbstractTestDescription):
         AbstractTestDescription.pre_delete(self, db)
         
         self.env.log.debug("Deleting all test cases related to this catalog id '%s'" % self['id'])
-        for tc in self.list_testcases(db=db):
-            tc.delete(db=db)
+        for tc in self.list_testcases(db):
+            tc.delete(db)
             
         self.env.log.debug("Deleting all sub catalogs in this catalog id '%s'" % self['id'])
-        for tcat in self.list_subcatalogs(db=db):
-            tcat.delete(db=db)
+        for tcat in self.list_subcatalogs(db):
+            tcat.delete(db)
         
         return True
 
@@ -363,7 +357,7 @@ class TestCatalog(AbstractTestDescription):
         self.env.log.debug("Deleting all test plans related to this catalog id '%s'" % self['id'])
 
         for tp in self.list_testplans(db):
-            tp.delete(db=db)
+            tp.delete(db)
 
         AbstractTestDescription.post_delete(self, db)
 
@@ -414,20 +408,19 @@ class TestCase(AbstractTestDescription):
     def create_instance(self, key):
         return TestCase(self.env, key['id'])
 
-    def set_order(self, new_order, db=None):
+    def set_order(self, new_order, dbb=None):
         """
         Changes the order of the test case in the current catalog.
         """
 
         if new_order != self['exec_order']:
-            @self.env.with_transaction(db)
-            def do_move_to(db):
+            with self.env.db_transaction as db:
                 self['exec_order'] = new_order
                 
                 self.save_changes('System', "Changed execution order", 
                     datetime.now(utc), db)
 
-    def move_to(self, tcat, new_order=-1, delete_tcip=False, db=None):
+    def move_to(self, tcat, new_order=-1, delete_tcip=False, dbb=None):
         """ 
         Moves the test case into a different catalog.
         
@@ -439,8 +432,7 @@ class TestCase(AbstractTestDescription):
         into the new name. This way, the page change history is kept.
         """
 
-        @self.env.with_transaction(db)
-        def do_move_to(db):
+        with self.env.db_transaction as db:
             # Remove the test case from the ordered list of the old catalog
             old_cat = self.get_enclosing_catalog()
             old_cat.remove_testcase_from_order(self)
@@ -456,7 +448,7 @@ class TestCase(AbstractTestDescription):
                 # Remove test case from all the plans
                 tcip_search = TestCaseInPlan(self.env)
                 tcip_search['id'] = self.values['id']
-                for tcip in tcip_search.list_matching_objects(db=db):
+                for tcip in tcip_search.list_matching_objects(db):
                     tcip.delete(db)
 
             # Update self properties and save
@@ -466,24 +458,22 @@ class TestCase(AbstractTestDescription):
             self.save_changes('System', "Moved to a different catalog", 
                 datetime.now(utc), db)
 
-    def get_related_tickets(self, db=None):
+    def get_related_tickets(self, dbb=None):
         """
         Returns an iterator over the IDs of the ticket opened against 
         this test case.
         """
         self.env.log.debug('>>> get_related_tickets')
     
-        if not db:
-            db = self.env.get_read_db()
-        
-        cursor = db.cursor()
-        cursor.execute("SELECT id FROM ticket WHERE id in " +
-            "(SELECT ticket FROM ticket_custom WHERE name='testcaseid' AND value=%s)",
-            (self.values['page_name'],))
-            
-        for row in cursor:
-            self.env.log.debug('    ---> Found ticket %s' % row[0])
-            yield row[0]
+        with self.env.db_query as db:
+            cursor = db.cursor()
+            cursor.execute("SELECT id FROM ticket WHERE id in " +
+                "(SELECT ticket FROM ticket_custom WHERE name='testcaseid' AND value=%s)",
+                (self.values['page_name'],))
+                
+            for row in cursor:
+                self.env.log.debug('    ---> Found ticket %s' % row[0])
+                yield row[0]
 
         self.env.log.debug('<<< get_related_tickets')
 
@@ -599,7 +589,7 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
     def create_instance(self, key):
         return TestCaseInPlan(self.env, key['id'], key['planid'])
         
-    def set_status(self, status, author, db=None):
+    def set_status(self, status, author, dbb=None):
         """
         Sets the execution status of the test case in the test plan.
         This method immediately writes into the test case history, but
@@ -610,48 +600,43 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
         status = status.lower()
         self['status'] = status
 
-        @self.env.with_transaction(db)
-        def do_set_status(db):
+        with self.env.db_transaction as db:
             cursor = db.cursor()
             sql = 'INSERT INTO testcasehistory (id, planid, time, author, status) VALUES (%s, %s, %s, %s, %s)'
             cursor.execute(sql, (self.values['id'], self.values['planid'], to_any_timestamp(datetime.now(utc)), author, status))
 
-    def list_history(self, db=None):
+    def list_history(self, dbb=None):
         """
         Returns an ordered list of status changes, along with timestamp
         and author, starting from the most recent.
         """
-        if not db:
-            db = self.env.get_read_db()
-        
-        cursor = db.cursor()
+        with self.env.db_query as db:
+            cursor = db.cursor()
 
-        sql = "SELECT time, author, status FROM testcasehistory WHERE id=%s AND planid=%s ORDER BY time DESC"
-        
-        cursor.execute(sql, (self.values['id'], self.values['planid']))
-        for ts, author, status in cursor:
-            yield ts, author, status.lower()
+            sql = "SELECT time, author, status FROM testcasehistory WHERE id=%s AND planid=%s ORDER BY time DESC"
+            
+            cursor.execute(sql, (self.values['id'], self.values['planid']))
+            for ts, author, status in cursor:
+                yield ts, author, status.lower()
 
-    def get_related_tickets(self, db=None):
+    def get_related_tickets(self, dbb=None):
         """
         Returns an iterator over the IDs of the ticket opened against 
         this test case and this test plan.
         """
         self.env.log.debug('>>> get_related_tickets')
     
-        if not db:
-            db = self.env.get_read_db()
-
-        cursor = db.cursor()
-        cursor.execute("SELECT id FROM ticket WHERE id in " +
-            "(SELECT ticket FROM ticket_custom WHERE name='testcaseid' AND value=%s) " +
-            "AND id in " +
-            "(SELECT ticket FROM ticket_custom WHERE name='planid' AND value=%s) ",
-            (self.values['id'], self.values['planid']))
-            
-        for row in cursor:
-            self.env.log.debug('    ---> Found ticket %s' % row[0])
-            yield row[0]
+        with self.env.db_query as db:
+            cursor = db.cursor()
+            cursor.execute("SELECT id FROM ticket WHERE id in " +
+                "(SELECT ticket FROM ticket_custom WHERE name='testcaseid' AND value=%s) " +
+                "AND id in " +
+                "(SELECT ticket FROM ticket_custom WHERE name='planid' AND value=%s) ",
+                (self.values['id'], self.values['planid']))
+                
+            for row in cursor:
+                self.env.log.debug('    ---> Found ticket %s' % row[0])
+                yield row[0]
 
         self.env.log.debug('<<< get_related_tickets')
 
@@ -666,14 +651,13 @@ class TestCaseInPlan(AbstractVariableFieldsObject):
         
         self.env.log.debug('<<< update_version')
         
-    def delete_history(self, db=None):
+    def delete_history(self, dbb=None):
         """
         Deletes all entries in the testcasehistory related to this test case in plan
         """
         self.env.log.debug('>>> delete_history')
 
-        @self.env.with_transaction(db)
-        def do_delete_history(db):
+        with self.env.db_transaction as db:
             cursor = db.cursor()
             
             # Delete test case status history
@@ -798,7 +782,7 @@ class TestPlan(AbstractVariableFieldsObject):
         #self.env.log.debug("Deleting all test cases in the plan...")
         #tcip_search = TestCaseInPlan(self.env)
         #tcip_search['planid'] = self.values['id']
-        #for tcip in tcip_search.list_matching_objects(db=db):
+        #for tcip in tcip_search.list_matching_objects(db):
         #    self.env.log.debug("Deleting test case in plan, with id %s" % tcip['id'])
         #    tcip.delete(db)
 
@@ -812,10 +796,10 @@ class TestPlan(AbstractVariableFieldsObject):
         # Delete test case status history
         cursor.execute('DELETE FROM testcasehistory WHERE planid = %s', (self['id'],))
 
-    def get_related_tickets(self, db=None):
+    def get_related_tickets(self, dbb=None):
         pass
 
-    def get_selected_testcases(self, db=None):
+    def get_selected_testcases(self, dbb=None):
         """
         If this test plan does not contain all the test cases,
         returns a list of the contained test cases.
@@ -823,16 +807,14 @@ class TestPlan(AbstractVariableFieldsObject):
         """
         self.env.log.debug('>>> get_selected_testcases')
         
-        if not db:
-            db = self.env.get_read_db()
+        with self.env.db_query as db:
+            cursor = db.cursor()
 
-        cursor = db.cursor()
+            cursor.execute('SELECT id FROM testcaseinplan WHERE planid = %s', (self.values['id'],))
 
-        cursor.execute('SELECT id FROM testcaseinplan WHERE planid = %s', (self.values['id'],))
-
-        for row in cursor:
-            tcip_id = row[0]
-            yield TestCaseInPlan(self.env, tcip_id, self.values['id'])
+            for row in cursor:
+                tcip_id = row[0]
+                yield TestCaseInPlan(self.env, tcip_id, self.values['id'])
             
         self.env.log.debug('<<< get_selected_testcases')      
 
@@ -1050,24 +1032,24 @@ class TestManagerModelProvider(Component):
     def environment_created(self):
         self.upgrade_environment()
 
-    def environment_needs_upgrade(self, db=None):
-        if self._need_upgrade(db):
-            return True
-        
-        for realm in self.SCHEMA:
-            realm_schema = self.SCHEMA[realm]
-
-            if need_db_create_for_realm(self.env, realm, realm_schema, db) or \
-                need_db_upgrade_for_realm(self.env, realm, realm_schema, db):
-                    
+    def environment_needs_upgrade(self, dbb=None):
+        with self.env.db_transaction as db:
+            if self._need_upgrade(db):
                 return True
+            
+            for realm in self.SCHEMA:
+                realm_schema = self.SCHEMA[realm]
+
+                if need_db_create_for_realm(self.env, realm, realm_schema, db) or \
+                    need_db_upgrade_for_realm(self.env, realm, realm_schema, db):
+                        
+                    return True
                 
         return False
 
-    def upgrade_environment(self, db=None):
+    def upgrade_environment(self, dbb=None):
         # Create or update db
-        @self.env.with_transaction(db)
-        def do_upgrade_environment(db):
+        with self.env.db_transaction as db:
             for realm in self.SCHEMA:
                 realm_schema = self.SCHEMA[realm]
 
@@ -1100,7 +1082,7 @@ class TestManagerModelProvider(Component):
             tc_page = WikiPage(self.env, 'TC')
             if not tc_page.exists:
                 tc_page.text = ' '
-                tc_page.save('System', '', '127.0.0.1')
+                tc_page.save('System', '')
             
                 db.commit()
             
@@ -1174,9 +1156,8 @@ class TestManagerModelProvider(Component):
 
         return False
 
-    def _fix_blank_id_templates(self, db):
-        @self.env.with_transaction(db)
-        def do_fix_blank_id_templates(db):
+    def _fix_blank_id_templates(self):
+        with self.env.db_transaction as db:
             cursor = db.cursor()
 
             items = []

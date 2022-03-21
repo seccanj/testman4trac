@@ -5,7 +5,11 @@
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
-  <xi:include href="macros.html" />
+
+  <!--
+  # import 'macros.html' as jmacros with context
+  -->
+
   <head>
 
 	<style type="text/css">
@@ -18,14 +22,18 @@
   </head>
 
   <body>
-      <p/>
+      <p></p>
       <h1>SQL Executor</h1>
 
       <form method="post" id="sqlexecutor_form" action="${baseurl}/sqlexec">
+
         <h2>Type your SQL query here:</h2>
 <textarea cols="100" rows="10" name="sql">${sql}</textarea>
         <br />
         
+        <!--
+        ${jmacros.form_token_input()}
+        -->
         <input type="submit" value="Execute" /> 
         
         <br /><br />
@@ -37,10 +45,10 @@
         <table class="listing">
           <tbody>
             <tr py:for="row in result">
-			  <td py:for="col in row">${col}</td>
-			</tr>
-		  </tbody>
-		</table>
+            <td py:for="col in row">${col}</td>
+          </tr>
+          </tbody>
+        </table>
         
       </form>
     

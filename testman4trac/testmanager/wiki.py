@@ -13,14 +13,17 @@
 # 
 
 from operator import itemgetter
-from StringIO import StringIO
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from trac.core import *
-from trac.mimeview.api import Context
 from trac.resource import Resource
 from trac.util import format_datetime, format_date
 from trac.web.api import ITemplateStreamFilter
-from trac.web.chrome import add_stylesheet, add_script, ITemplateProvider
+from trac.web.chrome import add_stylesheet, add_script, ITemplateProvider, web_context
 from trac.wiki.api import WikiSystem, IWikiChangeListener
 from trac.wiki.formatter import Formatter
 from trac.wiki.model import WikiPage
@@ -149,13 +152,7 @@ class WikiTestManagerInterface(Component):
             self._parse_config_options()
 
             planid = req.args.get('planid', '-1')
-            delete_version = req.args.get('delete_version', '')
-            version = req.args.get('version', '')
 
-            formatter = Formatter(
-                self.env, Context.from_request(req, Resource('testmanager'))
-                )
-            
             insert1 = HTML('')
             if page_name.find('_TC') >= 0:
                 if page_name.startswith('TC_TT'):

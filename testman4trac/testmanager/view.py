@@ -27,13 +27,12 @@ from operator import itemgetter
 from StringIO import StringIO
 
 from trac.core import *
-from trac.mimeview.api import Context
 from trac.perm import IPermissionRequestor, PermissionError
 from trac.resource import Resource, IResourceManager, render_resource_link, get_resource_url
 from trac.util import get_reporter_id, format_datetime, format_date
 from trac.util.datefmt import utc
 from trac.web.api import IRequestHandler
-from trac.web.chrome import add_stylesheet, add_script, ITemplateProvider, add_notice, add_warning, add_stylesheet
+from trac.web.chrome import add_stylesheet, add_script, ITemplateProvider, add_notice, add_warning, add_stylesheet, web_context
 from trac.web.href import Href
 from trac.wiki.formatter import Formatter
 from trac.wiki.model import WikiPage
@@ -378,7 +377,7 @@ class TestManagerView(Component):
         result += '</li>'
 
     def _get_wiki_page_contents(self, req, page_name, markup):
-        context = Context.from_request(req, 'wiki', page_name)
+        context = web_context(req)
         formatter = Formatter(self.env, context)
         wikidom = WikiParser(self.env).parse(markup)
         out = StringIO()

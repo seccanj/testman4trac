@@ -26,8 +26,8 @@ class Invocable(object):
         """
         
         def handle_request(self, *args):
-            print "Inside handle_request()", self.name
-            print args
+            print("Inside handle_request()", self.name)
+            print(args)
             
             return self.action(*args)
             
@@ -43,12 +43,12 @@ class Invocable(object):
 
         if decoratorArgs:
             self._invocable.specs = decoratorArgs[0]
-            print "Invocable args: %s" % (decoratorArgs[0],)
+            print("Invocable args: %s" % (decoratorArgs[0],))
         
     def __call__(self, action):
         """
         """
-        print "Action: %s" % (action,)
+        print("Action: %s" % (action,))
 
         if action.__name__ in Invocable.invocables:
             raise TracException("@Invocable function or method name must be unique")

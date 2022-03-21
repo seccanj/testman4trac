@@ -15,11 +15,13 @@
 import inspect
 
 import json
-import new
 import sys
 import traceback
 
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from genshi import HTML, Markup
 from genshi.builder import tag, Element
@@ -30,11 +32,9 @@ from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
 
 from trac.core import *
-from trac.util import get_reporter_id
 from trac.web.api import IRequestHandler, ITemplateStreamFilter
 from trac.web.chrome import ITemplateProvider
 from trac.web.href import Href
-from trac.wiki.formatter import Formatter
 
 from api import Invocable
 
@@ -343,8 +343,8 @@ def _get_class(kls):
     module_name = parts[0]
     class_name = parts[2]
     
-    print module_name
-    print class_name
+    print(module_name)
+    print(class_name)
     
     m = __import__(module_name, globals(), locals(), (class_name,), -1)
     class_object = getattr(m, class_name)

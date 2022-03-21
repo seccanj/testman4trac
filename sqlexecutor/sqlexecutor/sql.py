@@ -72,33 +72,33 @@ class SqlExecutor(Component):
             if not sql == '':
                 self.env.log.debug(sql)
 
-                try:
-                    db = self.env.get_db_cnx()
-                    cursor = db.cursor()
-                    cursor.execute(sql)
-                    
-                    for row in cursor:
-                        curr_row = []
-                        for i in row:
-                            if isinstance(i, basestring):
-                                curr_row.append(to_unicode(i))
-                            elif isinstance(i, long):
-                                curr_row.append(to_unicode(str(from_any_timestamp(i).isoformat()) + ' (' + str(i) + ')'))
-                            else:
-                                curr_row.append(to_unicode(str(i)))
-                            
-                        result.append(curr_row)
+                with self.env.db_transaction as db:
+                    try:
+                        cursor = db.cursor()
+                        cursor.execute(sql)
+                        
+                        for row in cursor:
+                            curr_row = []
+                            for i in row:
+                                if isinstance(i, basestring):
+                                    curr_row.append(to_unicode(i))
+                                elif isinstance(i, long):
+                                    curr_row.append(to_unicode(str(from_any_timestamp(i).isoformat()) + ' (' + str(i) + ')'))
+                                else:
+                                    curr_row.append(to_unicode(str(i)))
+                                
+                            result.append(curr_row)
 
-                    db.commit()
-                    
-                    message = "Query executed successfully."
-                    
-                    self.env.log.debug(result)
-                except:
-                    message = formatExceptionInfo()
-                    db.rollback()
-                    self.env.log.debug("SqlExecutor - Exception: ")
-                    self.env.log.debug(message)
+                        db.commit()
+                        
+                        message = "Query executed successfully."
+                        
+                        self.env.log.debug(result)
+                    except:
+                        message = formatExceptionInfo()
+                        db.rollback()
+                        self.env.log.debug("SqlExecutor - Exception: ")
+                        self.env.log.debug(message)
 
             if format == 'tab':
                 tsv_result = ''

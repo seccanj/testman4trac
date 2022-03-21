@@ -153,20 +153,20 @@ class GenericWorkflowModelProvider(Component):
         self.upgrade_environment()
 
     def environment_needs_upgrade(self, db=None):
-        for realm in self.SCHEMA:
-            realm_metadata = self.SCHEMA[realm]
+        with self.env.db_query as db:
+            for realm in self.SCHEMA:
+                realm_metadata = self.SCHEMA[realm]
 
-            if need_db_create_for_realm(self.env, realm, realm_metadata, db) or \
-                need_db_upgrade_for_realm(self.env, realm, realm_metadata, db):
-                
-                return True
+                if need_db_create_for_realm(self.env, realm, realm_metadata, db) or \
+                    need_db_upgrade_for_realm(self.env, realm, realm_metadata, db):
+                    
+                    return True
                 
         return False
 
-    def upgrade_environment(self, db=None):
+    def upgrade_environment(self, dbb=None):
         # Create or update db
-        @self.env.with_transaction(db)
-        def do_upgrade_environment(db):
+        with self.env.db_transaction as db:
             for realm in self.SCHEMA:
                 realm_metadata = self.SCHEMA[realm]
 

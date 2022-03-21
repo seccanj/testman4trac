@@ -10,9 +10,9 @@ project_path=""
 show_help ()
 {
 	echo Usage:
-	echo     . ./build.sh [-c] [-i your/trac/env/path]
+	echo     . ./build.sh [-f] [-i your/trac/env/path]
 	echo
-	echo     -f :    fast: do not generate message catalogs
+	echo     -f :    fast: do not generate localized message catalogs
 	echo     -i :    install the built plugins into your trac environment
 	echo
 	
@@ -43,6 +43,10 @@ make_catalogs ()
     python setup.py update_catalog_js -l ko
     python setup.py compile_catalog -f -l ko
     python setup.py compile_catalog_js -f -l ko
+    python setup.py update_catalog -l nl
+    python setup.py update_catalog_js -l nl
+    python setup.py compile_catalog -f -l nl
+    python setup.py compile_catalog_js -f -l nl
     python setup.py update_catalog -l ru
     python setup.py update_catalog_js -l ru
     python setup.py compile_catalog -f -l ru

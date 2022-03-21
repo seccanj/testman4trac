@@ -18,10 +18,9 @@ from operator import itemgetter
 
 from trac.core import *
 from trac.db import *
-from trac.web.chrome import add_notice, add_warning, add_stylesheet
+from trac.web.chrome import add_notice, add_warning, add_stylesheet, web_context
 from trac.admin.web_ui import IAdminPanelProvider
 from trac.wiki.formatter import format_to_html
-from trac.mimeview.api import Context
 
 from tracgenericclass.model import GenericClassModelProvider
 
@@ -113,7 +112,7 @@ class TestManagerAdmin(Component):
 
         testmanagersystem = TestManagerSystem(self.env)
 
-        context = Context.from_request(req)
+        context = web_context(req)
 
         data = {}
 
